@@ -95,10 +95,10 @@ const AuthForm = () => {
             type="submit"
             className="w-full bg-blue-700 text-white border-black/40"
           >
-            {isLogin ? "Login" : "Register"}
+            {isLogin ? "Register" : "Login"}
           </Button>
           <Button variant="outline" className="w-full border-black/10">
-            {isLogin ? "Login with Google" : "Register with Google"}
+            {isLogin ? "Register with Google" : "Login with Google"}
           </Button>
         </CardFooter>
       </Card>
