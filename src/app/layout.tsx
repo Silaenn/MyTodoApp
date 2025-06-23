@@ -1,5 +1,8 @@
 import { Inter, Poppins, Roboto_Mono } from "next/font/google";
 import "./globals.css";
+import Dashboard from "@/components/Dashboard";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({ subsets: ["latin"], weight: ["600", "800"] });
@@ -13,9 +16,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} ${poppins.className} ${robotoMono.className}`}
+        className={`${inter.className} ${poppins.className} ${robotoMono.className} text-white min-h-screen flex`}
       >
-        {children}
+        <Dashboard />
+        <div className="flex-1 p-6 ml-64 bg-[url('/images/BG-3.jpg')] bg-cover bg-center bg-no-repeat">
+          {/*Header */}
+          <Header />
+          {children}
+          <Footer />
+        </div>
       </body>
     </html>
   );
