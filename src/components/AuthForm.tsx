@@ -46,7 +46,7 @@ const AuthForm = () => {
         <CardContent>
           <form>
             <div className="flex flex-col gap-6">
-              {isLogin && (
+              {!isLogin && (
                 <div className="grid gap-2">
                   <Label htmlFor="email">Username</Label>
                   <Input
