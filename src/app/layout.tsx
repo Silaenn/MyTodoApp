@@ -33,7 +33,7 @@ export default function RootLayout({
         >
           {!isLoginOrRegister && <Header />}
           {children}
-          {!isLoginOrRegister && <Footer />}
+          {!isLoginOrRegister && pathname !== "/profile" && <Footer />}
         </div>
       </body>
     </html>
