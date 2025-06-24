@@ -20,9 +20,9 @@ const AuthForm = () => {
   const isLogin = pathname === "/login";
   return (
     <>
-      <Card className="sm:mx-auto sm:w-full sm:max-w-md bg-white/80">
+      <Card className=" text-white/80 sm:mx-auto sm:w-full sm:max-w-md bg-form">
         <CardHeader>
-          <CardTitle className="text-center text-2xl font-extrabold">
+          <CardTitle className="text-center text-2xl font-[var(--font-heading)]">
             {isLogin ? "Sign in to your account" : "Create a new account"}
           </CardTitle>
           <CardDescription className="text-center text-blue-500">
@@ -48,29 +48,35 @@ const AuthForm = () => {
             <div className="flex flex-col gap-6">
               {!isLogin && (
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Username</Label>
+                  <Label htmlFor="email" className="text-base">
+                    Username
+                  </Label>
                   <Input
                     id="username"
                     type="text"
                     placeholder="yourusername"
                     required
-                    className="border border-black focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
                 </div>
               )}
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-base">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="user@example.com"
+                  placeholder="your@email..com"
                   required
-                  className="border border-black focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-base">
+                    Password
+                  </Label>
                   {isLogin && (
                     <a
                       href="#"
@@ -80,12 +86,7 @@ const AuthForm = () => {
                     </a>
                   )}
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  className="border border-black"
-                />
+                <Input id="password" type="password" required />
               </div>
             </div>
           </form>
@@ -93,12 +94,15 @@ const AuthForm = () => {
         <CardFooter className="flex-col gap-2">
           <Button
             type="submit"
-            className="w-full bg-blue-700 text-white border-black/40"
+            className="w-full bg-[#2563EB] hover:bg-[#1E40AF] text-white text-base font-semibold"
           >
-            {isLogin ? "Register" : "Login"}
+            {!isLogin ? "Register" : "Login"}
           </Button>
-          <Button variant="outline" className="w-full border-black/10">
-            {isLogin ? "Register with Google" : "Login with Google"}
+          <Button
+            variant="outline"
+            className="w-full border-white/80 font-[var(--font-code)] text-sm font-medium"
+          >
+            {!isLogin ? "Register with Google" : "Login with Google"}
           </Button>
         </CardFooter>
       </Card>

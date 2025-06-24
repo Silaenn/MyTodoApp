@@ -8,8 +8,6 @@ import Footer from "@/components/Footer";
 import { usePathname } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
-const poppins = Poppins({ subsets: ["latin"], weight: ["600", "800"] });
-const robotoMono = Roboto_Mono({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -20,9 +18,7 @@ export default function RootLayout({
   const isLoginOrRegister = pathname === "/login" || pathname === "/register";
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} ${poppins.className} ${robotoMono.className} text-white min-h-screen flex`}
-      >
+      <body className={`${inter.className} text-white min-h-screen flex`}>
         {!isLoginOrRegister && <Dashboard />}
         <div
           className={`flex-1 ${

@@ -19,9 +19,9 @@ const Tasks = () => {
       <div className="flex justify-end items-center mb-6">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="bg-gray-700">Category</Button>
+            <Button className="bg-form">Category</Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-40 bg-gray-700 mr-6 mt-1">
+          <DropdownMenuContent className="w-40 bg-form mr-6 mt-1">
             <DropdownMenuLabel>Select</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup
@@ -41,32 +41,32 @@ const Tasks = () => {
 
       {/* Task List */}
       <div className="space-y-4">
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md flex justify-between items-center">
+        <div className="bg-form p-4 rounded-lg shadow-md flex justify-between items-center">
           <div>
             <h3 className="text-lg font-semibold">Finish Report</h3>
             <p className="text-gray-400 text-sm">Deadline: 2025-06-25</p>
           </div>
           <div className="flex space-x-2">
-            <button className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
+            <Button className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
               Edit
-            </button>
-            <button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+            </Button>
+            <Button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
               Delete
-            </button>
+            </Button>
           </div>
         </div>
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md flex justify-between items-center">
+        <div className="bg-form p-4 rounded-lg shadow-md flex justify-between items-center">
           <div>
             <h3 className="text-lg font-semibold">Read Book</h3>
             <p className="text-gray-400 text-sm">Deadline: 2025-06-30</p>
           </div>
           <div className="flex space-x-2">
-            <button className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
+            <Button className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
               Edit
-            </button>
-            <button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+            </Button>
+            <Button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
               Delete
-            </button>
+            </Button>
           </div>
         </div>
       </div>
