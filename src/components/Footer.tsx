@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <>
       {/* Music Widget (Sticky Bottom) */}
-      <footer className="fixed bottom-0 left-64 w-[calc(100%-256px)] flex items-center justify-between border-t  border-zinc-700 px-6 py-4">
+      <footer className="bg-black/70 fixed bottom-0 left-64 w-[calc(100%-256px)] flex items-center justify-between border-t  border-zinc-700 px-6 py-4">
         <div className="flex items-center gap-3">
           <Image
             className="w-14 h-14"

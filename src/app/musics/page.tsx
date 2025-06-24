@@ -20,9 +20,9 @@ const Musics = () => {
       <div className="flex justify-end items-center mb-6">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="bg-gray-700">Genre</Button>
+            <Button className="bg-form">Genre</Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-40 bg-gray-700 mr-6 mt-1">
+          <DropdownMenuContent className="w-40 bg-form mr-6 mt-1">
             <DropdownMenuLabel>Select</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup value={genre} onValueChange={setGenre}>
@@ -39,32 +39,32 @@ const Musics = () => {
 
       {/* Playlist */}
       <div className="space-y-4">
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md flex justify-between items-center">
+        <div className="bg-form p-4 rounded-lg shadow-md flex justify-between items-center">
           <div>
             <h3 className="text-lg font-semibold">Upbeat Coding</h3>
             <p className="text-gray-400 text-sm">Mood: Upbeat</p>
           </div>
           <div className="flex space-x-2">
-            <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
-              Play
-            </button>
-            <button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+            <Button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
+              ▶ {""} Play
+            </Button>
+            <Button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
               Set for Task
-            </button>
+            </Button>
           </div>
         </div>
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md flex justify-between items-center">
+        <div className="bg-form p-4 rounded-lg shadow-md flex justify-between items-center">
           <div>
             <h3 className="text-lg font-semibold">Chill Vibes</h3>
             <p className="text-gray-400 text-sm">Mood: Chill</p>
           </div>
           <div className="flex space-x-2">
-            <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
-              Play
-            </button>
-            <button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+            <Button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
+              ▶ {""} Play
+            </Button>
+            <Button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
               Set for Task
-            </button>
+            </Button>
           </div>
         </div>
       </div>

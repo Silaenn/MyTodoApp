@@ -1,32 +1,35 @@
+"use client";
 import React from "react";
+
+const tasks = [
+  { title: "Finish Report", category: "Work", isDone: false },
+  { title: "Read Book", category: "Personal", isDone: false },
+];
 
 const Home = () => {
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+      {tasks.map((task, idx) => (
+        <div
+          key={idx}
+          className="bg-form rounded-xl p-5 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-150"
+        >
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Finish Report</h3>
-            <input type="checkbox" className="h-5 w-5 text-blue-500" />
+            <h3 className="text-lg font-semibold">{task.title}</h3>
+            <input
+              type="checkbox"
+              className="form-checkbox h-5 w-5 text-indigo-500 rounded border-gray-600"
+            />
           </div>
-          <p className="text-gray-400 text-sm mt-2">Category: Work</p>
-          <button className="mt-2 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
-            Play Song
+          <p className="text-sm text-gray-400 mt-2">
+            Category: {task.category}
+          </p>
+          <button className="mt-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-mono">
+            ▶ Play Song
           </button>
         </div>
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Read Book</h3>
-            <input type="checkbox" className="h-5 w-5 text-blue-500" />
-          </div>
-          <p className="text-gray-400 text-sm mt-2">Category: Personal</p>
-          <button className="mt-2 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
-            Play Song
-          </button>
-        </div>
-      </div>
-      )
-    </>
+      ))}
+    </section>
   );
 };
 
