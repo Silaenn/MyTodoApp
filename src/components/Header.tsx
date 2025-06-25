@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, SearchIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { DialogDemo } from "./Dialog";
 
 const Header = () => {
   const pathname = usePathname();
@@ -23,10 +24,7 @@ const Header = () => {
 
         {isName !== "Profile" && (
           <div className="flex items-center gap-4">
-            <Button className="flex gap-2 bg-blue-600 hover:bg-blue-700">
-              <Plus size={16} />
-              Add Task
-            </Button>
+            <DialogDemo />
 
             <div className="w-10 h-10 bg-form text-white font-semibold rounded-full flex items-center justify-center">
               U
