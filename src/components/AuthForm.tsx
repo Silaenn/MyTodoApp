@@ -5,19 +5,84 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import {
+  LoginFormData,
+  loginSchema,
+  RegisterFormData,
+  registerSchema,
+} from "@/lib/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const AuthForm = () => {
+  const router = useRouter();
   const pathname = usePathname();
   const isLogin = pathname === "/login";
+
+  const loginForm = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  const registerForm = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { email: "", username: "", password: "" },
+  });
+
+  const onLoginSubmit = async (data: LoginFormData) => {
+    try {
+      const res = await fetch("api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+      router.push("/");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        loginForm.setError("root", { message: error.message });
+      } else {
+        loginForm.setError("root", { message: "Something went wrong" });
+      }
+    }
+  };
+
+  const onRegisterSubmit = async (data: RegisterFormData) => {
+    try {
+      const res = await fetch("api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+      router.push("/login");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        registerForm.setError("root", { message: error.message });
+      } else {
+        registerForm.setError("root", { message: "Something went wrong" });
+      }
+    }
+  };
+
   return (
     <>
       <Card className=" text-white/80 sm:mx-auto sm:w-full sm:max-w-md bg-form">
@@ -44,67 +109,139 @@ const AuthForm = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="flex flex-col gap-6">
-              {!isLogin && (
-                <div className="grid gap-2">
-                  <Label htmlFor="email" className="text-base">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    placeholder="yourusername"
-                    required
-                    className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-                </div>
-              )}
-              <div className="grid gap-2">
-                <Label htmlFor="email" className="text-base">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your@email..com"
-                  required
-                  className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password" className="text-base">
-                    Password
-                  </Label>
-                  {isLogin && (
-                    <a
-                      href="#"
-                      className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                    >
-                      Forgot your password?
-                    </a>
+          {isLogin ? (
+            <Form {...loginForm}>
+              <form
+                onSubmit={loginForm.handleSubmit(onLoginSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={loginForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="your@email..com"
+                          {...field}
+                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </div>
-                <Input id="password" type="password" required />
-              </div>
-            </div>
-          </form>
+                />
+                <FormField
+                  control={loginForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-center justify-between">
+                        <FormLabel>Password</FormLabel>
+                        <Link
+                          href="#"
+                          className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                        >
+                          Forgot your password?
+                        </Link>
+                      </div>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          {...field}
+                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {loginForm.formState.errors.root && (
+                  <p className="text-red-500 text-sm">
+                    {loginForm.formState.errors.root.message}
+                  </p>
+                )}
+                <Button
+                  type="submit"
+                  className="w-full bg-[#2563EB] hover:bg-[#1E40AF] text-white text-base font-semibold"
+                >
+                  Login
+                </Button>
+              </form>
+            </Form>
+          ) : (
+            <Form {...registerForm}>
+              <form
+                onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={registerForm.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Username</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="yourusername"
+                          {...field}
+                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={registerForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="your@email..com"
+                          {...field}
+                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={registerForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          {...field}
+                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {registerForm.formState.errors.root && (
+                  <p className="text-red-500 text-sm">
+                    {registerForm.formState.errors.root.message}
+                  </p>
+                )}
+                <Button
+                  type="submit"
+                  className="w-full bg-[#2563EB] hover:bg-[#1E40AF] text-white text-base font-semibold"
+                >
+                  Register
+                </Button>
+              </form>
+            </Form>
+          )}
         </CardContent>
-        <CardFooter className="flex-col gap-2">
-          <Button
-            type="submit"
-            className="w-full bg-[#2563EB] hover:bg-[#1E40AF] text-white text-base font-semibold"
-          >
-            {!isLogin ? "Register" : "Login"}
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full border-white/80 font-[var(--font-code)] text-sm font-medium"
-          >
-            {!isLogin ? "Register with Google" : "Login with Google"}
-          </Button>
-        </CardFooter>
       </Card>
     </>
   );

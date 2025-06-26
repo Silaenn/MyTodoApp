@@ -1,6 +1,6 @@
 "use client";
 
-import { Inter, Poppins, Roboto_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Dashboard from "@/components/Dashboard";
 import Header from "@/components/Header";
@@ -18,7 +18,10 @@ export default function RootLayout({
   const isLoginOrRegister = pathname === "/login" || pathname === "/register";
   return (
     <html lang="en">
-      <body className={`${inter.className} text-white min-h-screen flex`}>
+      <body
+        className={`${inter.className} text-white min-h-screen flex`}
+        suppressHydrationWarning
+      >
         {!isLoginOrRegister && <Dashboard />}
         <div
           className={`flex-1 ${
