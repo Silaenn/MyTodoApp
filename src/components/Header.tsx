@@ -1,7 +1,6 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Plus, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { DialogDemo } from "./Dialog";
 
