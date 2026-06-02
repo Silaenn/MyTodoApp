@@ -15,67 +15,54 @@ import {
 const Tasks = () => {
   const [category, setCategory] = useState("chill");
   return (
-    <>
-      <div className="flex justify-end items-center mb-6">
+    <div className="max-w-5xl">
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-black uppercase tracking-tighter">Manage <span className="text-[var(--accent-neon)]">Tasks</span></h1>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="bg-form">Category</Button>
+            <Button className="brutal-btn brutal-btn-primary">Filter: {category}</Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-40 bg-form mr-6 mt-1">
-            <DropdownMenuLabel>Select</DropdownMenuLabel>
-            <DropdownMenuSeparator />
+          <DropdownMenuContent className="bg-black border-2 border-white rounded-none p-2">
+            <DropdownMenuLabel className="text-white font-black uppercase text-xs">Category</DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-white" />
             <DropdownMenuRadioGroup
               value={category}
               onValueChange={setCategory}
+              className="text-white"
             >
-              <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="work">Work</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="personal">
-                Personal
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="chill">Chill</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="all" className="hover:bg-white hover:text-black font-bold uppercase cursor-pointer">All</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="work" className="hover:bg-white hover:text-black font-bold uppercase cursor-pointer">Work</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="personal" className="hover:bg-white hover:text-black font-bold uppercase cursor-pointer">Personal</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="chill" className="hover:bg-white hover:text-black font-bold uppercase cursor-pointer">Chill</DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
       {/* Task List */}
-      <div className="space-y-4">
-        <div className="bg-form p-4 rounded-lg shadow-md flex justify-between items-center">
-          <div>
-            <h3 className="text-lg font-semibold">Finish Report</h3>
-            <p className="text-gray-400 text-sm">Deadline: 2025-06-25</p>
+      <div className="space-y-6">
+        {[
+          { title: "Finish Report", date: "2025-06-25", cat: "Work" },
+          { title: "Read Book", date: "2025-06-30", cat: "Personal" }
+        ].map((t, i) => (
+          <div key={i} className="brutal-card p-6 flex justify-between items-center">
+            <div>
+              <span className="text-[10px] font-black bg-white text-black px-2 py-0.5 mb-2 inline-block uppercase">{t.cat}</span>
+              <h3 className="text-2xl font-black uppercase italic">{t.title}</h3>
+              <p className="text-gray-400 text-xs font-bold mt-1 uppercase tracking-widest">DL: {t.date}</p>
+            </div>
+            <div className="flex gap-4">
+              <button className="brutal-btn bg-white text-black hover:bg-yellow-400">
+                EDIT
+              </button>
+              <button className="brutal-btn bg-white text-black hover:bg-red-500">
+                DELETE
+              </button>
+            </div>
           </div>
-          <div className="flex space-x-2">
-            <Button className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
-              Edit
-            </Button>
-            <Button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-              Delete
-            </Button>
-          </div>
-        </div>
-        <div className="bg-form p-4 rounded-lg shadow-md flex justify-between items-center">
-          <div>
-            <h3 className="text-lg font-semibold">Read Book</h3>
-            <p className="text-gray-400 text-sm">Deadline: 2025-06-30</p>
-          </div>
-          <div className="flex space-x-2">
-            <Button className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
-              Edit
-            </Button>
-            <Button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-              Delete
-            </Button>
-          </div>
-        </div>
+        ))}
       </div>
-
-      {/* No Tasks Message */}
-      {false && ( // Ganti dengan logika jika task kosong
-        <p className="text-center text-gray-400 mt-6">No tasks available.</p>
-      )}
-    </>
+    </div>
   );
 };
 

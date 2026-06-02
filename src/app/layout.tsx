@@ -19,21 +19,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} text-white min-h-screen flex`}
+        className={`${inter.className} bg-black text-white min-h-screen flex`}
         suppressHydrationWarning
       >
         {!isLoginOrRegister && <Dashboard />}
-        <div
-          className={`flex-1 ${
-            !isLoginOrRegister
-              ? "p-6 text-white  ml-64 bg-[url('/images/BG-3.jpg')] bg-cover bg-center bg-no-repeat"
-              : ""
+        <main
+          className={`flex-1 flex flex-col ${
+            !isLoginOrRegister ? "ml-64 p-8" : ""
           }`}
         >
           {!isLoginOrRegister && <Header />}
-          {children}
+          <div className="flex-1 mt-4">
+            {children}
+          </div>
           {!isLoginOrRegister && pathname !== "/profile" && <Footer />}
-        </div>
+        </main>
       </body>
     </html>
   );

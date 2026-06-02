@@ -16,20 +16,22 @@ const Dashboard = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 hidden md:flex flex-col justify-between w-64 h-screen bg-[#1F2937] p-6 text-white shadow-xl">
+    <aside className="fixed left-0 top-0 hidden md:flex flex-col justify-between w-64 h-screen bg-black border-r-4 border-white p-6 text-white">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight mb-6">📚 TaskTune</h2>
-        <nav className="space-y-3">
+        <h2 className="text-3xl font-black italic tracking-tighter mb-10 border-b-2 border-white pb-4">
+          TASK<span className="text-[var(--accent-neon)]">TUNE</span>
+        </h2>
+        <nav className="space-y-4">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block px-3 py-2 rounded-md transition-colors font-medium ${
+                className={`block px-4 py-3 border-2 transition-all font-bold uppercase tracking-widest shadow-[4px_4px_0px_#ffffff] ${
                   isActive
-                    ? "bg-indigo-600 text-white"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                    ? "bg-[var(--accent-neon)] text-black border-white"
+                    : "bg-black text-white border-white hover:bg-white hover:text-black"
                 }`}
               >
                 {link.label}
@@ -39,9 +41,9 @@ const Dashboard = () => {
         </nav>
       </div>
 
-      <Button className="mt-6 justify-start text-red-400 hover:text-red-300">
-        <LogOut /> Logout
-      </Button>
+      <button className="brutal-btn bg-red-600 text-white flex items-center gap-2 justify-center">
+        <LogOut size={20} /> LOGOUT
+      </button>
     </aside>
   );
 };

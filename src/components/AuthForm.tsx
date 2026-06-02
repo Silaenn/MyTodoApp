@@ -85,23 +85,23 @@ const AuthForm = () => {
 
   return (
     <>
-      <Card className=" text-white/80 sm:mx-auto sm:w-full sm:max-w-md bg-form">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-[var(--font-heading)]">
-            {isLogin ? "Sign in to your account" : "Create a new account"}
+      <Card className="sm:mx-auto sm:w-full sm:max-w-md bg-[#121212] border-4 border-white rounded-none shadow-[8px_8px_0px_#ffffff]">
+        <CardHeader className="border-b-4 border-white mb-6">
+          <CardTitle className="text-center text-3xl font-black uppercase tracking-tighter italic text-white">
+            {isLogin ? "Welcome Back" : "Join the Vibe"}
           </CardTitle>
-          <CardDescription className="text-center text-blue-500">
+          <CardDescription className="text-center font-bold uppercase tracking-widest text-[var(--accent-neon)]">
             {isLogin ? (
               <>
-                Don&apos;t have an account?{" "}
-                <Link href={"/register"} className="text-blue-800">
+                No account?{" "}
+                <Link href={"/register"} className="underline hover:text-white">
                   Register
                 </Link>
               </>
             ) : (
               <>
-                Already have an account?{""}
-                <Link href={"/login"} className="text-blue-800">
+                Have account?{""}
+                <Link href={"/login"} className="underline hover:text-white">
                   {""} Login
                 </Link>
               </>
@@ -113,22 +113,22 @@ const AuthForm = () => {
             <Form {...loginForm}>
               <form
                 onSubmit={loginForm.handleSubmit(onLoginSubmit)}
-                className="space-y-4"
+                className="space-y-6"
               >
                 <FormField
                   control={loginForm.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="font-black uppercase tracking-widest text-xs">Email</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="your@email..com"
+                          placeholder="YOUR@EMAIL.COM"
                           {...field}
-                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="h-12 bg-black border-2 border-white rounded-none text-white font-bold placeholder:text-gray-600 focus-visible:ring-0 focus-visible:border-[var(--accent-neon)]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="font-bold text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -138,58 +138,58 @@ const AuthForm = () => {
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex items-center justify-between">
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel className="font-black uppercase tracking-widest text-xs">Password</FormLabel>
                         <Link
                           href="#"
-                          className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                          className="text-[10px] font-bold uppercase underline hover:text-[var(--accent-neon)]"
                         >
-                          Forgot your password?
+                          Forgot?
                         </Link>
                       </div>
                       <FormControl>
                         <Input
                           type="password"
                           {...field}
-                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="h-12 bg-black border-2 border-white rounded-none text-white font-bold focus-visible:ring-0 focus-visible:border-[var(--accent-neon)]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="font-bold text-red-500" />
                     </FormItem>
                   )}
                 />
                 {loginForm.formState.errors.root && (
-                  <p className="text-red-500 text-sm">
+                  <p className="text-red-500 font-bold uppercase text-xs">
                     {loginForm.formState.errors.root.message}
                   </p>
                 )}
-                <Button
+                <button
                   type="submit"
-                  className="w-full bg-[#2563EB] hover:bg-[#1E40AF] text-white text-base font-semibold"
+                  className="brutal-btn brutal-btn-primary w-full h-14 text-xl"
                 >
-                  Login
-                </Button>
+                  ENTER
+                </button>
               </form>
             </Form>
           ) : (
             <Form {...registerForm}>
               <form
                 onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
-                className="space-y-4"
+                className="space-y-6"
               >
                 <FormField
                   control={registerForm.control}
                   name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel className="font-black uppercase tracking-widest text-xs">Username</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="yourusername"
+                          placeholder="USERNAME"
                           {...field}
-                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="h-12 bg-black border-2 border-white rounded-none text-white font-bold placeholder:text-gray-600 focus-visible:ring-0 focus-visible:border-[var(--accent-neon)]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="font-bold text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -198,15 +198,15 @@ const AuthForm = () => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="font-black uppercase tracking-widest text-xs">Email</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="your@email..com"
+                          placeholder="YOUR@EMAIL.COM"
                           {...field}
-                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="h-12 bg-black border-2 border-white rounded-none text-white font-bold placeholder:text-gray-600 focus-visible:ring-0 focus-visible:border-[var(--accent-neon)]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="font-bold text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -215,29 +215,29 @@ const AuthForm = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel className="font-black uppercase tracking-widest text-xs">Password</FormLabel>
                       <FormControl>
                         <Input
                           type="password"
                           {...field}
-                          className="text-base focus-visible:ring-0 focus-visible:ring-offset-0"
+                          className="h-12 bg-black border-2 border-white rounded-none text-white font-bold focus-visible:ring-0 focus-visible:border-[var(--accent-neon)]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="font-bold text-red-500" />
                     </FormItem>
                   )}
                 />
                 {registerForm.formState.errors.root && (
-                  <p className="text-red-500 text-sm">
+                  <p className="text-red-500 font-bold uppercase text-xs">
                     {registerForm.formState.errors.root.message}
                   </p>
                 )}
-                <Button
+                <button
                   type="submit"
-                  className="w-full bg-[#2563EB] hover:bg-[#1E40AF] text-white text-base font-semibold"
+                  className="brutal-btn brutal-btn-primary w-full h-14 text-xl"
                 >
-                  Register
-                </Button>
+                  CREATE ACCOUNT
+                </button>
               </form>
             </Form>
           )}
