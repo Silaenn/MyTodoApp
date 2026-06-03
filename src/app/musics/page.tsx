@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Music2, Play } from "lucide-react";
+import { Search, Music2, Play, Heart } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 
 interface SearchResult {
@@ -19,7 +19,7 @@ const Musics = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
-  const playTrack = useMusicStore((state) => state.playTrack);
+  const { playTrack, toggleLike, isLiked, likedTracks } = useMusicStore();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,12 +37,65 @@ const Musics = () => {
     }
   };
 
+  const TrackCard = ({ track, compact = false }: { track: SearchResult, compact?: boolean }) => (
+    <div className={`brutal-card flex flex-col group hover:border-brutal-neon transition-all overflow-hidden ${compact ? 'p-3' : 'p-4'}`}>
+      <div className="relative aspect-square border-4 border-white overflow-hidden shadow-brutal-sm group-hover:shadow-brutal transition-all">
+        <img 
+          src={track.thumbnail} 
+          alt={track.title} 
+          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" 
+        />
+        <div className="absolute inset-0 bg-brutal-neon/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+          <button 
+            onClick={() => playTrack(track)}
+            className="bg-white p-3 border-4 border-black hover:bg-brutal-neon transition-colors"
+          >
+            <Play className="text-black fill-current" size={32} />
+          </button>
+        </div>
+        <button 
+          onClick={() => toggleLike(track)}
+          className={`absolute top-2 right-2 p-2 border-2 border-white transition-all ${
+            isLiked(track.id) ? "bg-brutal-pink text-white" : "bg-black/50 text-white hover:bg-white hover:text-black"
+          }`}
+        >
+          <Heart size={16} fill={isLiked(track.id) ? "currentColor" : "none"} />
+        </button>
+      </div>
+      
+      <div className="mt-4 flex flex-col gap-1 overflow-hidden">
+        <h3 className="text-lg font-black uppercase truncate leading-tight group-hover:text-brutal-neon transition-colors">
+          {track.title}
+        </h3>
+        <p className="text-brutal-pink text-[10px] font-black uppercase tracking-[0.2em] truncate opacity-80">
+          {track.artist}
+        </p>
+      </div>
+      
+      <button 
+        onClick={() => playTrack(track)}
+        className="brutal-btn brutal-btn-primary mt-4 py-2 text-xs italic w-full"
+      >
+        ▶ ACTIVATE
+      </button>
+    </div>
+  );
+
   return (
     <div className="w-full pb-32">
       <div className="flex flex-col gap-10 mb-12 border-b-8 border-white pb-10">
-        <h1 className="text-6xl sm:text-7xl font-black uppercase tracking-tighter italic text-stroke">
-          VIBE <span className="text-brutal-pink !text-white !italic">DISCOVERY</span>
-        </h1>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <h1 className="text-6xl sm:text-7xl font-black uppercase tracking-tighter italic text-stroke">
+            VIBE <span className="text-brutal-pink !text-white !italic">DISCOVERY</span>
+          </h1>
+          <div className="bg-brutal-pink border-4 border-white p-4 shadow-brutal flex items-center gap-4">
+            <Heart size={24} fill="white" className="animate-pulse" />
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase">FAVORITE VAULT</span>
+              <span className="text-xl font-black italic">{likedTracks.length} TRACKS</span>
+            </div>
+          </div>
+        </div>
         
         <form onSubmit={handleSearch} className="relative w-full group">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/50 group-focus-within:text-brutal-neon z-10 transition-colors" size={28} />
@@ -58,47 +111,37 @@ const Musics = () => {
         </form>
       </div>
 
+      {likedTracks.length > 0 && !query && (
+        <div className="mb-16">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-8 h-8 bg-brutal-pink border-2 border-white"></div>
+            <h2 className="text-3xl font-black uppercase italic tracking-tighter">LIKED <span className="text-brutal-pink">PLAYLIST</span></h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            {likedTracks.map((track) => (
+              <TrackCard key={track.id} track={track} compact />
+            ))}
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-6">
           <div className="w-20 h-20 border-8 border-white border-t-brutal-neon animate-spin"></div>
           <p className="text-3xl font-black uppercase italic text-stroke">SCANNING FREQUENCIES...</p>
         </div>
       ) : (
-        <div className="grid gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
           {results.length > 0 ? (
             results.map((m) => (
-              <div key={m.id} className="brutal-card p-6 flex flex-col sm:flex-row justify-between items-center gap-8 group hover:border-brutal-neon transition-all">
-                <div className="flex flex-col sm:flex-row items-center gap-8 overflow-hidden w-full">
-                  <div className="relative w-32 h-32 border-4 border-white flex-shrink-0 overflow-hidden shadow-brutal rotate-3 group-hover:rotate-0 transition-transform">
-                    <img src={m.thumbnail} alt={m.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                    <div className="absolute inset-0 bg-brutal-neon/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
-                      <Play className="text-white fill-current animate-ping" size={48} />
-                    </div>
-                  </div>
-                  <div className="overflow-hidden text-center sm:text-left flex-1">
-                    <h3 className="text-3xl font-black uppercase truncate leading-tight group-hover:text-brutal-neon transition-colors">{m.title}</h3>
-                    <div className="flex items-center justify-center sm:justify-start gap-3 mt-3">
-                      <span className="w-4 h-1 bg-brutal-pink"></span>
-                      <p className="text-brutal-pink text-sm font-black uppercase tracking-[0.3em] truncate">{m.artist}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex space-x-4 flex-shrink-0 w-full sm:w-auto">
-                  <button 
-                    onClick={() => playTrack(m)}
-                    className="brutal-btn brutal-btn-primary w-full sm:w-auto px-10 italic"
-                  >
-                    ▶ ACTIVATE
-                  </button>
-                </div>
-              </div>
+              <TrackCard key={m.id} track={m} />
             ))
           ) : query && !loading ? (
-            <div className="brutal-card p-12 text-center bg-transparent border-dashed">
+            <div className="col-span-full brutal-card p-12 text-center bg-transparent border-dashed">
               <p className="text-2xl font-black text-gray-500 uppercase italic tracking-widest">ZERO MATCHES FOUND IN ARCHIVES.</p>
             </div>
-          ) : (
-            <div className="py-24 text-center opacity-20 group">
+          ) : !likedTracks.length && (
+            <div className="col-span-full py-24 text-center opacity-20 group">
               <Music2 size={120} className="mx-auto mb-6 group-hover:text-brutal-neon group-hover:scale-110 transition-all" />
               <p className="text-4xl font-black uppercase italic tracking-tighter">SEARCH TO INITIATE VIBE</p>
             </div>
