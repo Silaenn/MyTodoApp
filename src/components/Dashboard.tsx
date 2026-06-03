@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { LogOut, X } from "lucide-react";
+import { LogOut, X, User } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -10,7 +11,7 @@ const navLinks = [
   { label: "Music", href: "/musics" },
 ];
 
-const Dashboard = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+const Dashboard = ({ isOpen, onClose, user }: { isOpen: boolean, onClose: () => void, user?: any }) => {
   const pathname = usePathname();
 
   return (
@@ -59,12 +60,38 @@ const Dashboard = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }
           </nav>
         </div>
 
-        <div className="p-4 border-4 border-white bg-brutal-gray font-black text-[10px] uppercase tracking-[0.3em] flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-brutal-neon animate-pulse"></span>
-            SYSTEM ONLINE
+        <div className="space-y-4">
+          {/* User Profile Info */}
+          <div className="p-4 border-4 border-white bg-brutal-gray shadow-brutal-sm flex items-center gap-3 group">
+            <div className="w-10 h-10 border-2 border-white overflow-hidden bg-black flex-shrink-0">
+              {user?.image ? (
+                <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-brutal-neon text-black">
+                  <User size={20} />
+                </div>
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-black uppercase truncate leading-none mb-1">{user?.name || "GUEST"}</p>
+              <p className="text-[8px] font-black uppercase tracking-widest text-brutal-neon truncate">ONLINE</p>
+            </div>
+            <button 
+              onClick={() => signOut()}
+              className="text-white hover:text-brutal-pink transition-colors"
+              title="Logout"
+            >
+              <LogOut size={18} />
+            </button>
           </div>
-          <span className="opacity-50 text-[8px]">BUILD VERSION: 1.0.42-STABLE</span>
+
+          <div className="p-4 border-4 border-white bg-brutal-gray font-black text-[10px] uppercase tracking-[0.3em] flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-brutal-neon animate-pulse"></span>
+              SYSTEM ONLINE
+            </div>
+            <span className="opacity-50 text-[8px]">USER_ID: {user?.id?.substring(0, 8) || "N/A"}</span>
+          </div>
         </div>
       </aside>
     </>

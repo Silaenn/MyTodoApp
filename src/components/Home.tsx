@@ -1,5 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useMusicStore } from "@/lib/music-store";
+import { Play, CheckCircle2, Clock, Heart, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 interface Task {
   id: string;
@@ -11,12 +14,14 @@ interface Task {
 const Home = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const { likedTracks, playTrack } = useMusicStore();
 
   const fetchTasks = async () => {
     try {
       const res = await fetch("/api/tasks");
       const data = await res.json();
-      setTasks(data.slice(0, 6)); // Show only first 6 tasks on home
+      // Only get top 3 unfinished tasks for dashboard
+      setTasks(data.filter((t: Task) => !t.is_done).slice(0, 3));
     } catch (error) {
       console.error("Failed to fetch tasks:", error);
     } finally {
@@ -27,29 +32,6 @@ const Home = () => {
   useEffect(() => {
     fetchTasks();
   }, []);
-
-  const toggleDone = async (id: string, currentStatus: boolean) => {
-    try {
-      await fetch(`/api/tasks/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ is_done: !currentStatus }),
-      });
-      setTasks(tasks.map(t => t.id === id ? { ...t, is_done: !currentStatus } : t));
-    } catch (error) {
-      console.error("Failed to update task:", error);
-    }
-  };
-
-  const getCategoryColor = (cat: string) => {
-    const colors: Record<string, string> = {
-      work: "bg-brutal-blue",
-      personal: "bg-brutal-pink",
-      music: "bg-brutal-neon",
-      urgent: "bg-brutal-yellow text-black",
-    };
-    return colors[cat.toLowerCase()] || "bg-white/20";
-  };
 
   if (loading) {
     return (
@@ -67,55 +49,114 @@ const Home = () => {
     );
   }
 
-
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
-      {tasks.map((task) => (
-        <div
-          key={task.id}
-          className={`brutal-card p-6 flex flex-col justify-between min-h-[220px] transition-all relative overflow-hidden group ${
-            task.is_done ? "opacity-50 grayscale" : ""
-          }`}
-        >
-          {/* Background Accent */}
-          <div className={`absolute -right-4 -top-4 w-16 h-16 rotate-12 opacity-20 group-hover:opacity-40 transition-all ${getCategoryColor(task.category)}`}></div>
-
-          <div>
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex flex-col gap-1">
-                <span className={`text-[10px] font-black uppercase px-2 py-0.5 w-fit shadow-brutal-sm border-2 border-white ${getCategoryColor(task.category)}`}>
-                  {task.category}
-                </span>
-                <h3 className={`text-2xl font-black uppercase leading-tight mt-2 ${task.is_done ? 'line-through' : ''}`}>
-                  {task.title}
-                </h3>
-              </div>
-              <button 
-                onClick={() => toggleDone(task.id, task.is_done)}
-                className={`w-10 h-10 border-4 border-white flex items-center justify-center transition-all ${
-                  task.is_done ? "bg-brutal-neon shadow-none translate-x-1 translate-y-1" : "bg-black shadow-brutal-sm hover:bg-white hover:text-black"
-                }`}
-              >
-                {task.is_done ? "✔" : ""}
-              </button>
+    <div className="w-full space-y-12 pb-20">
+      {/* Welcome Hero */}
+      <section className="relative p-8 md:p-12 border-4 border-white bg-brutal-gray shadow-brutal-neon overflow-hidden group">
+        <div className="absolute -right-20 -top-20 w-64 h-64 bg-brutal-neon/10 rounded-full blur-3xl group-hover:bg-brutal-neon/20 transition-all"></div>
+        <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="text-center md:text-left">
+            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-none mb-4 text-stroke-sm">
+              WELCOME <span className="text-brutal-neon !text-white !italic">USER</span>
+            </h1>
+            <p className="text-sm md:text-lg font-black uppercase tracking-[0.3em] opacity-60">
+              System Online // {new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
+            <div className="brutal-card p-4 bg-white text-black text-center min-w-[120px]">
+              <span className="block text-3xl font-black italic">{tasks.length}</span>
+              <span className="text-[8px] font-black uppercase">Active Protocols</span>
+            </div>
+            <div className="brutal-card p-4 bg-brutal-pink text-white text-center min-w-[120px]">
+              <span className="block text-3xl font-black italic">{likedTracks.length}</span>
+              <span className="text-[8px] font-black uppercase">Stored Vibes</span>
             </div>
           </div>
-          
-          <button className="brutal-btn brutal-btn-secondary mt-6 w-full text-sm font-black italic group-hover:animate-vibrate">
-            ▶ ACTIVATE VIBE
-          </button>
         </div>
-      ))}
-      
-      {/* Add Task Card */}
-      <div 
-        onClick={() => window.location.href = '/tasks'}
-        className="brutal-card p-6 flex flex-col items-center justify-center border-dashed border-white/30 bg-transparent shadow-none hover:shadow-brutal hover:border-solid hover:border-brutal-neon cursor-pointer group min-h-[220px]"
-      >
-        <span className="text-6xl font-black mb-2 group-hover:scale-125 transition-transform">+</span>
-        <span className="text-xs font-black uppercase tracking-widest opacity-60 group-hover:opacity-100">Add New Protocol</span>
+      </section>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* Urgent Tasks Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between border-b-4 border-white pb-4">
+            <div className="flex items-center gap-4">
+              <Clock className="text-brutal-yellow" size={32} />
+              <h2 className="text-3xl font-black uppercase italic tracking-tighter">Priority <span className="text-brutal-yellow">Tasks</span></h2>
+            </div>
+            <Link href="/tasks" className="brutal-btn py-1 px-3 text-[10px] bg-white text-black hover:bg-brutal-neon">
+              VIEW ALL <ArrowRight size={14} className="ml-1" />
+            </Link>
+          </div>
+
+          <div className="space-y-4">
+            {tasks.length > 0 ? (
+              tasks.map((task) => (
+                <div key={task.id} className="brutal-card p-4 flex items-center justify-between group hover:border-brutal-yellow transition-all">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 border-2 border-white bg-brutal-gray flex items-center justify-center font-black group-hover:bg-brutal-yellow group-hover:text-black transition-colors">
+                      {task.title.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-black uppercase text-lg leading-none mb-1">{task.title}</p>
+                      <span className="text-[8px] font-black text-gray-500 uppercase tracking-widest bg-white/5 px-2 py-0.5">{task.category}</span>
+                    </div>
+                  </div>
+                  <CheckCircle2 className="text-white/20 group-hover:text-brutal-yellow transition-colors" />
+                </div>
+              ))
+            ) : (
+              <div className="p-8 border-4 border-dashed border-white/20 text-center">
+                <p className="text-sm font-black text-gray-500 uppercase tracking-widest italic">All systems clear.</p>
+              </div>
+            )}
+            <Link href="/tasks" className="block p-4 border-4 border-dashed border-white/20 text-center hover:border-brutal-neon hover:bg-white/5 transition-all group">
+              <span className="text-xs font-black uppercase tracking-widest group-hover:text-brutal-neon">+ INITIATE NEW PROTOCOL</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* Favorite Vibes Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between border-b-4 border-white pb-4">
+            <div className="flex items-center gap-4">
+              <Heart className="text-brutal-pink" size={32} fill="currentColor" />
+              <h2 className="text-3xl font-black uppercase italic tracking-tighter">Favorite <span className="text-brutal-pink">Vibes</span></h2>
+            </div>
+            <Link href="/musics" className="brutal-btn py-1 px-3 text-[10px] bg-white text-black hover:bg-brutal-pink">
+              BROWSE <ArrowRight size={14} className="ml-1" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {likedTracks.length > 0 ? (
+              likedTracks.slice(0, 4).map((track) => (
+                <div key={track.id} className="brutal-card p-3 flex flex-col group hover:border-brutal-pink transition-all">
+                  <div className="relative aspect-square border-2 border-white overflow-hidden mb-3">
+                    <img src={track.thumbnail} alt={track.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                    <button 
+                      onClick={() => playTrack(track)}
+                      className="absolute inset-0 bg-brutal-pink/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all"
+                    >
+                      <Play fill="white" size={32} />
+                    </button>
+                  </div>
+                  <p className="font-black uppercase text-[10px] truncate leading-none mb-1">{track.title}</p>
+                  <p className="text-brutal-pink font-black text-[8px] truncate opacity-80">{track.artist}</p>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full p-8 border-4 border-dashed border-white/20 text-center">
+                <p className="text-sm font-black text-gray-500 uppercase tracking-widest italic">No vibes stored in archives.</p>
+                <Link href="/musics" className="inline-block mt-4 brutal-btn py-1 px-4 text-[10px] bg-white text-black">
+                  EXPLORE MUSIC
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
 };
 

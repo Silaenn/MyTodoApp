@@ -4,7 +4,7 @@ import { SearchIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { DialogDemo } from "./Dialog";
 
-const Header = () => {
+const Header = ({ user }: { user?: any }) => {
   const pathname = usePathname();
   const isName =
     pathname === "/"
@@ -29,8 +29,12 @@ const Header = () => {
 
             <div className="group relative">
               <div className="absolute inset-0 bg-brutal-neon translate-x-1 translate-y-1 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform"></div>
-              <div className="relative w-12 h-12 sm:w-16 sm:h-16 bg-black border-4 border-white text-white font-black flex items-center justify-center text-xl sm:text-2xl italic group-hover:-translate-x-1 group-hover:-translate-y-1 transition-transform">
-                U
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 bg-black border-4 border-white text-white font-black flex items-center justify-center overflow-hidden italic group-hover:-translate-x-1 group-hover:-translate-y-1 transition-transform">
+                {user?.image ? (
+                  <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  user?.name?.charAt(0).toUpperCase() || "U"
+                )}
               </div>
             </div>
           </div>
