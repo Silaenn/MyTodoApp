@@ -4,7 +4,7 @@ import Google from "next-auth/providers/google"
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [Google],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       if (!user.email) return false;
       
       // We can also store/update user in Turso here if needed

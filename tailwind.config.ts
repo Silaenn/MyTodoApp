@@ -7,21 +7,21 @@ const config: Config = {
       colors: {
         form: "rgba(17, 24, 39, 0.85)",
         brutal: {
-          neon: "#00FF94",
-          pink: "#FF2E63",
-          yellow: "#FFE400",
-          blue: "#2E4CEE",
+          neon: "#14B8A6",
+          pink: "#F97316",
+          yellow: "#F59E0B",
+          blue: "#2563EB",
           white: "#FFFFFF",
           black: "#000000",
-          gray: "#121212",
+          gray: "#0F172A",
         }
       },
       boxShadow: {
-        'brutal-sm': '2px 2px 0px 0px rgba(255, 255, 255, 1)',
-        'brutal': '4px 4px 0px 0px rgba(255, 255, 255, 1)',
-        'brutal-lg': '8px 8px 0px 0px rgba(255, 255, 255, 1)',
-        'brutal-neon': '4px 4px 0px 0px #00FF94',
-        'brutal-pink': '4px 4px 0px 0px #FF2E63',
+        'brutal-sm': '0 10px 30px rgba(15, 23, 42, 0.18)',
+        'brutal': '0 16px 40px rgba(15, 23, 42, 0.24)',
+        'brutal-lg': '0 24px 60px rgba(15, 23, 42, 0.28)',
+        'brutal-neon': '0 16px 40px rgba(20, 184, 166, 0.35)',
+        'brutal-pink': '0 16px 40px rgba(249, 115, 22, 0.28)',
       },
       animation: {
         'vibrate': 'vibrate 0.3s linear infinite',

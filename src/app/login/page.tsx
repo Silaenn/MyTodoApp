@@ -30,7 +30,7 @@ const LoginPage = () => {
             </p>
             
             <Button 
-              onClick={() => signIn("google", { callbackUrl: "/" })}
+              onClick={() => signIn("google", { callbackUrl: "/tasks" })}
               className="w-full h-16 bg-white text-black hover:bg-brutal-neon border-4 border-white shadow-brutal flex items-center justify-center gap-4 group"
             >
               <LogIn className="group-hover:rotate-12 transition-transform" />

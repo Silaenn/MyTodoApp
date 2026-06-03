@@ -3,16 +3,18 @@ import { auth } from "@/auth"
 export default auth((req) => {
   const isLoggedIn = !!req.auth
   const { nextUrl } = req
+  const { pathname } = nextUrl
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth")
-  const isPublicRoute = ["/login", "/register"].includes(nextUrl.pathname)
+  const isApiAuthRoute = pathname.startsWith("/api/auth")
 
   if (isApiAuthRoute) return null
 
-  if (isPublicRoute) {
-    if (isLoggedIn) {
-      return Response.redirect(new URL("/", nextUrl))
-    }
+  if (pathname === "/") {
+    return Response.redirect(new URL(isLoggedIn ? "/tasks" : "/login", nextUrl))
+  }
+
+  if (pathname === "/login") {
+    if (isLoggedIn) return Response.redirect(new URL("/tasks", nextUrl))
     return null
   }
 

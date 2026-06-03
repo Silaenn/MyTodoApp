@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const result = await turso.execute("SELECT * FROM tasks ORDER BY created_at DESC");
     return NextResponse.json(result.rows);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch tasks" }, { status: 500 });
   }
 }
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     });
     
     return NextResponse.json({ id, title, category, deadline }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to create task" }, { status: 500 });
   }
 }

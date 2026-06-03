@@ -1,12 +1,9 @@
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import Dashboard from "@/components/Dashboard";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { auth } from "@/auth";
 import LayoutClient from "@/components/LayoutClient";
 
-const inter = Inter({ subsets: ["latin"] });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export default async function RootLayout({
   children,
@@ -18,7 +15,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-black text-white min-h-screen flex overflow-x-hidden`}
+        className={`${jakarta.className} bg-slate-950 text-slate-50 min-h-screen flex overflow-x-hidden antialiased`}
         suppressHydrationWarning
       >
         <LayoutClient session={session}>

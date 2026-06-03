@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const { title, category, deadline, is_done } = await request.json();
 
     await turso.execute({
@@ -20,23 +20,23 @@ export async function PATCH(
     });
 
     return NextResponse.json({ message: "Task updated" });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to update task" }, { status: 500 });
   }
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     await turso.execute({
       sql: "DELETE FROM tasks WHERE id = ?",
       args: [id],
     });
     return NextResponse.json({ message: "Task deleted" });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to delete task" }, { status: 500 });
   }
 }

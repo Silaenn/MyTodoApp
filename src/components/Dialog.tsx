@@ -63,75 +63,75 @@ export function DialogDemo() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button
-          className="brutal-btn bg-[var(--accent-neon)] text-black flex gap-2 items-center"
+          className="brutal-btn bg-brutal-neon text-slate-950 flex gap-2 items-center"
         >
           <Plus size={20} className="stroke-[3px]" />
-          ADD TASK
+          Add task
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-black border-4 border-white rounded-none shadow-[8px_8px_0px_#ffffff] z-[100]">
+      <DialogContent className="sm:max-w-[460px] z-[100]">
         <form onSubmit={handleSubmit}>
-          <DialogHeader className="border-b-2 border-white pb-4 mb-4">
-            <DialogTitle className="text-3xl font-black uppercase italic tracking-tighter">New <span className="text-[var(--accent-neon)]">Task</span></DialogTitle>
-            <DialogDescription className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">
-              Setup your next big vibe.
+          <DialogHeader className="border-b border-white/10 pb-4">
+            <DialogTitle className="text-3xl font-black tracking-tight">New <span className="text-brutal-neon">Task</span></DialogTitle>
+            <DialogDescription className="text-sm text-slate-400">
+              Capture the next thing you want to move forward.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-6">
+          <div className="grid gap-5">
             <div className="grid gap-2">
-              <Label htmlFor="name" className="font-black uppercase tracking-widest text-xs text-white">
-                TASK NAME
+              <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
+                Task name
               </Label>
               <Input 
                 id="name" 
                 name="name" 
                 required
-                placeholder="E.G. FINISH MIXTAPE" 
-                className="bg-[#121212] border-2 border-white rounded-none h-12 font-bold focus-visible:border-[var(--accent-neon)] text-white"
+                placeholder="e.g. finish landing page" 
+                className="h-12"
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="deadline" className="font-black uppercase tracking-widest text-xs text-white">
-                DEADLINE
+              <Label htmlFor="deadline" className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
+                Deadline
               </Label>
               <Input 
                 id="deadline" 
                 name="deadline" 
                 type="date" 
-                className="bg-[#121212] border-2 border-white rounded-none h-12 font-bold focus-visible:border-[var(--accent-neon)] text-white"
+                className="h-12"
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="category" className="font-black uppercase tracking-widest text-xs text-white">
-                CATEGORY
+              <Label htmlFor="category" className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
+                Category
               </Label>
               <Select name="category" defaultValue="work">
-                <SelectTrigger id="category" className="bg-[#121212] border-2 border-white rounded-none h-12 font-bold text-white">
-                  <SelectValue placeholder="SELECT CATEGORY" />
+                <SelectTrigger id="category" className="h-12">
+                  <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent className="bg-black border-2 border-white rounded-none z-[110]">
-                  <SelectItem value="work" className="hover:bg-white hover:text-black font-bold uppercase text-white">Work</SelectItem>
-                  <SelectItem value="study" className="hover:bg-white hover:text-black font-bold uppercase text-white">Study</SelectItem>
-                  <SelectItem value="hobby" className="hover:bg-white hover:text-black font-bold uppercase text-white">Hobby</SelectItem>
-                  <SelectItem value="personal" className="hover:bg-white hover:text-black font-bold uppercase text-white">Personal</SelectItem>
+                <SelectContent className="z-[110]">
+                  <SelectItem value="work">Work</SelectItem>
+                  <SelectItem value="study">Study</SelectItem>
+                  <SelectItem value="hobby">Hobby</SelectItem>
+                  <SelectItem value="personal">Personal</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          <DialogFooter className="pt-6 gap-4">
+          <DialogFooter className="pt-6 gap-3">
             <DialogClose asChild>
-              <button type="button" className="brutal-btn bg-black text-white hover:bg-white hover:text-black">CANCEL</button>
+              <button type="button" className="brutal-btn brutal-btn-outline">Cancel</button>
             </DialogClose>
             <button 
               type="submit" 
               disabled={loading}
-              className="brutal-btn bg-[var(--accent-neon)] text-black disabled:opacity-50"
+              className="brutal-btn bg-brutal-neon text-slate-950 disabled:opacity-50"
             >
-              {loading ? "SAVING..." : "SAVE TASK"}
+              {loading ? "Saving..." : "Save task"}
             </button>
           </DialogFooter>
         </form>
