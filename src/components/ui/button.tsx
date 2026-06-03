@@ -1,26 +1,36 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0 active:translate-y-0.5 active:shadow-none border border-white/10 shadow-brutal",
+  [
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-bold",
+    "border-2 border-[#1A1208] rounded-md",
+    "transition-all duration-100",
+    "shadow-[3px_3px_0px_#1A1208]",
+    "hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px",
+    "active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C75B2D] focus-visible:ring-offset-2",
+    "disabled:pointer-events-none disabled:opacity-50",
+    "[&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0",
+  ].join(" "),
   {
     variants: {
       variant: {
-        default: "bg-brutal-neon text-slate-950 hover:bg-teal-300",
-        destructive: "bg-brutal-pink text-white hover:bg-orange-400 hover:text-slate-950",
-        outline: "bg-white/5 text-slate-100 hover:bg-white/10",
-        secondary: "bg-slate-800 text-slate-50 hover:bg-slate-700",
-        ghost: "border-none shadow-none hover:bg-white/10",
-        link: "border-none shadow-none text-brutal-neon underline-offset-4 hover:underline",
+        default:     "bg-[#C75B2D] text-[#FDFAF4] hover:bg-[#b54f27]",
+        destructive: "bg-[#1A1208] text-[#FDFAF4] hover:bg-[#2d1f0f]",
+        outline:     "bg-[#FDFAF4] text-[#1A1208] hover:bg-[#F5ECD7]",
+        secondary:   "bg-[#E8A838] text-[#1A1208] hover:bg-[#d99a2e] border-[#1A1208]",
+        accent:      "bg-[#4A7C59] text-[#FDFAF4] hover:bg-[#3d6849]",
+        ghost:       "border-transparent shadow-none hover:bg-[#E8A838]/30 hover:shadow-none active:shadow-none active:translate-x-0 active:translate-y-0",
+        link:        "border-transparent shadow-none text-[#C75B2D] underline-offset-4 hover:underline hover:shadow-none active:shadow-none active:translate-x-0 active:translate-y-0",
       },
       size: {
-        default: "h-12 px-6 py-3 rounded-2xl",
-        sm: "h-10 px-4 text-xs rounded-xl shadow-brutal-sm",
-        lg: "h-14 px-10 text-base rounded-2xl shadow-brutal-lg",
-        icon: "h-12 w-12 rounded-2xl",
+        default: "h-11 px-6 py-2.5",
+        sm:      "h-9 px-4 text-xs shadow-[2px_2px_0px_#1A1208] hover:shadow-[3px_3px_0px_#1A1208]",
+        lg:      "h-13 px-10 text-base shadow-[4px_4px_0px_#1A1208] hover:shadow-[6px_6px_0px_#1A1208]",
+        icon:    "h-11 w-11",
       },
     },
     defaultVariants: {

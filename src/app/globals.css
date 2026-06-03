@@ -2,103 +2,246 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+
 :root {
-  --background: #020617;
-  --foreground: #f8fafc;
-  --accent-neon: #14b8a6;
-  --accent-pink: #f97316;
-  --accent-yellow: #f59e0b;
-  --accent-blue: #2563eb;
+  --background: #F5ECD7;
+  --foreground: #1A1208;
+  --surface: #FDFAF4;
+  --primary: #C75B2D;
+  --secondary: #E8A838;
+  --accent: #4A7C59;
+  --muted: #6B5744;
+  --border: #1A1208;
 }
 
 body {
-  background:
-    radial-gradient(circle at top left, rgba(20, 184, 166, 0.14), transparent 28%),
-    radial-gradient(circle at top right, rgba(249, 115, 22, 0.12), transparent 24%),
-    linear-gradient(180deg, #0f172a 0%, #020617 45%, #01040f 100%);
+  background: #F5ECD7;
   color: var(--foreground);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   margin: 0;
   padding: 0;
-  position: relative;
   min-height: 100vh;
-}
-
-/* Noise Overlay */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 18px 18px;
-  opacity: 0.18;
-  pointer-events: none;
-  z-index: 9999;
 }
 
 @layer components {
   .brutal-card {
-    @apply rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 shadow-brutal;
+    @apply bg-[#FDFAF4] border-2 border-[#1A1208] rounded-lg transition-all duration-150;
+    box-shadow: 4px 4px 0px #1A1208;
   }
 
   .brutal-card:hover {
-    @apply -translate-y-1 border-white/20 shadow-brutal-lg;
+    box-shadow: 6px 6px 0px #1A1208;
+    transform: translate(-1px, -1px);
   }
 
   .brutal-btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 px-6 py-3 font-semibold tracking-wide transition-all shadow-brutal active:translate-y-0.5 active:shadow-none select-none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+    @apply inline-flex items-center justify-center gap-2 rounded-md border-2 border-[#1A1208] px-5 py-2.5 font-bold tracking-wide transition-all duration-100 select-none;
+    box-shadow: 3px 3px 0px #1A1208;
+  }
+
+  .brutal-btn:hover {
+    box-shadow: 5px 5px 0px #1A1208;
+    transform: translate(-1px, -1px);
+  }
+
+  .brutal-btn:active {
+    box-shadow: 1px 1px 0px #1A1208;
+    transform: translate(2px, 2px);
   }
 
   .brutal-btn-primary {
-    @apply bg-brutal-neon text-slate-950 hover:bg-teal-300;
+    @apply bg-[#C75B2D] text-[#FDFAF4];
   }
 
   .brutal-btn-secondary {
-    @apply bg-slate-800 text-slate-50 hover:bg-slate-700;
+    @apply bg-[#E8A838] text-[#1A1208];
+  }
+
+  .brutal-btn-accent {
+    @apply bg-[#4A7C59] text-[#FDFAF4];
   }
 
   .brutal-btn-outline {
-    @apply bg-white/5 text-slate-100 hover:bg-white/10;
+    @apply bg-[#FDFAF4] text-[#1A1208];
+  }@tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+  
+  :root {
+    --background: #020617;
+    --foreground: #f8fafc;
+    --accent-neon: #14b8a6;
+    --accent-pink: #f97316;
+    --accent-yellow: #f59e0b;
+    --accent-blue: #2563eb;
+  }
+  
+  body {
+    background:
+      radial-gradient(circle at top left, rgba(20, 184, 166, 0.14), transparent 28%),
+      radial-gradient(circle at top right, rgba(249, 115, 22, 0.12), transparent 24%),
+      linear-gradient(180deg, #0f172a 0%, #020617 45%, #01040f 100%);
+    color: var(--foreground);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    min-height: 100vh;
+  }
+  
+  /* Noise Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 18px 18px;
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  
+  @layer components {
+    .brutal-card {
+      @apply rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 shadow-brutal;
+    }
+  
+    .brutal-card:hover {
+      @apply -translate-y-1 border-white/20 shadow-brutal-lg;
+    }
+  
+    .brutal-btn {
+      @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 px-6 py-3 font-semibold tracking-wide transition-all shadow-brutal active:translate-y-0.5 active:shadow-none select-none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+  
+    .brutal-btn-primary {
+      @apply bg-brutal-neon text-slate-950 hover:bg-teal-300;
+    }
+  
+    .brutal-btn-secondary {
+      @apply bg-slate-800 text-slate-50 hover:bg-slate-700;
+    }
+  
+    .brutal-btn-outline {
+      @apply bg-white/5 text-slate-100 hover:bg-white/10;
+    }
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 16px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #020617;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.6);
+    border: 4px solid #020617;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-neon);
+  }
+  
+  /* Typography Enhancements */
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-brutal {
+    @apply tracking-tight;
+  }
+  
+  .text-stroke {
+    -webkit-text-stroke: 1px rgba(248, 250, 252, 0.9);
+    color: transparent;
+  }
+  
+  ::selection {
+    background: rgba(20, 184, 166, 0.28);
+    color: #f8fafc;
+  }
+
+  .brutal-input {
+    @apply w-full bg-[#FDFAF4] border-2 border-[#1A1208] rounded-md px-4 py-2.5 font-medium text-[#1A1208] outline-none transition-all duration-100;
+    box-shadow: 3px 3px 0px #1A1208;
+  }
+
+  .brutal-input:focus {
+    box-shadow: 5px 5px 0px #C75B2D;
+    border-color: #C75B2D;
+  }
+
+  .brutal-input::placeholder {
+    color: #6B5744;
+  }
+
+  .brutal-badge {
+    @apply inline-block border-2 border-[#1A1208] rounded px-2 py-0.5 text-xs font-bold;
+  }
+
+  .brutal-badge-primary {
+    @apply bg-[#C75B2D] text-[#FDFAF4];
+  }
+
+  .brutal-badge-secondary {
+    @apply bg-[#E8A838] text-[#1A1208];
+  }
+
+  .brutal-badge-accent {
+    @apply bg-[#4A7C59] text-[#FDFAF4];
+  }
+
+  .brutal-badge-muted {
+    @apply bg-[#FDFAF4] text-[#6B5744];
   }
 }
 
-/* Custom Scrollbar */
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 16px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #020617;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background: #F5ECD7;
+  border-left: 2px solid #1A1208;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.6);
-  border: 4px solid #020617;
+  background: #C75B2D;
+  border: 2px solid #1A1208;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-neon);
+  background: #E8A838;
 }
 
-/* Typography Enhancements */
-h1, h2, h3, h4, .font-brutal {
-  @apply tracking-tight;
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+.font-brutal {
+  @apply tracking-tight font-bold;
+  color: #1A1208;
 }
 
-.text-stroke {
-  -webkit-text-stroke: 1px rgba(248, 250, 252, 0.9);
-  color: transparent;
+.text-muted {
+  color: #6B5744;
 }
 
 ::selection {
-  background: rgba(20, 184, 166, 0.28);
-  color: #f8fafc;
+  background: #E8A838;
+  color: #1A1208;
 }

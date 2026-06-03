@@ -48,9 +48,8 @@ export function DialogDemo() {
 
       if (res.ok) {
         setOpen(false);
-        router.refresh(); // Refresh current page data
-        // If on /tasks or /, we might want a harder refresh or custom event
-        if (typeof window !== 'undefined') window.location.reload(); 
+        router.refresh();
+        if (typeof window !== "undefined") window.location.reload();
       }
     } catch (error) {
       console.error("Failed to save task:", error);
@@ -62,54 +61,62 @@ export function DialogDemo() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button
-          className="brutal-btn bg-brutal-neon text-slate-950 flex gap-2 items-center"
-        >
-          <Plus size={20} className="stroke-[3px]" />
+        <button className="inline-flex items-center gap-2 rounded-md border-2 border-[#1A1208] bg-[#C75B2D] px-5 py-2.5 text-sm font-bold text-[#FDFAF4] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5">
+          <Plus size={18} className="stroke-[3px]" />
           Add task
         </button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[460px] z-[100]">
         <form onSubmit={handleSubmit}>
-          <DialogHeader className="border-b border-white/10 pb-4">
-            <DialogTitle className="text-3xl font-black tracking-tight">New <span className="text-brutal-neon">Task</span></DialogTitle>
-            <DialogDescription className="text-sm text-slate-400">
+          <DialogHeader className="border-b-2 border-[#1A1208] pb-4 mb-5">
+            <DialogTitle>
+              New <span className="text-[#C75B2D]">Task</span>
+            </DialogTitle>
+            <DialogDescription>
               Capture the next thing you want to move forward.
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-5">
             <div className="grid gap-2">
-              <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
+              <Label
+                htmlFor="name"
+                className="text-xs font-bold uppercase tracking-[0.3em] text-[#6B5744]"
+              >
                 Task name
               </Label>
-              <Input 
-                id="name" 
-                name="name" 
+              <Input
+                id="name"
+                name="name"
                 required
-                placeholder="e.g. finish landing page" 
-                className="h-12"
+                placeholder="e.g. finish landing page"
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="deadline" className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
+              <Label
+                htmlFor="deadline"
+                className="text-xs font-bold uppercase tracking-[0.3em] text-[#6B5744]"
+              >
                 Deadline
               </Label>
-              <Input 
-                id="deadline" 
-                name="deadline" 
-                type="date" 
-                className="h-12"
+              <Input
+                id="deadline"
+                name="deadline"
+                type="date"
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="category" className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
+              <Label
+                htmlFor="category"
+                className="text-xs font-bold uppercase tracking-[0.3em] text-[#6B5744]"
+              >
                 Category
               </Label>
               <Select name="category" defaultValue="work">
-                <SelectTrigger id="category" className="h-12">
+                <SelectTrigger id="category">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent className="z-[110]">
@@ -124,12 +131,17 @@ export function DialogDemo() {
 
           <DialogFooter className="pt-6 gap-3">
             <DialogClose asChild>
-              <button type="button" className="brutal-btn brutal-btn-outline">Cancel</button>
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] px-5 py-2.5 text-sm font-bold text-[#1A1208] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5"
+              >
+                Cancel
+              </button>
             </DialogClose>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
-              className="brutal-btn bg-brutal-neon text-slate-950 disabled:opacity-50"
+              className="inline-flex items-center justify-center rounded-md border-2 border-[#1A1208] bg-[#C75B2D] px-5 py-2.5 text-sm font-bold text-[#FDFAF4] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none"
             >
               {loading ? "Saving..." : "Save task"}
             </button>

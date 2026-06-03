@@ -59,20 +59,20 @@ const Tasks = () => {
 
   return (
     <div className="w-full pb-28">
-      <div className="mb-8 flex flex-col gap-6 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-brutal backdrop-blur-xl md:flex-row md:items-end md:justify-between">
+      <div className="mb-8 flex flex-col gap-6 brutal-card p-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">Task board</p>
-          <h1 className="mt-2 text-5xl font-black tracking-tight text-slate-50">
-            Manage <span className="text-brutal-neon">tasks</span>
+          <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#6B5744]">Task board</p>
+          <h1 className="mt-2 text-5xl font-black tracking-tight text-[#1A1208]">
+            Manage <span className="text-[#C75B2D]">tasks</span>
           </h1>
-          <p className="mt-3 max-w-2xl text-sm text-slate-300">
+          <p className="mt-3 max-w-2xl text-sm text-[#6B5744]">
             Filter work, personal, hobby, and urgent items from one clean view.
           </p>
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" className="capitalize">
               Filter: {category}
             </Button>
           </DropdownMenuTrigger>
@@ -96,9 +96,9 @@ const Tasks = () => {
 
       {loading ? (
         <div className="flex h-[calc(100vh-440px)] flex-col items-center justify-center">
-          <p className="text-4xl font-black tracking-tight text-brutal-neon">Loading tasks...</p>
-          <div className="mt-6 h-3 w-56 overflow-hidden rounded-full border border-white/10 bg-white/5">
-            <div className="h-full w-1/3 animate-pulse bg-brutal-neon" />
+          <p className="text-4xl font-black tracking-tight text-[#C75B2D]">Loading tasks...</p>
+          <div className="mt-6 h-3 w-56 overflow-hidden rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] shadow-[3px_3px_0px_#1A1208]">
+            <div className="h-full w-1/3 animate-pulse bg-[#C75B2D]" />
           </div>
         </div>
       ) : (
@@ -113,19 +113,19 @@ const Tasks = () => {
               >
                 <div className="flex-1">
                   <div className="mb-3 flex items-center gap-3">
-                    <span className="h-2.5 w-2.5 rounded-full bg-brutal-neon" />
-                    <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400">
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#C75B2D]" />
+                    <span className="rounded-full bg-[#F5ECD7] border border-[#1A1208] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-[#6B5744]">
                       {task.category}
                     </span>
                   </div>
-                  <h3 className={`text-2xl font-semibold tracking-tight text-slate-50 ${task.is_done ? "line-through opacity-60" : ""}`}>
+                  <h3 className={`text-2xl font-bold tracking-tight text-[#1A1208] ${task.is_done ? "line-through opacity-60" : ""}`}>
                     {task.title}
                   </h3>
-                  <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-slate-400">
-                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-300">
+                  <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-[#6B5744]">
+                    <span className="rounded-full border border-[#1A1208] bg-[#F5ECD7] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-[#1A1208]">
                       Deadline
                     </span>
-                    <span className="text-brutal-pink">{task.deadline || "None"}</span>
+                    <span className="text-[#C75B2D] font-bold">{task.deadline || "None"}</span>
                   </div>
                 </div>
 
@@ -135,8 +135,8 @@ const Tasks = () => {
               </div>
             ))
           ) : (
-            <div className="rounded-3xl border border-dashed border-white/10 bg-white/5 p-10 text-center">
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">No tasks found.</p>
+            <div className="brutal-card p-10 text-center border-dashed">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#6B5744]">No tasks found.</p>
             </div>
           )}
         </div>

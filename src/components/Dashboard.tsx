@@ -1,14 +1,15 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { LogOut, X, User } from "lucide-react";
+import { LogOut, X, User, Home, CheckSquare, Music } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const navLinks = [
-  { label: "Home", href: "/tasks" },
-  { label: "Tasks", href: "/tasks" },
-  { label: "Music", href: "/musics" },
+  { label: "Home", href: "/", icon: Home },
+  { label: "Tasks", href: "/tasks", icon: CheckSquare },
+  { label: "Music", href: "/musics", icon: Music },
 ];
 
 type UserProfile = {
@@ -17,93 +18,126 @@ type UserProfile = {
   name?: string | null;
 };
 
-const Dashboard = ({ isOpen, onClose, user }: { isOpen: boolean; onClose: () => void; user?: UserProfile }) => {
+const Dashboard = ({
+  isOpen,
+  onClose,
+  user,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  user?: UserProfile;
+}) => {
   const pathname = usePathname();
 
   return (
     <>
       {/* Mobile Overlay */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[60] md:hidden"
+        <div
+          className="fixed inset-0 bg-[#1A1208]/50 z-[60] md:hidden"
           onClick={onClose}
         />
       )}
 
-      <aside className={`fixed left-0 top-0 z-[70] md:flex flex-col justify-between w-72 h-screen border-r border-white/10 bg-slate-950/90 text-white transition-transform duration-300 backdrop-blur-xl ${
-        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-      }`}>
+      <aside
+        className={`fixed left-0 top-0 z-[70] md:flex flex-col w-72 h-screen border-r-2 border-[#1A1208] bg-[#F5ECD7] transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+      >
         <div className="flex h-full flex-col justify-between p-6">
           <div>
-            <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
+            {/* Logo */}
+            <div className="flex justify-between items-center mb-8 border-b-2 border-[#1A1208] pb-6">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-400">Workspace</p>
-                <h2 className="text-3xl font-black tracking-tight text-slate-50">
-                  TASK<span className="text-brutal-neon">TUNE</span>
+                <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#6B5744]">
+                  Workspace
+                </p>
+                <h2 className="text-3xl font-black tracking-tight text-[#1A1208]">
+                  TASK<span className="text-[#C75B2D]">TUNE</span>
                 </h2>
               </div>
-              <button onClick={onClose} className="md:hidden rounded-full border border-white/10 bg-white/5 p-2 text-white">
-                <X size={24} />
+              <button
+                onClick={onClose}
+                className="md:hidden inline-flex items-center justify-center rounded-sm border-2 border-[#1A1208] bg-[#FDFAF4] p-2 shadow-[2px_2px_0px_#1A1208] transition-all hover:shadow-[3px_3px_0px_#1A1208] active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+              >
+                <X size={20} className="text-[#1A1208]" />
               </button>
             </div>
+
+            {/* Nav */}
             <nav className="space-y-3">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={onClose}
-                  className={`relative block rounded-2xl border px-4 py-4 transition-all font-semibold tracking-wide shadow-brutal active:translate-y-0.5 ${
-                    isActive
-                      ? "border-teal-300/40 bg-teal-400/15 text-teal-100 shadow-brutal-neon"
-                      : "border-white/10 bg-white/5 text-slate-200 hover:border-white/20 hover:bg-white/10"
-                  }`}
-                >
-                  {isActive && (
-                    <span className="absolute left-3 top-1/2 h-8 w-1 -translate-y-1/2 rounded-full bg-brutal-neon"></span>
-                  )}
-                  <span className="pl-3">{link.label}</span>
-                </Link>
-              );
-            })}
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={onClose}
+                    className={`relative flex items-center gap-3 rounded-md border-2 border-[#1A1208] px-4 py-3.5 font-bold tracking-wide transition-all ${
+                      isActive
+                        ? "bg-[#C75B2D] text-[#FDFAF4] shadow-[4px_4px_0px_#1A1208]"
+                        : "bg-[#FDFAF4] text-[#1A1208] shadow-[3px_3px_0px_#1A1208] hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px"
+                    }`}
+                  >
+                    {isActive && (
+                      <span className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-sm bg-[#E8A838]" />
+                    )}
+                    <Icon size={18} className={isActive ? "text-[#FDFAF4]" : "text-[#6B5744]"} />
+                    <span className={isActive ? "pl-1" : ""}>{link.label}</span>
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
-        <div className="space-y-4">
-          {/* User Profile Info */}
-          <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-brutal-sm">
-            <div className="w-11 h-11 overflow-hidden rounded-xl border border-white/10 bg-slate-900 flex-shrink-0">
-              {user?.image ? (
-                <img src={user.image ?? undefined} alt={user.name ?? "User"} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-brutal-neon text-slate-950">
-                  <User size={20} />
-                </div>
-              )}
+          <div className="space-y-3">
+            {/* User Card */}
+            <div className="flex items-center gap-3 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-4 shadow-[3px_3px_0px_#1A1208]">
+              <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-[#1A1208] flex-shrink-0 shadow-[2px_2px_0px_#1A1208]">
+                {user?.image ? (
+                  <img
+                    src={user.image ?? undefined}
+                    alt={user.name ?? "User"}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-[#E8A838]">
+                    <User size={18} className="text-[#1A1208]" />
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-black truncate leading-none mb-1 text-[#1A1208]">
+                  {user?.name || "Guest"}
+                </p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4A7C59] truncate">
+                  Online
+                </p>
+              </div>
+              <button
+                onClick={() => signOut()}
+                className="inline-flex items-center justify-center rounded-sm border-2 border-[#1A1208] bg-[#F5ECD7] p-2 shadow-[2px_2px_0px_#1A1208] transition-all hover:bg-[#C75B2D] hover:text-[#FDFAF4] hover:shadow-[3px_3px_0px_#1A1208] active:shadow-none"
+                title="Logout"
+              >
+                <LogOut size={16} className="text-[#1A1208]" />
+              </button>
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold truncate leading-none mb-1">{user?.name || "Guest"}</p>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-teal-300 truncate">Online</p>
-            </div>
-            <button 
-              onClick={() => signOut()}
-              className="rounded-full border border-white/10 p-2 text-slate-300 transition-colors hover:bg-white/10 hover:text-rose-300"
-              title="Logout"
-            >
-              <LogOut size={18} />
-            </button>
-          </div>
 
-          <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-300 shadow-brutal-sm">
-            <div className="flex items-center gap-2 text-slate-100">
-              <span className="w-2 h-2 rounded-full bg-brutal-neon animate-pulse"></span>
-              System online
+            {/* Status */}
+            <div className="rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-4 shadow-[2px_2px_0px_#1A1208]">
+              <div className="flex items-center gap-2 text-[#1A1208]">
+                <span className="w-2 h-2 rounded-full bg-[#4A7C59] animate-pulse" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em]">
+                  System online
+                </span>
+              </div>
+              <span className="mt-1.5 block text-[9px] font-medium text-[#6B5744] tracking-wider">
+                ID: {user?.id?.substring(0, 8) || "N/A"}
+              </span>
             </div>
-            <span className="mt-2 block opacity-60 text-[9px]">User ID: {user?.id?.substring(0, 8) || "N/A"}</span>
           </div>
-       </div>
-      </div>
+        </div>
       </aside>
     </>
   );

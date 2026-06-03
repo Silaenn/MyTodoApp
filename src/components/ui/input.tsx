@@ -1,5 +1,6 @@
-import * as React from "react"
+"use client"
 
+import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
@@ -8,7 +9,11 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
       <input
         type={type}
         className={cn(
-          "flex h-12 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-base font-medium text-slate-50 shadow-brutal transition-all placeholder:text-slate-400 focus-visible:outline-none focus-visible:border-teal-400/50 focus-visible:ring-2 focus-visible:ring-teal-400/20 focus-visible:shadow-brutal-neon disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          "flex h-11 w-full rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] px-4 py-2 text-sm font-medium text-[#1A1208] transition-all duration-100",
+          "placeholder:text-[#6B5744]",
+          "shadow-[3px_3px_0px_#1A1208]",
+          "focus-visible:outline-none focus-visible:border-[#C75B2D] focus-visible:shadow-[4px_4px_0px_#C75B2D]",
+          "disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         ref={ref}
@@ -18,5 +23,4 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
   }
 )
 Input.displayName = "Input"
-
 export { Input }
