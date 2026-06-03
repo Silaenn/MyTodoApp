@@ -18,17 +18,20 @@ const Header = () => {
   return (
     <>
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter italic">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10 border-b-4 border-white pb-6">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-stroke">
           {isName}
         </h1>
 
         {isName !== "Profile" && (
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-4 sm:gap-8">
             <DialogDemo />
 
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[var(--accent-neon)] border-2 border-white text-black font-black flex items-center justify-center text-lg sm:text-xl shadow-[4px_4px_0px_#ffffff]">
-              U
+            <div className="group relative">
+              <div className="absolute inset-0 bg-brutal-neon translate-x-1 translate-y-1 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform"></div>
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 bg-black border-4 border-white text-white font-black flex items-center justify-center text-xl sm:text-2xl italic group-hover:-translate-x-1 group-hover:-translate-y-1 transition-transform">
+                U
+              </div>
             </div>
           </div>
         )}
@@ -36,12 +39,12 @@ const Header = () => {
 
       {/* Search Bar */}
       {isName !== "Profile" && (
-        <div className="relative mb-6 md:mb-8 w-full md:w-[450px]">
-          <SearchIcon className="z-10 absolute left-4 top-1/2 -translate-y-1/2 text-white h-5 w-5" />
+        <div className="relative mb-10 w-full md:w-[600px] group">
+          <SearchIcon className="z-10 absolute left-5 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-brutal-neon transition-colors" size={24} />
           <Input
             type="search"
-            placeholder="SEARCH SOMETHING..."
-            className="pl-12 h-12 sm:h-14 bg-[#121212] text-white border-2 border-white rounded-none font-bold uppercase tracking-widest focus-visible:ring-0 focus-visible:border-[var(--accent-neon)] transition-all shadow-[4px_4px_0px_#ffffff]"
+            placeholder="ACCESS DATABASE..."
+            className="pl-14 h-16 sm:h-20 text-lg sm:text-xl shadow-brutal border-4"
           />
         </div>
       )}

@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --background: #050505;
+  --background: #000000;
   --foreground: #ffffff;
   --accent-neon: #00FF94;
-  --accent-pink: #5522FF;
-  --brutal-border: 2px solid #ffffff;
-  --brutal-shadow: 4px 4px 0px #ffffff;
+  --accent-pink: #FF2E63;
+  --accent-yellow: #FFE400;
+  --accent-blue: #2E4CEE;
 }
 
 body {
@@ -17,52 +17,79 @@ body {
   font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
+  position: relative;
+}
+
+/* Noise Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 9999;
 }
 
 @layer components {
   .brutal-card {
-    @apply bg-[#121212] border-2 border-white transition-all duration-200;
-    box-shadow: 4px 4px 0px #ffffff;
+    @apply bg-brutal-gray border-4 border-white transition-all duration-300 shadow-brutal;
   }
 
   .brutal-card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0px var(--accent-neon);
-    border-color: var(--accent-neon);
+    @apply -translate-x-1 -translate-y-1 shadow-brutal-lg border-brutal-neon;
   }
 
   .brutal-btn {
-    @apply px-4 py-2 border-2 border-white font-bold uppercase tracking-wider transition-all active:translate-x-1 active:translate-y-1 active:shadow-none;
-    box-shadow: 4px 4px 0px #ffffff;
+    @apply px-6 py-3 border-4 border-white font-black uppercase tracking-widest transition-all shadow-brutal active:translate-x-1 active:translate-y-1 active:shadow-none select-none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem;
   }
 
   .brutal-btn-primary {
-    @apply bg-white text-black hover:bg-[var(--accent-neon)] hover:border-[var(--accent-neon)];
+    @apply bg-brutal-neon text-black hover:bg-white;
   }
 
-  .brutal-btn-pink {
-    @apply bg-[var(--accent-pink)] text-white hover:opacity-90;
-    box-shadow: 4px 4px 0px #ffffff;
+  .brutal-btn-secondary {
+    @apply bg-brutal-pink text-white hover:bg-brutal-yellow hover:text-black;
+  }
+
+  .brutal-btn-outline {
+    @apply bg-transparent text-white hover:bg-white hover:text-black;
   }
 }
 
-/* Custom Scrollbar for Brutalism */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 16px;
 }
 
 ::-webkit-scrollbar-track {
   background: #000;
+  border-left: 4px solid #fff;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #fff;
-  border: 3px solid #000;
+  border: 4px solid #000;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-neon);
+}
+
+/* Typography Enhancements */
+h1, h2, h3, h4, .font-brutal {
+  @apply tracking-tighter italic;
+  text-shadow: 2px 2px 0px rgba(0,0,0,1);
+}
+
+.text-stroke {
+  -webkit-text-stroke: 1px white;
+  color: transparent;
 }
