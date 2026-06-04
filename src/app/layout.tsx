@@ -8,11 +8,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  
+
   return (
     <html lang="en">
       <body
-        className="min-h-screen flex overflow-x-hidden antialiased"
+        className="min-h-screen flex overflow-x-hidden antialiased bg-[#F5ECD7]"
         suppressHydrationWarning
       >
         <LayoutClient session={session}>

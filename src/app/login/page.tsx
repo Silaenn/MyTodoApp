@@ -3,49 +3,65 @@
 import React from "react";
 import { signIn } from "next-auth/react";
 import { LogIn } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const LoginPage = () => {
   return (
     <div className="min-h-screen bg-[#F5ECD7] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+
+      {/* Decorative shapes */}
+      <div className="absolute top-12 left-12 h-24 w-24 rounded-sm border-2 border-[#1A1208] bg-[#E8A838] shadow-[4px_4px_0px_#1A1208] rotate-12 opacity-60" />
+      <div className="absolute bottom-16 right-16 h-32 w-32 rounded-sm border-2 border-[#1A1208] bg-[#C75B2D] shadow-[4px_4px_0px_#1A1208] -rotate-6 opacity-40" />
+      <div className="absolute top-1/3 right-12 h-16 w-16 rounded-sm border-2 border-[#1A1208] bg-[#4A7C59] shadow-[3px_3px_0px_#1A1208] rotate-3 opacity-50" />
+      <div className="absolute bottom-1/3 left-16 h-12 w-12 rounded-sm border-2 border-[#1A1208] bg-[#FDFAF4] shadow-[3px_3px_0px_#1A1208] -rotate-12 opacity-70" />
+
       <div className="relative z-10 w-full max-w-md">
-        <div className="brutal-card p-10 bg-[#FDFAF4] text-center space-y-8">
+        <div className="rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-10 shadow-[8px_8px_0px_#1A1208] text-center space-y-8">
+
+          {/* Logo */}
           <div>
-            <h1 className="text-6xl font-black uppercase italic tracking-tighter mb-2 text-[#1A1208]">
+            <h1 className="text-6xl font-black uppercase italic tracking-tighter text-[#1A1208]">
               TASK<span className="text-[#C75B2D]">TUNE</span>
             </h1>
-            <p className="text-xs font-black uppercase tracking-[0.4em] text-[#6B5744]">
-              Access Controlled Territory
+            <p className="mt-2 text-xs font-black uppercase tracking-[0.4em] text-[#6B5744]">
+              Productivity. Simplified.
             </p>
           </div>
 
-          <div className="py-8 space-y-6">
-            <p className="text-sm font-bold text-[#6B5744]">
-              NO REGISTRATION REQUIRED. <br />
-              JUST SYNC YOUR FREQUENCY.
+          {/* Divider */}
+          <div className="border-t-2 border-[#1A1208]/20" />
+
+          {/* CTA */}
+          <div className="space-y-6">
+            <p className="text-sm font-bold text-[#6B5744] leading-relaxed">
+              No registration required. <br />
+              Just sync your frequency.
             </p>
-            
-            <Button 
+
+            <button
               onClick={() => signIn("google", { callbackUrl: "/tasks" })}
-              className="w-full h-16 brutal-btn brutal-btn-primary"
+              className="w-full inline-flex items-center justify-center gap-3 rounded-md border-2 border-[#1A1208] bg-[#C75B2D] px-6 py-4 text-xl font-black uppercase italic text-[#FDFAF4] shadow-[5px_5px_0px_#1A1208] transition-all hover:shadow-[7px_7px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[2px_2px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5"
             >
-              <LogIn />
-              <span className="text-xl font-black uppercase italic">
-                SYNC WITH GOOGLE
-              </span>
-            </Button>
+              <LogIn size={22} className="stroke-[3px]" />
+              Sync with Google
+            </button>
           </div>
 
+          {/* Footer note */}
           <div className="pt-4 border-t-2 border-[#1A1208]/10">
             <p className="text-[10px] font-black uppercase tracking-widest text-[#6B5744]">
-              By syncing, you agree to store your data securely via Auth.js.
+              Data secured via Auth.js v5
             </p>
           </div>
         </div>
 
-        <div className="mt-8 flex justify-between px-4 text-[#1A1208]/30">
-          <span className="text-[8px] font-black uppercase tracking-widest">AUTH_PROTOCOL: Auth.js v5</span>
-          <span className="text-[8px] font-black uppercase tracking-widest">SECURE_CHANNEL: ENCRYPTED</span>
+        {/* Bottom labels */}
+        <div className="mt-6 flex justify-between px-2">
+          <span className="text-[9px] font-black uppercase tracking-widest text-[#1A1208]/30">
+            Auth: Auth.js v5
+          </span>
+          <span className="text-[9px] font-black uppercase tracking-widest text-[#1A1208]/30">
+            Channel: Encrypted
+          </span>
         </div>
       </div>
     </div>

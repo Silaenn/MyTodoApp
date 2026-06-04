@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ChevronDown, Trash2 } from "lucide-react";
 
 interface Task {
   id: string;
@@ -21,6 +22,14 @@ interface Task {
 }
 
 const categoryOptions = ["all", "work", "personal", "hobby", "urgent"];
+
+const categoryColors: Record<string, string> = {
+  work:     "bg-[#C75B2D] text-[#FDFAF4]",
+  personal: "bg-[#4A7C59] text-[#FDFAF4]",
+  hobby:    "bg-[#E8A838] text-[#1A1208]",
+  urgent:   "bg-[#1A1208] text-[#FDFAF4]",
+  all:      "bg-[#FDFAF4] text-[#1A1208]",
+};
 
 const Tasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -44,8 +53,7 @@ const Tasks = () => {
   }, []);
 
   const deleteTask = async (id: string) => {
-    if (!confirm("Are you sure?")) return;
-
+    if (!confirm("Delete this task?")) return;
     try {
       await fetch(`/api/tasks/${id}`, { method: "DELETE" });
       setTasks(tasks.filter((t) => t.id !== id));
@@ -55,28 +63,35 @@ const Tasks = () => {
   };
 
   const filteredTasks =
-    category === "all" ? tasks : tasks.filter((t) => t.category.toLowerCase() === category.toLowerCase());
+    category === "all"
+      ? tasks
+      : tasks.filter((t) => t.category.toLowerCase() === category.toLowerCase());
 
   return (
     <div className="w-full pb-28">
-      <div className="mb-8 flex flex-col gap-6 brutal-card p-6 md:flex-row md:items-end md:justify-between">
+
+      {/* Header */}
+      <div className="mb-8 flex flex-col gap-6 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-6 shadow-[4px_4px_0px_#1A1208] md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#6B5744]">Task board</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#6B5744]">
+            Task board
+          </p>
           <h1 className="mt-2 text-5xl font-black tracking-tight text-[#1A1208]">
             Manage <span className="text-[#C75B2D]">tasks</span>
           </h1>
-          <p className="mt-3 max-w-2xl text-sm text-[#6B5744]">
+          <p className="mt-3 max-w-2xl text-sm font-medium text-[#6B5744]">
             Filter work, personal, hobby, and urgent items from one clean view.
           </p>
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="lg" className="capitalize">
+            <button className="inline-flex items-center gap-2 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] px-5 py-2.5 text-sm font-bold text-[#1A1208] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5 capitalize">
               Filter: {category}
-            </Button>
+              <ChevronDown size={16} />
+            </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="min-w-[220px]">
+          <DropdownMenuContent className="min-w-[200px]">
             <DropdownMenuLabel>Select category</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup value={category} onValueChange={setCategory}>
@@ -84,7 +99,7 @@ const Tasks = () => {
                 <DropdownMenuRadioItem
                   key={cat}
                   value={cat}
-                  className="cursor-pointer px-3 py-2 font-medium capitalize"
+                  className="cursor-pointer capitalize font-medium"
                 >
                   {cat}
                 </DropdownMenuRadioItem>
@@ -94,10 +109,13 @@ const Tasks = () => {
         </DropdownMenu>
       </div>
 
+      {/* Loading */}
       {loading ? (
-        <div className="flex h-[calc(100vh-440px)] flex-col items-center justify-center">
-          <p className="text-4xl font-black tracking-tight text-[#C75B2D]">Loading tasks...</p>
-          <div className="mt-6 h-3 w-56 overflow-hidden rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] shadow-[3px_3px_0px_#1A1208]">
+        <div className="flex h-[calc(100vh-440px)] flex-col items-center justify-center gap-6">
+          <p className="text-4xl font-black tracking-tight text-[#C75B2D]">
+            Loading tasks...
+          </p>
+          <div className="h-3 w-56 overflow-hidden rounded-sm border-2 border-[#1A1208] bg-[#FDFAF4] shadow-[3px_3px_0px_#1A1208]">
             <div className="h-full w-1/3 animate-pulse bg-[#C75B2D]" />
           </div>
         </div>
@@ -107,36 +125,56 @@ const Tasks = () => {
             filteredTasks.map((task) => (
               <div
                 key={task.id}
-                className={`brutal-card flex flex-col gap-5 p-5 md:flex-row md:items-center md:justify-between ${
+                className={`flex flex-col gap-5 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-5 shadow-[4px_4px_0px_#1A1208] transition-all hover:shadow-[6px_6px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px md:flex-row md:items-center md:justify-between ${
                   task.is_done ? "opacity-60" : ""
                 }`}
               >
                 <div className="flex-1">
                   <div className="mb-3 flex items-center gap-3">
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#C75B2D]" />
-                    <span className="rounded-full bg-[#F5ECD7] border border-[#1A1208] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-[#6B5744]">
+                    <span
+                      className={`rounded-sm border-2 border-[#1A1208] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.3em] ${
+                        categoryColors[task.category.toLowerCase()] ?? categoryColors.all
+                      }`}
+                    >
                       {task.category}
                     </span>
+                    {task.is_done && (
+                      <span className="rounded-sm border-2 border-[#4A7C59] bg-[#4A7C59] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.3em] text-[#FDFAF4]">
+                        Done
+                      </span>
+                    )}
                   </div>
-                  <h3 className={`text-2xl font-bold tracking-tight text-[#1A1208] ${task.is_done ? "line-through opacity-60" : ""}`}>
+                  <h3
+                    className={`text-2xl font-black tracking-tight text-[#1A1208] ${
+                      task.is_done ? "line-through opacity-50" : ""
+                    }`}
+                  >
                     {task.title}
                   </h3>
-                  <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-[#6B5744]">
-                    <span className="rounded-full border border-[#1A1208] bg-[#F5ECD7] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-[#1A1208]">
-                      Deadline
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#6B5744]">
+                      Deadline:
                     </span>
-                    <span className="text-[#C75B2D] font-bold">{task.deadline || "None"}</span>
+                    <span className="rounded-sm border border-[#1A1208]/20 bg-[#F5ECD7] px-2 py-0.5 text-xs font-bold text-[#C75B2D]">
+                      {task.deadline || "None"}
+                    </span>
                   </div>
                 </div>
 
-                <Button variant="destructive" onClick={() => deleteTask(task.id)} className="self-start md:self-center">
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  className="inline-flex items-center gap-2 self-start rounded-md border-2 border-[#1A1208] bg-[#1A1208] px-4 py-2.5 text-sm font-bold text-[#FDFAF4] shadow-[3px_3px_0px_#C75B2D] transition-all hover:shadow-[5px_5px_0px_#C75B2D] hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5 md:self-center"
+                >
+                  <Trash2 size={15} />
                   Delete
-                </Button>
+                </button>
               </div>
             ))
           ) : (
-            <div className="brutal-card p-10 text-center border-dashed">
-              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#6B5744]">No tasks found.</p>
+            <div className="rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] p-10 text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#6B5744]">
+                No tasks found.
+              </p>
             </div>
           )}
         </div>
