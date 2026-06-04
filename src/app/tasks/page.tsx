@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Trash2 } from "lucide-react";
+import { DialogDemo } from "@/components/Dialog";
 
 interface Task {
   id: string;
@@ -71,42 +71,48 @@ const Tasks = () => {
     <div className="w-full pb-28">
 
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-6 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-6 shadow-[4px_4px_0px_#1A1208] md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#6B5744]">
-            Task board
-          </p>
-          <h1 className="mt-2 text-5xl font-black tracking-tight text-[#1A1208]">
-            Manage <span className="text-[#C75B2D]">tasks</span>
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm font-medium text-[#6B5744]">
-            Filter work, personal, hobby, and urgent items from one clean view.
-          </p>
-        </div>
+      <div className="mb-8 flex flex-col gap-6 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-6 shadow-[4px_4px_0px_#1A1208]">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#6B5744]">
+              Task board
+            </p>
+            <h1 className="mt-2 text-5xl font-black tracking-tight text-[#1A1208]">
+              Manage <span className="text-[#C75B2D]">tasks</span>
+            </h1>
+            <p className="mt-2 text-sm font-medium text-[#6B5744]">
+              {tasks.length} total · {tasks.filter(t => !t.is_done).length} remaining
+            </p>
+          </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="inline-flex items-center gap-2 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] px-5 py-2.5 text-sm font-bold text-[#1A1208] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5 capitalize">
-              Filter: {category}
-              <ChevronDown size={16} />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="min-w-[200px]">
-            <DropdownMenuLabel>Select category</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioGroup value={category} onValueChange={setCategory}>
-              {categoryOptions.map((cat) => (
-                <DropdownMenuRadioItem
-                  key={cat}
-                  value={cat}
-                  className="cursor-pointer capitalize font-medium"
-                >
-                  {cat}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <div className="flex items-center gap-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="inline-flex items-center gap-2 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] px-4 py-2.5 text-sm font-bold text-[#1A1208] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5 capitalize">
+                  Filter: {category}
+                  <ChevronDown size={15} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="min-w-[180px]">
+                <DropdownMenuLabel>Category</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup value={category} onValueChange={setCategory}>
+                  {categoryOptions.map((cat) => (
+                    <DropdownMenuRadioItem
+                      key={cat}
+                      value={cat}
+                      className="cursor-pointer capitalize font-medium"
+                    >
+                      {cat}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DialogDemo />
+          </div>
+        </div>
       </div>
 
       {/* Loading */}
@@ -130,7 +136,7 @@ const Tasks = () => {
                 }`}
               >
                 <div className="flex-1">
-                  <div className="mb-3 flex items-center gap-3">
+                  <div className="mb-3 flex items-center gap-2">
                     <span
                       className={`rounded-sm border-2 border-[#1A1208] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.3em] ${
                         categoryColors[task.category.toLowerCase()] ?? categoryColors.all
@@ -144,14 +150,10 @@ const Tasks = () => {
                       </span>
                     )}
                   </div>
-                  <h3
-                    className={`text-2xl font-black tracking-tight text-[#1A1208] ${
-                      task.is_done ? "line-through opacity-50" : ""
-                    }`}
-                  >
+                  <h3 className={`text-2xl font-black tracking-tight text-[#1A1208] ${task.is_done ? "line-through opacity-50" : ""}`}>
                     {task.title}
                   </h3>
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <div className="mt-3 flex items-center gap-2">
                     <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#6B5744]">
                       Deadline:
                     </span>
@@ -171,7 +173,7 @@ const Tasks = () => {
               </div>
             ))
           ) : (
-            <div className="rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] p-10 text-center">
+            <div className="flex min-h-[calc(100vh-250px)] flex-col items-center justify-center rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] p-10 text-center">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#6B5744]">
                 No tasks found.
               </p>
