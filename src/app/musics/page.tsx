@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Search, Music2, Play, Heart } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 
@@ -41,7 +40,7 @@ const Musics = () => {
         <img
           src={track.thumbnail}
           alt={track.title}
-          className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
+          className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-[#0F1A0F]/40 opacity-0 transition-all group-hover:opacity-100">
           <button
