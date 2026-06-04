@@ -117,7 +117,7 @@ const Tasks = () => {
 
       {/* Loading */}
       {loading ? (
-        <div className="flex h-[calc(100vh-440px)] flex-col items-center justify-center gap-6">
+        <div className="flex h-[calc(100vh-320px)] flex-col items-center justify-center gap-6">
           <p className="text-4xl font-black tracking-tight text-[#3B6B4A]">
             Loading tasks...
           </p>
