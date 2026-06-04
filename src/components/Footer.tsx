@@ -47,7 +47,7 @@ const Footer = () => {
         onEnded={() => setIsPlaying(false)}
       />
 
-      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-[6px_6px_0px_#0F1A0F] md:bottom-6 md:left-[18rem] md:right-6">
+      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-[6px_6px_0px_#0F1A0F] md:bottom-8 md:left-[20rem] md:right-8">
 
         {/* Track Info */}
         <div className="flex items-center gap-4 sm:gap-6 w-[35%]">
