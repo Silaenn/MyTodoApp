@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface Track {
+export interface Track {
   id: string;
   title: string;
   artist: string;
@@ -9,16 +9,32 @@ interface Track {
   url: string;
 }
 
+type RepeatMode = "none" | "one" | "all";
+
 interface MusicStore {
   currentTrack: Track | null;
   isPlaying: boolean;
   streamUrl: string | null;
   likedTracks: Track[];
+  queue: Track[];
+  currentIndex: number;
+  volume: number;
+  shuffle: boolean;
+  repeat: RepeatMode;
+  
   setCurrentTrack: (track: Track) => void;
   setIsPlaying: (playing: boolean) => void;
-  playTrack: (track: Track) => Promise<void>;
+  playTrack: (track: Track, newQueue?: Track[]) => Promise<void>;
   toggleLike: (track: Track) => void;
   isLiked: (trackId: string) => boolean;
+  
+  setVolume: (volume: number) => void;
+  toggleShuffle: () => void;
+  toggleRepeat: () => void;
+  nextTrack: () => void;
+  prevTrack: () => void;
+  addToQueue: (track: Track) => void;
+  setQueue: (tracks: Track[]) => void;
 }
 
 export const useMusicStore = create<MusicStore>()(
@@ -28,16 +44,46 @@ export const useMusicStore = create<MusicStore>()(
       isPlaying: false,
       streamUrl: null,
       likedTracks: [],
+      queue: [],
+      currentIndex: -1,
+      volume: 0.7,
+      shuffle: false,
+      repeat: "none",
       
       setCurrentTrack: (track) => set({ currentTrack: track }),
       setIsPlaying: (playing) => set({ isPlaying: playing }),
+      setVolume: (volume) => set({ volume }),
+      toggleShuffle: () => set((state) => ({ shuffle: !state.shuffle })),
+      toggleRepeat: () => set((state) => {
+        const modes: RepeatMode[] = ["none", "all", "one"];
+        const currentIndex = modes.indexOf(state.repeat);
+        const nextMode = modes[(currentIndex + 1) % modes.length];
+        return { repeat: nextMode };
+      }),
       
-      playTrack: async (track) => {
-        // Set track immediately so UI updates (footer appears)
-        set({ currentTrack: track, isPlaying: false, streamUrl: null });
+      setQueue: (tracks) => set({ queue: tracks }),
+      addToQueue: (track) => set((state) => ({ queue: [...state.queue, track] })),
+      
+      playTrack: async (track, newQueue) => {
+        const { queue } = get();
+        let currentQueue = newQueue || queue;
+        
+        // If not in queue, add it
+        let index = currentQueue.findIndex((t) => t.id === track.id);
+        if (index === -1) {
+          currentQueue = [...currentQueue, track];
+          index = currentQueue.length - 1;
+        }
+
+        set({ 
+          currentTrack: track, 
+          isPlaying: false, 
+          streamUrl: null, 
+          queue: currentQueue,
+          currentIndex: index
+        });
+
         try {
-          // Use a relative path or fixed localhost for now. 
-          // The user mentioned backend needs to be running.
           const res = await fetch(`http://localhost:8000/stream?url=${encodeURIComponent(track.url)}`);
           const data = await res.json();
           if (data.stream_url) {
@@ -46,6 +92,33 @@ export const useMusicStore = create<MusicStore>()(
         } catch (error) {
           console.error("Failed to get stream URL:", error);
         }
+      },
+
+      nextTrack: () => {
+        const { queue, currentIndex, shuffle, repeat, playTrack } = get();
+        if (queue.length === 0) return;
+
+        let nextIndex = currentIndex;
+        if (shuffle) {
+          nextIndex = Math.floor(Math.random() * queue.length);
+        } else {
+          nextIndex = (currentIndex + 1) % queue.length;
+          // If it reached the end and repeat is none, stop
+          if (nextIndex === 0 && repeat === "none" && currentIndex !== -1) {
+            set({ isPlaying: false });
+            return;
+          }
+        }
+        
+        playTrack(queue[nextIndex]);
+      },
+
+      prevTrack: () => {
+        const { queue, currentIndex, playTrack } = get();
+        if (queue.length === 0) return;
+
+        const prevIndex = (currentIndex - 1 + queue.length) % queue.length;
+        playTrack(queue[prevIndex]);
       },
 
       toggleLike: (track) => {
@@ -65,7 +138,12 @@ export const useMusicStore = create<MusicStore>()(
     }),
     {
       name: "music-storage",
-      partialize: (state) => ({ likedTracks: state.likedTracks }), // Only persist liked tracks
+      partialize: (state) => ({ 
+        likedTracks: state.likedTracks,
+        volume: state.volume,
+        shuffle: state.shuffle,
+        repeat: state.repeat
+      }), 
     }
   )
 );

@@ -44,7 +44,7 @@ const Musics = () => {
         />
         <div className="absolute inset-0 flex items-center justify-center bg-[#0F1A0F]/40 opacity-0 transition-all group-hover:opacity-100">
           <button
-            onClick={() => playTrack(track)}
+            onClick={() => playTrack(track, compact ? likedTracks : results)}
             className="rounded-sm border-2 border-[#F5F8F4] bg-[#F5F8F4] p-3 text-[#0F1A0F] shadow-[2px_2px_0px_#0F1A0F] transition-all hover:scale-105"
           >
             <Play className="fill-current" size={22} />
@@ -72,7 +72,7 @@ const Musics = () => {
       </div>
 
       <button
-        onClick={() => playTrack(track)}
+        onClick={() => playTrack(track, compact ? likedTracks : results)}
         className="mt-3 w-full brutal-btn brutal-btn-secondary py-2 text-xs"
       >
         Play track

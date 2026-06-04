@@ -1,14 +1,24 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { Repeat1, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, ListMusic } from "lucide-react";
+import { Repeat1, Repeat, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, ListMusic } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 
 const Footer = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { currentTrack, isPlaying, streamUrl, setIsPlaying } = useMusicStore();
+  const { 
+    currentTrack, isPlaying, streamUrl, setIsPlaying, 
+    nextTrack, prevTrack, shuffle, toggleShuffle, 
+    repeat, toggleRepeat, volume, setVolume 
+  } = useMusicStore();
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -24,6 +34,17 @@ const Footer = () => {
     if (audioRef.current) {
       setProgress(audioRef.current.currentTime);
       setDuration(audioRef.current.duration || 0);
+    }
+  };
+
+  const handleEnded = () => {
+    if (repeat === "one") {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+      }
+    } else {
+      nextTrack();
     }
   };
 
@@ -44,7 +65,7 @@ const Footer = () => {
         ref={audioRef}
         src={streamUrl || undefined}
         onTimeUpdate={handleTimeUpdate}
-        onEnded={() => setIsPlaying(false)}
+        onEnded={handleEnded}
       />
 
       <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-[6px_6px_0px_#0F1A0F] md:bottom-8 md:left-[20rem] md:right-8">
@@ -76,10 +97,16 @@ const Footer = () => {
         {/* Controls */}
         <div className="flex flex-col items-center gap-3 sm:gap-4 flex-1 px-4">
           <div className="flex items-center gap-6 sm:gap-8">
-            <button className="hidden sm:block text-[#5A6E5A] hover:text-[#3B6B4A] transition-colors">
-              <Shuffle size={22} />
+            <button 
+              onClick={toggleShuffle}
+              className={`hidden sm:block transition-colors ${shuffle ? "text-[#3B6B4A]" : "text-[#5A6E5A] hover:text-[#3B6B4A]"}`}
+            >
+              <Shuffle size={22} className={shuffle ? "stroke-[3px]" : ""} />
             </button>
-            <button className="text-[#0F1A0F] hover:text-[#3B6B4A] transition-colors hover:-translate-x-0.5">
+            <button 
+              onClick={prevTrack}
+              className="text-[#0F1A0F] hover:text-[#3B6B4A] transition-colors hover:-translate-x-0.5"
+            >
               <SkipBack size={28} fill="currentColor" />
             </button>
             <button
@@ -95,11 +122,17 @@ const Footer = () => {
                 : <Play size={24} fill="currentColor" className="ml-0.5" />
               }
             </button>
-            <button className="text-[#0F1A0F] hover:text-[#3B6B4A] transition-colors hover:translate-x-0.5">
+            <button 
+              onClick={nextTrack}
+              className="text-[#0F1A0F] hover:text-[#3B6B4A] transition-colors hover:translate-x-0.5"
+            >
               <SkipForward size={28} fill="currentColor" />
             </button>
-            <button className="hidden sm:block text-[#5A6E5A] hover:text-[#3B6B4A] transition-colors">
-              <Repeat1 size={22} />
+            <button 
+              onClick={toggleRepeat}
+              className={`hidden sm:block transition-colors ${repeat !== "none" ? "text-[#3B6B4A]" : "text-[#5A6E5A] hover:text-[#3B6B4A]"}`}
+            >
+              {repeat === "one" ? <Repeat1 size={22} className="stroke-[3px]" /> : <Repeat size={22} className={repeat === "all" ? "stroke-[3px]" : ""} />}
             </button>
           </div>
 
@@ -132,10 +165,20 @@ const Footer = () => {
           <button className="text-[#5A6E5A] hover:text-[#3B6B4A] transition-colors">
             <ListMusic size={24} />
           </button>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 group">
             <Volume2 size={22} className="text-[#5A6E5A]" />
-            <div className="h-3 w-28 rounded-sm border-2 border-[#0F1A0F] bg-[#E8EDE6] relative overflow-hidden">
-              <div className="absolute top-0 left-0 h-full w-[70%] bg-[#D4A843]" />
+            <div 
+              className="h-3 w-28 rounded-sm border-2 border-[#0F1A0F] bg-[#E8EDE6] relative cursor-pointer overflow-hidden"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const newVolume = (e.clientX - rect.left) / rect.width;
+                setVolume(Math.max(0, Math.min(1, newVolume)));
+              }}
+            >
+              <div 
+                className="absolute top-0 left-0 h-full bg-[#D4A843]" 
+                style={{ width: `${volume * 100}%` }}
+              />
             </div>
           </div>
         </div>
