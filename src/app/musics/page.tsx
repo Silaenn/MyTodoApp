@@ -150,7 +150,7 @@ const Musics = () => {
 
       {/* Results */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center gap-6 py-24">
+        <div className="flex flex-col items-center justify-center gap-6 h-[calc(100vh-380px)]">
           <div className="h-14 w-14 animate-spin rounded-sm border-4 border-[#0F1A0F] border-t-[#3B6B4A]" />
           <p className="text-2xl font-black tracking-tight text-[#0F1A0F]">
             Scanning frequencies...
