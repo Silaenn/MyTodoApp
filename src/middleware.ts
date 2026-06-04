@@ -10,7 +10,8 @@ export default auth((req) => {
   if (isApiAuthRoute) return null
 
   if (pathname === "/") {
-    return Response.redirect(new URL(isLoggedIn ? "/tasks" : "/login", nextUrl))
+    if (!isLoggedIn) return Response.redirect(new URL("/login", nextUrl))
+    return null
   }
 
   if (pathname === "/login") {
