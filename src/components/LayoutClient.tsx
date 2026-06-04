@@ -57,7 +57,6 @@ export default function LayoutClient({
             </h1>
           </div>
         )}
-        {!isLoginOrRegister && <Header user={session?.user ?? undefined} />}
         <div className="flex-1">{children}</div>
         {!isLoginOrRegister && pathname !== "/profile" && <Footer />}
       </main>
