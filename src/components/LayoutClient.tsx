@@ -48,11 +48,11 @@ export default function LayoutClient({
           <div className="flex items-center gap-4 mb-6 md:hidden">
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-md border-2 border-[#1A1208] bg-[#C75B2D] text-[#FDFAF4] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5"
+              className="brutal-btn brutal-btn-primary h-11 w-11 p-0"
             >
               <Menu size={22} />
             </button>
-            <h1 className="text-xl font-black tracking-tight text-[#1A1208]">
+            <h1 className="text-xl font-black tracking-tight text-[#0F1A0F]">
               TASKTUNE
             </h1>
           </div>
@@ -62,4 +62,4 @@ export default function LayoutClient({
       </main>
     </>
   );
-}
+} 

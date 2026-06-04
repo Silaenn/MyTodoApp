@@ -12,7 +12,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className="min-h-screen flex overflow-x-hidden antialiased bg-[#F5ECD7]"
+        className="min-h-screen flex overflow-x-hidden antialiased bg-[#E8EDE6]"
         suppressHydrationWarning
       >
         <LayoutClient session={session}>

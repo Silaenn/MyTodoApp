@@ -31,36 +31,35 @@ const Dashboard = ({
 
   return (
     <>
-      {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-[#1A1208]/50 z-[60] md:hidden"
+          className="fixed inset-0 bg-[#0F1A0F]/50 z-[60] md:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-[70] md:flex flex-col w-72 h-screen border-r-2 border-[#1A1208] bg-[#F5ECD7] transition-transform duration-300 ${
+        className={`fixed left-0 top-0 z-[70] md:flex flex-col w-72 h-screen border-r-2 border-[#0F1A0F] bg-[#E8EDE6] transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
         <div className="flex h-full flex-col justify-between p-6">
           <div>
             {/* Logo */}
-            <div className="flex justify-between items-center mb-8 border-b-2 border-[#1A1208] pb-6">
+            <div className="flex justify-between items-center mb-8 border-b-2 border-[#0F1A0F] pb-6">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#6B5744]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
                   Workspace
                 </p>
-                <h2 className="text-3xl font-black tracking-tight text-[#1A1208]">
-                  TASK<span className="text-[#C75B2D]">TUNE</span>
+                <h2 className="text-3xl font-black tracking-tight text-[#0F1A0F]">
+                  TASK<span className="text-[#3B6B4A]">TUNE</span>
                 </h2>
               </div>
               <button
                 onClick={onClose}
-                className="md:hidden inline-flex items-center justify-center rounded-sm border-2 border-[#1A1208] bg-[#FDFAF4] p-2 shadow-[2px_2px_0px_#1A1208] transition-all hover:shadow-[3px_3px_0px_#1A1208] active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+                className="md:hidden inline-flex items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] p-2 shadow-[2px_2px_0px_#0F1A0F] transition-all hover:shadow-[3px_3px_0px_#0F1A0F] active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
               >
-                <X size={20} className="text-[#1A1208]" />
+                <X size={20} className="text-[#0F1A0F]" />
               </button>
             </div>
 
@@ -74,16 +73,16 @@ const Dashboard = ({
                     key={link.href}
                     href={link.href}
                     onClick={onClose}
-                    className={`relative flex items-center gap-3 rounded-md border-2 border-[#1A1208] px-4 py-3.5 font-bold tracking-wide transition-all ${
+                    className={`relative flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] px-4 py-3.5 font-bold tracking-wide transition-all ${
                       isActive
-                        ? "bg-[#C75B2D] text-[#FDFAF4] shadow-[4px_4px_0px_#1A1208]"
-                        : "bg-[#FDFAF4] text-[#1A1208] shadow-[3px_3px_0px_#1A1208] hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px"
+                        ? "bg-[#3B6B4A] text-[#F5F8F4] shadow-[4px_4px_0px_#0F1A0F]"
+                        : "bg-[#F5F8F4] text-[#0F1A0F] shadow-[3px_3px_0px_#0F1A0F] hover:shadow-[5px_5px_0px_#0F1A0F] hover:-translate-x-px hover:-translate-y-px"
                     }`}
                   >
                     {isActive && (
-                      <span className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-sm bg-[#E8A838]" />
+                      <span className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-sm bg-[#D4A843]" />
                     )}
-                    <Icon size={18} className={isActive ? "text-[#FDFAF4]" : "text-[#6B5744]"} />
+                    <Icon size={18} className={isActive ? "text-[#F5F8F4]" : "text-[#5A6E5A]"} />
                     <span className={isActive ? "pl-1" : ""}>{link.label}</span>
                   </Link>
                 );
@@ -93,8 +92,8 @@ const Dashboard = ({
 
           <div className="space-y-3">
             {/* User Card */}
-            <div className="flex items-center gap-3 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-4 shadow-[3px_3px_0px_#1A1208]">
-              <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-[#1A1208] flex-shrink-0 shadow-[2px_2px_0px_#1A1208]">
+            <div className="flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-4 shadow-[3px_3px_0px_#0F1A0F]">
+              <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-[#0F1A0F] flex-shrink-0 shadow-[2px_2px_0px_#0F1A0F]">
                 {user?.image ? (
                   <img
                     src={user.image ?? undefined}
@@ -102,25 +101,25 @@ const Dashboard = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-[#E8A838]">
-                    <User size={18} className="text-[#1A1208]" />
+                  <div className="w-full h-full flex items-center justify-center bg-[#D4A843]">
+                    <User size={18} className="text-[#0F1A0F]" />
                   </div>
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-black truncate leading-none mb-1 text-[#1A1208]">
+                <p className="text-sm font-black truncate leading-none mb-1 text-[#0F1A0F]">
                   {user?.name || "Guest"}
                 </p>
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4A7C59] truncate">
+                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#3B6B4A] truncate">
                   Online
                 </p>
               </div>
               <button
                 onClick={() => signOut()}
-                className="inline-flex items-center justify-center rounded-sm border-2 border-[#1A1208] bg-[#F5ECD7] p-2 shadow-[2px_2px_0px_#1A1208] transition-all hover:bg-[#C75B2D] hover:text-[#FDFAF4] hover:shadow-[3px_3px_0px_#1A1208] active:shadow-none"
+                className="inline-flex items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#E8EDE6] p-2 shadow-[2px_2px_0px_#0F1A0F] transition-all hover:bg-[#8B4A2B] hover:text-[#F5F8F4] hover:shadow-[3px_3px_0px_#0F1A0F] active:shadow-none"
                 title="Logout"
               >
-                <LogOut size={16} className="text-[#1A1208]" />
+                <LogOut size={16} className="text-[#0F1A0F]" />
               </button>
             </div>
           </div>

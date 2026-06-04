@@ -36,27 +36,27 @@ const Musics = () => {
   };
 
   const TrackCard = ({ track, compact = false }: { track: SearchResult; compact?: boolean }) => (
-    <div className={`group flex flex-col overflow-hidden rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] shadow-[4px_4px_0px_#1A1208] transition-all hover:shadow-[6px_6px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px ${compact ? "p-3" : "p-4"}`}>
-      <div className="relative aspect-square overflow-hidden rounded-sm border-2 border-[#1A1208]">
+    <div className={`brutal-card group flex flex-col overflow-hidden ${compact ? "p-3" : "p-4"}`}>
+      <div className="relative aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
         <img
           src={track.thumbnail}
           alt={track.title}
           className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-[#1A1208]/40 opacity-0 transition-all group-hover:opacity-100">
+        <div className="absolute inset-0 flex items-center justify-center bg-[#0F1A0F]/40 opacity-0 transition-all group-hover:opacity-100">
           <button
             onClick={() => playTrack(track)}
-            className="rounded-sm border-2 border-[#FDFAF4] bg-[#FDFAF4] p-3 text-[#1A1208] shadow-[2px_2px_0px_#1A1208] transition-all hover:scale-105"
+            className="rounded-sm border-2 border-[#F5F8F4] bg-[#F5F8F4] p-3 text-[#0F1A0F] shadow-[2px_2px_0px_#0F1A0F] transition-all hover:scale-105"
           >
             <Play className="fill-current" size={22} />
           </button>
         </div>
         <button
           onClick={() => toggleLike(track)}
-          className={`absolute right-2 top-2 rounded-sm border-2 border-[#1A1208] p-1.5 transition-all ${
+          className={`absolute right-2 top-2 rounded-sm border-2 border-[#0F1A0F] p-1.5 transition-all ${
             isLiked(track.id)
-              ? "bg-[#C75B2D] text-[#FDFAF4] shadow-[2px_2px_0px_#1A1208]"
-              : "bg-[#FDFAF4] text-[#1A1208] hover:bg-[#E8A838]"
+              ? "bg-[#8B4A2B] text-[#F5F8F4] shadow-[2px_2px_0px_#0F1A0F]"
+              : "bg-[#F5F8F4] text-[#0F1A0F] hover:bg-[#D4A843]"
           }`}
         >
           <Heart size={14} fill={isLiked(track.id) ? "currentColor" : "none"} />
@@ -64,17 +64,17 @@ const Musics = () => {
       </div>
 
       <div className="mt-3 flex flex-col gap-1">
-        <h3 className="truncate text-base font-black leading-tight text-[#1A1208]">
+        <h3 className="truncate text-base font-black leading-tight text-[#0F1A0F]">
           {track.title}
         </h3>
-        <p className="truncate text-[10px] font-bold uppercase tracking-[0.25em] text-[#C75B2D]">
+        <p className="truncate text-[10px] font-bold uppercase tracking-[0.25em] text-[#3B6B4A]">
           {track.artist}
         </p>
       </div>
 
       <button
         onClick={() => playTrack(track)}
-        className="mt-3 w-full rounded-sm border-2 border-[#1A1208] bg-[#E8A838] py-2 text-xs font-black text-[#1A1208] shadow-[2px_2px_0px_#1A1208] transition-all hover:shadow-[4px_4px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+        className="mt-3 w-full brutal-btn brutal-btn-secondary py-2 text-xs"
       >
         Play track
       </button>
@@ -85,46 +85,46 @@ const Musics = () => {
     <div className="w-full pb-32">
 
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-6 rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-6 shadow-[4px_4px_0px_#1A1208]">
+      <div className="mb-8 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-[4px_4px_0px_#0F1A0F]">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#6B5744]">
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
               Music search
             </p>
-            <h1 className="mt-2 text-5xl font-black tracking-tight text-[#1A1208]">
-              Vibe <span className="text-[#C75B2D]">discovery</span>
+            <h1 className="mt-2 text-5xl font-black tracking-tight text-[#0F1A0F]">
+              Vibe <span className="text-[#3B6B4A]">discovery</span>
             </h1>
           </div>
 
-          <div className="flex items-center gap-4 rounded-md border-2 border-[#1A1208] bg-[#F5ECD7] p-4 shadow-[3px_3px_0px_#1A1208]">
-            <Heart size={22} fill="currentColor" className="text-[#C75B2D]" />
+          <div className="flex items-center gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#E8EDE6] p-4 shadow-[3px_3px_0px_#0F1A0F]">
+            <Heart size={22} fill="currentColor" className="text-[#8B4A2B]" />
             <div>
-              <span className="block text-[10px] font-bold uppercase tracking-[0.3em] text-[#6B5744]">
+              <span className="block text-[10px] font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
                 Favorite vault
               </span>
-              <span className="text-xl font-black text-[#1A1208]">
+              <span className="text-xl font-black text-[#0F1A0F]">
                 {likedTracks.length} tracks
               </span>
             </div>
           </div>
         </div>
 
-        <form onSubmit={handleSearch} className="flex w-full rounded-md border-2 border-[#1A1208] overflow-hidden">
+        <form onSubmit={handleSearch} className="flex w-full gap-3">
           <div className="relative flex-1">
             <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B5744] z-10"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5A6E5A] z-10"
               size={20}
             />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by title or artist..."
-              className="h-12 w-full bg-[#FDFAF4] pl-12 pr-4 text-base font-medium text-[#1A1208] placeholder:text-[#6B5744] outline-none"
+              className="brutal-input pl-12"
             />
           </div>
           <button
             type="submit"
-            className="border-l-2 border-[#1A1208] bg-[#C75B2D] px-6 text-sm font-black text-[#FDFAF4] transition-colors hover:bg-[#b54f27] active:bg-[#a04524] whitespace-nowrap"
+            className="brutal-btn brutal-btn-primary px-8"
           >
             Search
           </button>
@@ -134,10 +134,10 @@ const Musics = () => {
       {/* Liked Playlist */}
       {likedTracks.length > 0 && !query && (
         <div className="mb-16">
-          <div className="mb-6 flex items-center gap-4 border-b-2 border-[#1A1208] pb-4">
-            <div className="h-8 w-8 rounded-sm border-2 border-[#1A1208] bg-[#C75B2D] shadow-[2px_2px_0px_#1A1208]" />
-            <h2 className="text-2xl font-black tracking-tight text-[#1A1208]">
-              Liked <span className="text-[#C75B2D]">playlist</span>
+          <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
+            <div className="h-8 w-8 rounded-sm border-2 border-[#0F1A0F] bg-[#3B6B4A] shadow-[2px_2px_0px_#0F1A0F]" />
+            <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+              Liked <span className="text-[#3B6B4A]">playlist</span>
             </h2>
           </div>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">
@@ -151,8 +151,8 @@ const Musics = () => {
       {/* Results */}
       {loading ? (
         <div className="flex flex-col items-center justify-center gap-6 py-24">
-          <div className="h-14 w-14 animate-spin rounded-sm border-4 border-[#1A1208] border-t-[#C75B2D]" />
-          <p className="text-2xl font-black tracking-tight text-[#1A1208]">
+          <div className="h-14 w-14 animate-spin rounded-sm border-4 border-[#0F1A0F] border-t-[#3B6B4A]" />
+          <p className="text-2xl font-black tracking-tight text-[#0F1A0F]">
             Scanning frequencies...
           </p>
         </div>
@@ -161,15 +161,15 @@ const Musics = () => {
           {results.length > 0 ? (
             results.map((m) => <TrackCard key={m.id} track={m} />)
           ) : query && !loading ? (
-            <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] text-center min-h-[calc(100vh-280px)]">
-              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#6B5744]">
+            <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center min-h-[calc(100vh-280px)]">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
                 No matches found.
               </p>
             </div>
           ) : !likedTracks.length ? (
-            <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] min-h-[calc(100vh-280px)]">
-              <Music2 size={80} className="mb-6 text-[#1A1208]/20" />
-              <p className="text-3xl font-black tracking-tight text-[#1A1208]">
+            <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] min-h-[calc(100vh-280px)]">
+              <Music2 size={80} className="mb-6 text-[#0F1A0F]/20" />
+              <p className="text-3xl font-black tracking-tight text-[#0F1A0F]">
                 Search to discover music
               </p>
             </div>

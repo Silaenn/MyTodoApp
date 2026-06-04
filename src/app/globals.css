@@ -5,19 +5,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --background: #F5ECD7;
-  --foreground: #1A1208;
-  --surface: #FDFAF4;
-  --primary: #C75B2D;
-  --secondary: #E8A838;
-  --accent: #4A7C59;
-  --muted: #6B5744;
-  --border: #1A1208;
+  --background: #E8EDE6;
+  --foreground: #0F1A0F;
+  --surface: #F5F8F4;
+  --primary: #3B6B4A;
+  --secondary: #D4A843;
+  --accent: #8B4A2B;
+  --muted: #5A6E5A;
+  --border: #0F1A0F;
 }
 
 body {
-  background: #F5ECD7;
-  color: var(--foreground);
+  background: #E8EDE6;
+  color: #0F1A0F;
   font-family: 'Space Grotesk', sans-serif;
   margin: 0;
   padding: 0;
@@ -26,78 +26,78 @@ body {
 
 @layer components {
   .brutal-card {
-    @apply bg-[#FDFAF4] border-2 border-[#1A1208] rounded-lg transition-all duration-150;
-    box-shadow: 4px 4px 0px #1A1208;
+    @apply bg-[#F5F8F4] border-2 border-[#0F1A0F] rounded-lg transition-all duration-150;
+    box-shadow: 4px 4px 0px #0F1A0F;
   }
 
   .brutal-card:hover {
-    box-shadow: 6px 6px 0px #1A1208;
+    box-shadow: 6px 6px 0px #0F1A0F;
     transform: translate(-1px, -1px);
   }
 
   .brutal-btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md border-2 border-[#1A1208] px-5 py-2.5 font-bold tracking-wide transition-all duration-100 select-none;
-    box-shadow: 3px 3px 0px #1A1208;
+    @apply inline-flex items-center justify-center gap-2 rounded-md border-2 border-[#0F1A0F] px-5 py-2.5 font-bold tracking-wide transition-all duration-100 select-none;
+    box-shadow: 3px 3px 0px #0F1A0F;
   }
 
   .brutal-btn:hover {
-    box-shadow: 5px 5px 0px #1A1208;
+    box-shadow: 5px 5px 0px #0F1A0F;
     transform: translate(-1px, -1px);
   }
 
   .brutal-btn:active {
-    box-shadow: 1px 1px 0px #1A1208;
+    box-shadow: 1px 1px 0px #0F1A0F;
     transform: translate(2px, 2px);
   }
 
   .brutal-btn-primary {
-    @apply bg-[#C75B2D] text-[#FDFAF4];
+    @apply bg-[#3B6B4A] text-[#F5F8F4];
   }
 
   .brutal-btn-secondary {
-    @apply bg-[#E8A838] text-[#1A1208];
+    @apply bg-[#D4A843] text-[#0F1A0F];
   }
 
   .brutal-btn-accent {
-    @apply bg-[#4A7C59] text-[#FDFAF4];
+    @apply bg-[#8B4A2B] text-[#F5F8F4];
   }
 
   .brutal-btn-outline {
-    @apply bg-[#FDFAF4] text-[#1A1208];
+    @apply bg-[#F5F8F4] text-[#0F1A0F];
   }
 
   .brutal-input {
-    @apply w-full bg-[#FDFAF4] border-2 border-[#1A1208] rounded-md px-4 py-2.5 font-medium text-[#1A1208] outline-none transition-all duration-100;
-    box-shadow: 3px 3px 0px #1A1208;
+    @apply w-full bg-[#F5F8F4] border-2 border-[#0F1A0F] rounded-md px-4 py-2.5 font-medium text-[#0F1A0F] outline-none transition-all duration-100;
+    box-shadow: 3px 3px 0px #0F1A0F;
   }
 
   .brutal-input:focus {
-    box-shadow: 5px 5px 0px #C75B2D;
-    border-color: #C75B2D;
+    box-shadow: 5px 5px 0px #3B6B4A;
+    border-color: #3B6B4A;
   }
 
   .brutal-input::placeholder {
-    color: #6B5744;
+    color: #5A6E5A;
   }
 
   .brutal-badge {
-    @apply inline-block border-2 border-[#1A1208] rounded px-2 py-0.5 text-xs font-bold;
+    @apply inline-block border-2 border-[#0F1A0F] rounded px-2 py-0.5 text-xs font-bold;
   }
 
   .brutal-badge-primary {
-    @apply bg-[#C75B2D] text-[#FDFAF4];
+    @apply bg-[#3B6B4A] text-[#F5F8F4];
   }
 
   .brutal-badge-secondary {
-    @apply bg-[#E8A838] text-[#1A1208];
+    @apply bg-[#D4A843] text-[#0F1A0F];
   }
 
   .brutal-badge-accent {
-    @apply bg-[#4A7C59] text-[#FDFAF4];
+    @apply bg-[#8B4A2B] text-[#F5F8F4];
   }
 
   .brutal-badge-muted {
-    @apply bg-[#FDFAF4] text-[#6B5744];
+    @apply bg-[#F5F8F4] text-[#5A6E5A];
   }
 }
 
@@ -107,17 +107,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F5ECD7;
-  border-left: 2px solid #1A1208;
+  background: #E8EDE6;
+  border-left: 2px solid #0F1A0F;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C75B2D;
-  border: 2px solid #1A1208;
+  background: #3B6B4A;
+  border: 2px solid #0F1A0F;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #E8A838;
+  background: #D4A843;
 }
 
 /* Typography */
@@ -127,14 +127,14 @@ h3,
 h4,
 .font-brutal {
   @apply tracking-tight font-bold;
-  color: #1A1208;
+  color: #0F1A0F;
 }
 
 .text-muted {
-  color: #6B5744;
+  color: #5A6E5A;
 }
 
 ::selection {
-  background: #E8A838;
-  color: #1A1208;
+  background: #D4A843;
+  color: #0F1A0F;
 }

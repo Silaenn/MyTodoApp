@@ -61,19 +61,19 @@ export function DialogDemo() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="inline-flex items-center gap-2 rounded-md border-2 border-[#1A1208] bg-[#C75B2D] px-5 py-2.5 text-sm font-bold text-[#FDFAF4] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5">
+        <button className="brutal-btn brutal-btn-primary">
           <Plus size={18} className="stroke-[3px]" />
           Add task
         </button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[460px] z-[100]">
+      <DialogContent className="sm:max-w-[460px] z-[100] border-4 border-[#0F1A0F] bg-[#F5F8F4] shadow-[8px_8px_0px_#0F1A0F] rounded-none">
         <form onSubmit={handleSubmit}>
-          <DialogHeader className="border-b-2 border-[#1A1208] pb-4 mb-5">
-            <DialogTitle>
-              New <span className="text-[#C75B2D]">Task</span>
+          <DialogHeader className="border-b-2 border-[#0F1A0F] pb-4 mb-5">
+            <DialogTitle className="text-3xl font-black italic">
+              New <span className="text-[#3B6B4A]">Task</span>
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="font-bold text-[#5A6E5A]">
               Capture the next thing you want to move forward.
             </DialogDescription>
           </DialogHeader>
@@ -82,7 +82,7 @@ export function DialogDemo() {
             <div className="grid gap-2">
               <Label
                 htmlFor="name"
-                className="text-xs font-bold uppercase tracking-[0.3em] text-[#6B5744]"
+                className="text-xs font-black uppercase tracking-[0.3em] text-[#0F1A0F]"
               >
                 Task name
               </Label>
@@ -91,13 +91,14 @@ export function DialogDemo() {
                 name="name"
                 required
                 placeholder="e.g. finish landing page"
+                className="brutal-input"
               />
             </div>
 
             <div className="grid gap-2">
               <Label
                 htmlFor="deadline"
-                className="text-xs font-bold uppercase tracking-[0.3em] text-[#6B5744]"
+                className="text-xs font-black uppercase tracking-[0.3em] text-[#0F1A0F]"
               >
                 Deadline
               </Label>
@@ -105,25 +106,26 @@ export function DialogDemo() {
                 id="deadline"
                 name="deadline"
                 type="date"
+                className="brutal-input"
               />
             </div>
 
             <div className="grid gap-2">
               <Label
                 htmlFor="category"
-                className="text-xs font-bold uppercase tracking-[0.3em] text-[#6B5744]"
+                className="text-xs font-black uppercase tracking-[0.3em] text-[#0F1A0F]"
               >
                 Category
               </Label>
               <Select name="category" defaultValue="work">
-                <SelectTrigger id="category">
+                <SelectTrigger id="category" className="brutal-input bg-[#F5F8F4]">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent className="z-[110]">
-                  <SelectItem value="work">Work</SelectItem>
-                  <SelectItem value="study">Study</SelectItem>
-                  <SelectItem value="hobby">Hobby</SelectItem>
-                  <SelectItem value="personal">Personal</SelectItem>
+                <SelectContent className="z-[110] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[4px_4px_0px_#0F1A0F]">
+                  <SelectItem value="work" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Work</SelectItem>
+                  <SelectItem value="study" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Study</SelectItem>
+                  <SelectItem value="hobby" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Hobby</SelectItem>
+                  <SelectItem value="personal" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Personal</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -133,7 +135,7 @@ export function DialogDemo() {
             <DialogClose asChild>
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] px-5 py-2.5 text-sm font-bold text-[#1A1208] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5"
+                className="brutal-btn brutal-btn-outline"
               >
                 Cancel
               </button>
@@ -141,7 +143,7 @@ export function DialogDemo() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center justify-center rounded-md border-2 border-[#1A1208] bg-[#C75B2D] px-5 py-2.5 text-sm font-bold text-[#FDFAF4] shadow-[3px_3px_0px_#1A1208] transition-all hover:shadow-[5px_5px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#1A1208] active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none"
+              className="brutal-btn brutal-btn-primary disabled:opacity-50"
             >
               {loading ? "Saving..." : "Save task"}
             </button>
