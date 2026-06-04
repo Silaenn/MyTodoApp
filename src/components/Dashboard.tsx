@@ -123,19 +123,6 @@ const Dashboard = ({
                 <LogOut size={16} className="text-[#1A1208]" />
               </button>
             </div>
-
-            {/* Status */}
-            <div className="rounded-md border-2 border-[#1A1208] bg-[#FDFAF4] p-4 shadow-[2px_2px_0px_#1A1208]">
-              <div className="flex items-center gap-2 text-[#1A1208]">
-                <span className="w-2 h-2 rounded-full bg-[#4A7C59] animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em]">
-                  System online
-                </span>
-              </div>
-              <span className="mt-1.5 block text-[9px] font-medium text-[#6B5744] tracking-wider">
-                ID: {user?.id?.substring(0, 8) || "N/A"}
-              </span>
-            </div>
           </div>
         </div>
       </aside>
