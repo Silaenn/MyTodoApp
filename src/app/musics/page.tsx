@@ -109,20 +109,22 @@ const Musics = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSearch} className="relative w-full">
-          <Search
-            className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[#6B5744]"
-            size={20}
-          />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by title or artist..."
-            className="h-13 pl-12 pr-28 text-base"
-          />
+        <form onSubmit={handleSearch} className="flex w-full rounded-md border-2 border-[#1A1208] shadow-[4px_4px_0px_#1A1208] overflow-hidden">
+          <div className="relative flex-1">
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B5744] z-10"
+              size={20}
+            />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by title or artist..."
+              className="h-12 w-full bg-[#FDFAF4] pl-12 pr-4 text-base font-medium text-[#1A1208] placeholder:text-[#6B5744] outline-none"
+            />
+          </div>
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-sm border-2 border-[#1A1208] bg-[#C75B2D] px-4 py-2 text-xs font-black text-[#FDFAF4] shadow-[2px_2px_0px_#1A1208] transition-all hover:shadow-[4px_4px_0px_#1A1208] hover:-translate-x-px hover:-translate-y-1/2 active:shadow-none"
+            className="border-l-2 border-[#1A1208] bg-[#C75B2D] px-6 text-sm font-black text-[#FDFAF4] transition-colors hover:bg-[#b54f27] active:bg-[#a04524] whitespace-nowrap"
           >
             Search
           </button>
