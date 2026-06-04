@@ -159,14 +159,14 @@ const Musics = () => {
           {results.length > 0 ? (
             results.map((m) => <TrackCard key={m.id} track={m} />)
           ) : query && !loading ? (
-            <div className="col-span-full rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] p-12 text-center">
+            <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] text-center min-h-[calc(100vh-280px)]">
               <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#6B5744]">
                 No matches found.
               </p>
             </div>
           ) : !likedTracks.length ? (
-            <div className="col-span-full rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] py-24 text-center">
-              <Music2 size={80} className="mx-auto mb-6 text-[#1A1208]/20" />
+            <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] min-h-[calc(100vh-280px)]">
+              <Music2 size={80} className="mb-6 text-[#1A1208]/20" />
               <p className="text-3xl font-black tracking-tight text-[#1A1208]">
                 Search to discover music
               </p>

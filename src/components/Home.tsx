@@ -209,7 +209,7 @@ const Home = () => {
                 </div>
               ))
             ) : (
-              <div className="col-span-full rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] p-8 text-center">
+              <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] text-center min-h-[calc(100vh-380px)]">
                 <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#6B5744]">
                   No tracks saved yet.
                 </p>
