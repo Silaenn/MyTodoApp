@@ -142,21 +142,23 @@ const Home = () => {
                 </div>
               ))
             ) : (
-              <div className="rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] p-8 text-center">
-                <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#6B5744]">
-                  All clear. No tasks pending.
-                </p>
-              </div>
-            )}
+              <div className="flex flex-col gap-4" style={{ minHeight: "calc(100vh - 380px)" }}>
+                <div className="flex flex-1 items-center justify-center rounded-md border-2 border-dashed border-[#1A1208]/30 bg-[#FDFAF4] text-center">
+                  <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#6B5744]">
+                    All clear. No tasks pending.
+                  </p>
+                </div>
 
-            <Link
-              href="/tasks"
-              className="group block rounded-md border-2 border-dashed border-[#1A1208]/30 p-4 text-center transition-all hover:border-[#C75B2D] hover:bg-[#FDFAF4]"
-            >
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#6B5744] group-hover:text-[#C75B2D]">
-                + Create a new task
-              </span>
-            </Link>
+                <Link
+                  href="/tasks"
+                  className="group flex flex-1 items-center justify-center rounded-md border-2 border-dashed border-[#1A1208]/30 text-center transition-all hover:border-[#C75B2D] hover:bg-[#FDFAF4]"
+                >
+                  <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#6B5744] group-hover:text-[#C75B2D]">
+                    + Create a new task
+                  </span>
+                </Link>
+              </div>  
+            )}
           </div>
         </section>
 
