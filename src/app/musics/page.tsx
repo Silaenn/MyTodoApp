@@ -109,7 +109,7 @@ const Musics = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSearch} className="flex w-full rounded-md border-2 border-[#1A1208] shadow-[4px_4px_0px_#1A1208] overflow-hidden">
+        <form onSubmit={handleSearch} className="flex w-full rounded-md border-2 border-[#1A1208] overflow-hidden">
           <div className="relative flex-1">
             <Search
               className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6B5744] z-10"

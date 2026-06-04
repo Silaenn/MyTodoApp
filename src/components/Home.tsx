@@ -33,21 +33,6 @@ const Home = () => {
     fetchTasks();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center h-[calc(100vh-320px)]">
-        <p className="text-4xl md:text-6xl font-black tracking-tight text-[#C75B2D]">
-          Loading tasks...
-        </p>
-        <div className="mt-8 h-3 w-64 md:w-96 overflow-hidden rounded-sm border-2 border-[#1A1208] bg-[#FDFAF4] shadow-[3px_3px_0px_#1A1208]">
-          <div className="h-full w-1/2 animate-pulse bg-[#C75B2D]" />
-        </div>
-        <p className="mt-6 text-xs font-bold uppercase tracking-[0.5em] text-[#6B5744] animate-pulse">
-          Accessing workspace data
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full space-y-10 pb-20">
@@ -76,17 +61,23 @@ const Home = () => {
 
           <div className="grid w-full grid-cols-2 gap-4 md:w-auto">
             <div className="rounded-md border-2 border-[#1A1208] bg-[#E8A838] p-5 text-center shadow-[4px_4px_0px_#1A1208]">
-              <span className="block text-3xl font-black text-[#1A1208]">
-                {tasks.length}
-              </span>
+              {loading ? (
+                  <div className="h-8 w-12 mx-auto animate-pulse rounded-sm bg-[#1A1208]/20" />
+                ) : (
+                  <span className="block text-3xl font-black text-[#1A1208]">{tasks.length}</span>
+                )}
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#1A1208]/70">
                 Active tasks
               </span>
             </div>
             <div className="rounded-md border-2 border-[#1A1208] bg-[#4A7C59] p-5 text-center shadow-[4px_4px_0px_#1A1208]">
-              <span className="block text-3xl font-black text-[#FDFAF4]">
-                {likedTracks.length}
-              </span>
+              {loading ? (
+                  <div className="h-8 w-12 mx-auto animate-pulse rounded-sm bg-[#1A1208]/20" />
+                ) : (
+                  <span className="block text-3xl font-black text-[#FDFAF4]">
+                    {likedTracks.length}
+                  </span>
+                )}
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#FDFAF4]/80">
                 Saved tracks
               </span>
@@ -116,7 +107,14 @@ const Home = () => {
           </div>
 
           <div className="space-y-4">
-            {tasks.length > 0 ? (
+            {loading ? (
+              <div className="space-y-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-20 animate-pulse rounded-md border-2 border-[#1A1208]/20 bg-[#FDFAF4]" />
+                ))}
+              </div>
+            ) :
+            tasks.length > 0 ? (
               tasks.map((task) => (
                 <div
                   key={task.id}
