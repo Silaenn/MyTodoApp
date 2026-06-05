@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Trash2, Search, ArrowUpDown, CheckCircle2, Circle } from "lucide-react";
 import { DialogDemo } from "@/components/Dialog";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Task {
   id: string;
@@ -30,6 +31,25 @@ const categoryColors: Record<string, string> = {
   urgent:   "bg-[#FF0000] text-[#F5F8F4]",
   study:    "bg-[#3B6B4A] text-[#F5F8F4]",
   all:      "brutal-badge-muted",
+};
+
+// Animation Variants
+const headerVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" }
+  }
+};
+
+const listContainerVariants = {
+  hidden: { opacity: 0, scale: 0.99 },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    transition: { duration: 0.4, ease: "easeOut" }
+  }
 };
 
 const Tasks = () => {
@@ -119,7 +139,12 @@ const Tasks = () => {
     <div className="w-full h-[calc(100vh-60px)] flex flex-col overflow-hidden">
 
       {/* Header & Controls - Fixed Height */}
-      <div className="mb-6 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-[4px_4px_0px_#0F1A0F] shrink-0">
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={headerVariants}
+        className="mb-6 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-[4px_4px_0px_#0F1A0F] shrink-0"
+      >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
@@ -194,88 +219,102 @@ const Tasks = () => {
             </DropdownMenu>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Content Area - Only this scrolls */}
       <div className="flex-1 min-h-0 relative">
-        {loading ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#E8EDE6]">
-            <p className="text-4xl font-black tracking-tight text-[#3B6B4A]">
-              Loading tasks...
-            </p>
-            <div className="h-3 w-56 overflow-hidden rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[3px_3px_0px_#0F1A0F]">
-              <div className="h-full w-1/3 animate-pulse bg-[#3B6B4A]" />
-            </div>
-          </div>
-        ) : (
-          <div className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden pb-2">
-            <div className="grid gap-4 flex-col py-2">
-              {filteredAndSortedTasks.length > 0 ? (
-                filteredAndSortedTasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className={`brutal-card flex flex-col gap-5 p-5 md:flex-row md:items-center md:justify-between transition-all ${
-                      task.is_done ? "opacity-60 grayscale-[0.5]" : ""
-                    }`}
-                  >
-                    <div className="flex flex-1 items-start gap-4">
-                      <button 
-                        onClick={() => toggleDone(task)}
-                        className={`mt-1.5 transition-colors ${task.is_done ? "text-[#3B6B4A]" : "text-[#5A6E5A] hover:text-[#3B6B4A]"}`}
-                      >
-                        {task.is_done ? <CheckCircle2 size={24} /> : <Circle size={24} />}
-                      </button>
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div 
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#E8EDE6]"
+            >
+              <p className="text-4xl font-black tracking-tight text-[#3B6B4A]">
+                Loading tasks...
+              </p>
+              <div className="h-3 w-56 overflow-hidden rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[3px_3px_0px_#0F1A0F]">
+                <div className="h-full w-1/3 animate-pulse bg-[#3B6B4A]" />
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="content"
+              initial="hidden"
+              animate="visible"
+              variants={listContainerVariants}
+              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden pb-2"
+            >
+              <div className="grid gap-4 flex-col py-2">
+                {filteredAndSortedTasks.length > 0 ? (
+                  filteredAndSortedTasks.map((task) => (
+                    <div
+                      key={task.id}
+                      className={`brutal-card flex flex-col gap-5 p-5 md:flex-row md:items-center md:justify-between transition-all ${
+                        task.is_done ? "opacity-60 grayscale-[0.5]" : ""
+                      }`}
+                    >
+                      <div className="flex flex-1 items-start gap-4">
+                        <button 
+                          onClick={() => toggleDone(task)}
+                          className={`mt-1.5 transition-colors ${task.is_done ? "text-[#3B6B4A]" : "text-[#5A6E5A] hover:text-[#3B6B4A]"}`}
+                        >
+                          {task.is_done ? <CheckCircle2 size={24} /> : <Circle size={24} />}
+                        </button>
 
-                      <div className="flex-1">
-                        <div className="mb-2 flex items-center gap-2 flex-wrap">
-                          <span
-                            className={`brutal-badge ${
-                              categoryColors[task.category.toLowerCase()] ?? categoryColors.all
-                            }`}
-                          >
-                            {task.category.toUpperCase()}
-                          </span>
-                        </div>
-                        <h3 className={`text-2xl font-black tracking-tight text-[#0F1A0F] ${task.is_done ? "line-through opacity-50" : ""}`}>
-                          {task.title}
-                        </h3>
-                        <div className="mt-3 flex items-center gap-2">
-                          <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#5A6E5A]">
-                            Deadline:
-                          </span>
-                          <span className={`rounded-sm border border-[#0F1A0F]/20 px-2 py-0.5 text-xs font-bold ${
-                            task.deadline && new Date(task.deadline) < new Date() && !task.is_done
-                              ? "bg-red-100 text-red-600 border-red-200"
-                              : "bg-[#E8EDE6] text-[#3B6B4A]"
-                          }`}>
-                            {task.deadline || "None"}
-                          </span>
+                        <div className="flex-1">
+                          <div className="mb-2 flex items-center gap-2 flex-wrap">
+                            <span
+                              className={`brutal-badge ${
+                                categoryColors[task.category.toLowerCase()] ?? categoryColors.all
+                              }`}
+                            >
+                              {task.category.toUpperCase()}
+                            </span>
+                          </div>
+                          <h3 className={`text-2xl font-black tracking-tight text-[#0F1A0F] ${task.is_done ? "line-through opacity-50" : ""}`}>
+                            {task.title}
+                          </h3>
+                          <div className="mt-3 flex items-center gap-2">
+                            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#5A6E5A]">
+                              Deadline:
+                            </span>
+                            <span className={`rounded-sm border border-[#0F1A0F]/20 px-2 py-0.5 text-xs font-bold ${
+                              task.deadline && new Date(task.deadline) < new Date() && !task.is_done
+                                ? "bg-red-100 text-red-600 border-red-200"
+                                : "bg-[#E8EDE6] text-[#3B6B4A]"
+                            }`}>
+                              {task.deadline || "None"}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center gap-3 md:self-center">
-                      <DialogDemo task={task} />
-                      <button
-                        onClick={() => deleteTask(task.id)}
-                        className="brutal-btn brutal-btn-accent"
-                      >
-                        <Trash2 size={15} />
-                        Delete
-                      </button>
+                      <div className="flex items-center gap-3 md:self-center">
+                        <DialogDemo task={task} />
+                        <button
+                          onClick={() => deleteTask(task.id)}
+                          className="brutal-btn brutal-btn-accent"
+                        >
+                          <Trash2 size={15} />
+                          Delete
+                        </button>
+                      </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] p-10 text-center min-h-[400px] lg:min-h-[600px]">
+                    <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
+                      {searchQuery ? "No matching tasks." : "No tasks found."}
+                    </p>
                   </div>
-                ))
-              ) : (
-                <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] p-10 text-center min-h-[400px] lg:min-h-[600px]">
-                  <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
-                    {searchQuery ? "No matching tasks." : "No tasks found."}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
