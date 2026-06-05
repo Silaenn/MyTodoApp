@@ -120,6 +120,26 @@ body {
   background: #D4A843;
 }
 
+/* Custom Scrollbar Class */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-left: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #0F1A0F;
+  border: none;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3B6B4A;
+}
+
 /* Typography */
 h1,
 h2,
