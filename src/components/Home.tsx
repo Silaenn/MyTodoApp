@@ -12,8 +12,9 @@ interface Task {
   is_done: boolean;
 }
 
-const Home = () => {
+const Home = ({ session }: { session: any }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [totalActiveTasks, setTotalActiveTasks] = useState(0);
   const [loading, setLoading] = useState(true);
   const { likedTracks, playTrack } = useMusicStore();
 
@@ -21,7 +22,9 @@ const Home = () => {
     try {
       const res = await fetch("/api/tasks");
       const data = await res.json();
-      setTasks(data.filter((t: Task) => !t.is_done).slice(0, 5));
+      const activeTasks = data.filter((t: Task) => !t.is_done);
+      setTotalActiveTasks(activeTasks.length);
+      setTasks(activeTasks.slice(0, 5));
     } catch (error) {
       console.error("Failed to fetch tasks:", error);
     } finally {
@@ -34,20 +37,20 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-full space-y-10 pb-20">
+    <div className="w-full space-y-10 pb-10">
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-8 shadow-[6px_6px_0px_#0F1A0F] md:p-10">
+      <section className="relative overflow-hidden rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-[4px_4px_0px_#0F1A0F]">
         <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full border-2 border-[#0F1A0F] bg-[#D4A843] opacity-30" />
         <div className="absolute right-16 top-16 h-20 w-20 rounded-full border-2 border-[#0F1A0F] bg-[#3B6B4A] opacity-20" />
-        <div className="relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-          <div className="max-w-2xl">
+        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-4xl flex-1">
             <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
               Today
             </p>
-            <h1 className="mt-3 text-5xl font-black tracking-tight text-[#0F1A0F] md:text-6xl">
-              Welcome back,{" "}
-              <span className="text-[#3B6B4A]">user</span>
+            <h1 className="mt-3 text-3xl font-black tracking-tight text-[#0F1A0F] lg:text-5xl">
+              Welcome {" "}
+              <span className="text-[#3B6B4A]">{session?.user?.name || "Explorer"}</span>
             </h1>
             <p className="mt-4 text-sm font-medium text-[#5A6E5A] md:text-base">
               {new Date().toLocaleDateString("en-US", {
@@ -63,7 +66,7 @@ const Home = () => {
               {loading ? (
                 <div className="h-8 w-12 mx-auto animate-pulse rounded-sm bg-[#0F1A0F]/20" />
               ) : (
-                <span className="block text-3xl font-black text-[#0F1A0F]">{tasks.length}</span>
+                <span className="block text-3xl font-black text-[#0F1A0F]">{totalActiveTasks}</span>
               )}
               <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#0F1A0F]/70">
                 Active tasks
