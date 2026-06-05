@@ -69,6 +69,14 @@ const Footer = () => {
       />
 
       <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-[6px_6px_0px_#0F1A0F] md:bottom-8 md:left-[20rem] md:right-8">
+        {/* Close Button - Top Right Corner */}
+        <button 
+          onClick={stopMusic}
+          className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[3px_3px_0px_#0F1A0F] transition-all hover:bg-[#FF0000] hover:text-[#F5F8F4] active:shadow-none active:translate-x-0.5 active:translate-y-0.5 z-[60]"
+          title="Close Player"
+        >
+          <X size={18} className="stroke-[3px]" />
+        </button>
 
         {/* Track Info */}
         <div className="flex items-center gap-4 sm:gap-6 w-[35%]">
@@ -161,14 +169,7 @@ const Footer = () => {
         </div>
 
         {/* Volume */}
-        <div className="hidden lg:flex items-center gap-6 w-[35%] justify-end relative">
-          <button 
-            onClick={stopMusic}
-            className="absolute -top-1 -right-1 p-1 hover:bg-[#0F1A0F]/10 rounded-full transition-colors"
-            title="Close Player"
-          >
-            <X size={16} className="text-[#0F1A0F]" />
-          </button>
+        <div className="hidden lg:flex items-center gap-6 w-[35%] justify-end">
           <button className="text-[#5A6E5A] hover:text-[#3B6B4A] transition-colors">
             <ListMusic size={24} />
           </button>

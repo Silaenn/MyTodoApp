@@ -1,6 +1,21 @@
 import "./globals.css";
 import { auth } from "@/auth";
 import LayoutClient from "@/components/LayoutClient";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: "TaskTune | Productivity Meets Rhythm",
+    template: "%s | TaskTune"
+  },
+  description: "A neo-brutalist todo application integrated with music discovery. Master your tasks while finding your vibe.",
+  keywords: ["TaskTune", "Todo App", "Music Player", "Productivity", "Neo-Brutalism", "Task Management", "YouTube Music"],
+  authors: [{ name: "Deo Keldi Silaen" }],
+  creator: "Deo Keldi Silaen",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
 
 export default async function RootLayout({
   children,
