@@ -123,7 +123,7 @@ const Home = () => {
                       {task.title.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="mb-1 line-clamp-1 text-base font-bold leading-none text-[#0F1A0F]">
+                      <p className="mb-1 line-clamp-1 text-base font-bold text-[#0F1A0F]">
                         {task.title}
                       </p>
                       <span className="rounded-sm border border-[#0F1A0F]/30 bg-[#E8EDE6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-[#5A6E5A]">
