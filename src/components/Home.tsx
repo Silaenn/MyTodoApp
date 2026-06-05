@@ -21,7 +21,7 @@ const Home = () => {
     try {
       const res = await fetch("/api/tasks");
       const data = await res.json();
-      setTasks(data.filter((t: Task) => !t.is_done).slice(0, 3));
+      setTasks(data.filter((t: Task) => !t.is_done).slice(0, 5));
     } catch (error) {
       console.error("Failed to fetch tasks:", error);
     } finally {
@@ -108,22 +108,22 @@ const Home = () => {
           <div className="space-y-4">
             {loading ? (
               <div className="space-y-4">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="h-20 animate-pulse rounded-md border-2 border-[#0F1A0F]/20 bg-[#F5F8F4]" />
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="h-24 animate-pulse rounded-md border-2 border-[#0F1A0F]/20 bg-[#F5F8F4]" />
                 ))}
               </div>
             ) : tasks.length > 0 ? (
               tasks.map((task) => (
                 <div
                   key={task.id}
-                  className="group flex items-center justify-between gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-5 shadow-[4px_4px_0px_#0F1A0F] transition-all hover:shadow-[6px_6px_0px_#3B6B4A] hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
+                  className="h-24 group flex items-center justify-between gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-5 shadow-[4px_4px_0px_#0F1A0F] transition-all hover:shadow-[6px_6px_0px_#3B6B4A] hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-[#0F1A0F] bg-[#D4A843] font-black text-[#0F1A0F] transition-colors group-hover:bg-[#3B6B4A] group-hover:text-[#F5F8F4]">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border-2 border-[#0F1A0F] bg-[#D4A843] font-black text-[#0F1A0F] transition-colors group-hover:bg-[#3B6B4A] group-hover:text-[#F5F8F4]">
                       {task.title.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="mb-1 text-base font-bold leading-none text-[#0F1A0F]">
+                      <p className="mb-1 line-clamp-1 text-base font-bold leading-none text-[#0F1A0F]">
                         {task.title}
                       </p>
                       <span className="rounded-sm border border-[#0F1A0F]/30 bg-[#E8EDE6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-[#5A6E5A]">
@@ -132,7 +132,7 @@ const Home = () => {
                     </div>
                   </div>
                   <CheckCircle2
-                    className="text-[#0F1A0F]/20 transition-colors group-hover:text-[#3B6B4A]"
+                    className="shrink-0 text-[#0F1A0F]/20 transition-colors group-hover:text-[#3B6B4A]"
                     size={22}
                   />
                 </div>
@@ -175,36 +175,38 @@ const Home = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {likedTracks.length > 0 ? (
-              likedTracks.slice(0, 4).map((track) => (
+              likedTracks.slice(0, 6).map((track) => (
                 <div
                   key={track.id}
-                  className="group flex flex-col rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-3 shadow-[4px_4px_0px_#0F1A0F] transition-all hover:shadow-[6px_6px_0px_#3B6B4A] hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
+                  className="group flex flex-col rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-2 shadow-[4px_4px_0px_#0F1A0F] transition-all hover:shadow-[6px_6px_0px_#3B6B4A] hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
                 >
-                  <div className="relative mb-3 aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
+                  <div className="relative mb-2 aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
                     <img
                       src={track.thumbnail}
                       alt={track.title}
-                      className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
+                      className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
                     />
                     <button
                       onClick={() => playTrack(track)}
-                      className="absolute inset-0 flex items-center justify-center bg-[#0F1A0F]/50 opacity-0 transition-all group-hover:opacity-100"
+                      className="absolute inset-0 flex items-center justify-center bg-[#3B6B4A]/40 opacity-0 transition-all group-hover:opacity-100"
                     >
-                      <Play fill="white" size={28} className="text-[#F5F8F4]" />
+                      <div className="rounded-full border-2 border-[#F5F8F4] bg-[#F5F8F4] p-2 shadow-[2px_2px_0px_#0F1A0F]">
+                        <Play fill="#0F1A0F" size={16} className="text-[#0F1A0F] ml-0.5" />
+                      </div>
                     </button>
                   </div>
-                  <p className="mb-1 truncate text-sm font-bold leading-none text-[#0F1A0F]">
+                  <p className="mb-0.5 truncate text-[11px] font-bold leading-tight text-[#0F1A0F]">
                     {track.title}
                   </p>
-                  <p className="truncate text-[10px] font-bold uppercase tracking-[0.2em] text-[#3B6B4A]">
+                  <p className="truncate text-[9px] font-bold uppercase tracking-[0.1em] text-[#3B6B4A]">
                     {track.artist}
                   </p>
                 </div>
               ))
             ) : (
-              <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center min-h-[calc(100vh-380px)]">
+              <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center min-h-[300px] md:min-h-[550px] p-8">
                 <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#5A6E5A]">
                   No tracks saved yet.
                 </p>
