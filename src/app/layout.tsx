@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Deo Keldi Silaen" }],
   creator: "Deo Keldi Silaen",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/images/logo.png",
   },
 };
 
