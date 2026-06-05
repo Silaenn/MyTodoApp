@@ -210,7 +210,7 @@ const Tasks = () => {
         ) : (
           <div className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden pb-2">
             <div className="grid gap-4 flex-col py-2">
-              {filteredAndSortedTasks.length > 10 ? (
+              {filteredAndSortedTasks.length > 0 ? (
                 filteredAndSortedTasks.map((task) => (
                   <div
                     key={task.id}
