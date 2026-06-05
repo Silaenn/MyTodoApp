@@ -39,6 +39,7 @@ const Musics = () => {
   const [recommendations, setRecommendations] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [searchExecuted, setSearchExecuted] = useState(false);
   const { playTrack, toggleLike, isLiked, likedTracks } = useMusicStore();
 
   const fetchRecommendations = async () => {
@@ -62,18 +63,32 @@ const Musics = () => {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      setSearchExecuted(false);
+      setResults([]);
+      return;
+    }
+    
     setLoading(true);
     try {
       const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(query)}`);
       const data = await res.json();
       setResults(data);
+      setSearchExecuted(true);
     } catch (error) {
       console.error("Search failed:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // If user clears the input, we show recommendations again
+  useEffect(() => {
+    if (query === "") {
+      setSearchExecuted(false);
+      setResults([]);
+    }
+  }, [query]);
 
   const TrackCard = ({ track, compact = false, list }: { track: SearchResult; compact?: boolean, list: SearchResult[] }) => (
     <div className={`brutal-card group flex flex-col overflow-hidden ${compact ? "p-2 sm:p-3" : "p-4"}`}>
@@ -181,7 +196,7 @@ const Musics = () => {
       {/* Content Area */}
       <div className="flex-1 min-h-0 relative">
         <AnimatePresence mode="wait">
-          {loading || (initialLoading && !results.length) ? (
+          {loading || (initialLoading && !recommendations.length) ? (
             <motion.div 
               key="loading"
               initial={{ opacity: 0 }}
@@ -203,10 +218,10 @@ const Musics = () => {
               className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden pb-32"
             >
               {/* Liked Playlist Section */}
-              {likedTracks.length > 0 && !query && (
+              {likedTracks.length > 0 && !searchExecuted && (
                 <div className="mb-12">
                   <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
-                     <Heart className="text-[#8B4A2B]" size={28} fill="currentColor" />
+                    <Heart className="text-[#8B4A2B]" size={28} fill="currentColor" />
                     <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
                       Liked <span className="text-[#3B6B4A]">playlist</span>
                     </h2>
@@ -219,26 +234,35 @@ const Musics = () => {
                 </div>
               )}
 
-              {/* Recommendations OR Results Title */}
-              {!query && recommendations.length > 0 && (
-                <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
-                  <Music2 className="text-[#D4A843]" size={28} />
-                  <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
-                    Weekly <span className="text-[#3B6B4A]">picks</span>
-                  </h2>
-                </div>
-              )}
+              {/* Title Section (Recommendations or Results) */}
+              <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
+                {!searchExecuted ? (
+                  <>
+                    <Disc className="text-[#D4A843]" size={28} />
+                    <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+                      Weekly <span className="text-[#3B6B4A]">picks</span>
+                    </h2>
+                  </>
+                ) : (
+                  <>
+                    <Search className="text-[#3B6B4A]" size={28} />
+                    <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+                      Search <span className="text-[#3B6B4A]">results</span>
+                    </h2>
+                  </>
+                )}
+              </div>
 
               {/* Results Grid */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {(query ? results : recommendations).length > 0 ? (
-                  (query ? results : recommendations).map((m) => (
-                    <TrackCard key={m.id} track={m} list={query ? results : recommendations} />
+                {(!searchExecuted ? recommendations : results).length > 0 ? (
+                  (!searchExecuted ? recommendations : results).map((m) => (
+                    <TrackCard key={m.id} track={m} list={!searchExecuted ? recommendations : results} />
                   ))
-                ) : query && !loading ? (
+                ) : searchExecuted && !loading ? (
                   <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center min-h-[400px] lg:min-h-[500px]">
                     <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
-                      No matches found.
+                      No matches found for "{query}"
                     </p>
                   </div>
                 ) : null}
