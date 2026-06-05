@@ -178,7 +178,7 @@ const Tasks = () => {
               <DropdownMenuTrigger asChild>
                 <button className="brutal-btn brutal-btn-outline h-11 min-w-[140px]">
                   <ArrowUpDown size={15} />
-                  Sort: {sortBy}
+                  Sort: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="min-w-[180px] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[4px_4px_0px_#0F1A0F]">
