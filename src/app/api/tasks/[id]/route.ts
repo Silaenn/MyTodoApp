@@ -17,7 +17,7 @@ export async function PATCH(
     
     // Build dynamic query to only update provided fields
     const updates: string[] = [];
-    const args: any[] = [];
+    const args: (string | number | boolean | null)[] = [];
 
     if (body.title !== undefined) {
       updates.push("title = ?");

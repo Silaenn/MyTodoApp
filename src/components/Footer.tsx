@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { Repeat1, Repeat, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, ListMusic } from "lucide-react";
+import { Repeat1, Repeat, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, ListMusic, X } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 
 const Footer = () => {
@@ -9,7 +9,7 @@ const Footer = () => {
   const { 
     currentTrack, isPlaying, streamUrl, setIsPlaying, 
     nextTrack, prevTrack, shuffle, toggleShuffle, 
-    repeat, toggleRepeat, volume, setVolume 
+    repeat, toggleRepeat, volume, setVolume, stopMusic 
   } = useMusicStore();
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -161,7 +161,14 @@ const Footer = () => {
         </div>
 
         {/* Volume */}
-        <div className="hidden lg:flex items-center gap-6 w-[35%] justify-end">
+        <div className="hidden lg:flex items-center gap-6 w-[35%] justify-end relative">
+          <button 
+            onClick={stopMusic}
+            className="absolute -top-1 -right-1 p-1 hover:bg-[#0F1A0F]/10 rounded-full transition-colors"
+            title="Close Player"
+          >
+            <X size={16} className="text-[#0F1A0F]" />
+          </button>
           <button className="text-[#5A6E5A] hover:text-[#3B6B4A] transition-colors">
             <ListMusic size={24} />
           </button>

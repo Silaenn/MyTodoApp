@@ -13,6 +13,7 @@ import {
 import { ChevronDown, Trash2, Search, ArrowUpDown, CheckCircle2, Circle } from "lucide-react";
 import { DialogDemo } from "@/components/Dialog";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMusicStore } from "@/lib/music-store";
 
 interface Task {
   id: string;
@@ -58,6 +59,9 @@ const Tasks = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [loading, setLoading] = useState(true);
+  
+  // Get music store state
+  const { currentTrack } = useMusicStore();
 
   const fetchTasks = async () => {
     try {
@@ -121,7 +125,7 @@ const Tasks = () => {
 
     // Sorting
     result.sort((a, b) => {
-      if (sortBy === "newest") return -1; // Default is newest from API
+      if (sortBy === "newest") return -1;
       if (sortBy === "oldest") return 1;
       if (sortBy === "deadline") {
         if (!a.deadline) return 1;
@@ -245,7 +249,7 @@ const Tasks = () => {
               initial="hidden"
               animate="visible"
               variants={listContainerVariants}
-              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden pb-2"
+              className={`h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden ${currentTrack ? "pb-40" : "pb-10"}`}
             >
               <div className="grid gap-4 flex-col py-2">
                 {filteredAndSortedTasks.length > 0 ? (

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Search, Music2, Play, Heart, Sparkles, Disc } from "lucide-react";
+import { Search, Play, Heart, Disc } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -40,7 +40,9 @@ const Musics = () => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [searchExecuted, setSearchExecuted] = useState(false);
-  const { playTrack, toggleLike, isLiked, likedTracks } = useMusicStore();
+  
+  // Extract state from music store
+  const { playTrack, toggleLike, isLiked, likedTracks, currentTrack } = useMusicStore();
 
   const fetchRecommendations = async () => {
     const randomKeywords = ["lofi chill", "trending music 2024", "aesthetic vibes", "indie gems", "gaming beats"];
@@ -215,7 +217,7 @@ const Musics = () => {
               initial="hidden"
               animate="visible"
               variants={contentVariants}
-              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden pb-32"
+              className={`h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden ${currentTrack ? "pb-40" : "pb-10"}`}
             >
               {/* Liked Playlist Section */}
               {likedTracks.length > 0 && !searchExecuted && (
@@ -262,7 +264,7 @@ const Musics = () => {
                 ) : searchExecuted && !loading ? (
                   <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center min-h-[400px] lg:min-h-[500px]">
                     <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
-                      No matches found for "{query}"
+                      No matches found for &quot;{query}&quot;
                     </p>
                   </div>
                 ) : null}

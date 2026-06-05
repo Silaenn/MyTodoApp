@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock, Heart, Play } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 import { motion, AnimatePresence } from "framer-motion";
+import { Session } from "next-auth";
 
 interface Task {
   id: string;
@@ -41,11 +42,11 @@ const sectionVariants = {
   }
 };
 
-const Home = ({ session }: { session: any }) => {
+const Home = ({ session }: { session: Session | null }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [totalActiveTasks, setTotalActiveTasks] = useState(0);
   const [loading, setLoading] = useState(true);
-  const { likedTracks, playTrack } = useMusicStore();
+  const { likedTracks, playTrack, currentTrack } = useMusicStore();
 
   const fetchTasks = async () => {
     try {
@@ -70,7 +71,7 @@ const Home = ({ session }: { session: any }) => {
       initial="hidden"
       animate="visible"
       variants={mainContainerVariants}
-      className="w-full space-y-10 pb-10"
+      className={`w-full px-4 space-y-10 ${currentTrack ? "pb-40" : "pb-10"}`}
     >
       {/* Hero Section */}
       <motion.section 

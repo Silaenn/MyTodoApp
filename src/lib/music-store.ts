@@ -35,6 +35,7 @@ interface MusicStore {
   prevTrack: () => void;
   addToQueue: (track: Track) => void;
   setQueue: (tracks: Track[]) => void;
+  stopMusic: () => void;
 }
 
 export const useMusicStore = create<MusicStore>()(
@@ -50,6 +51,7 @@ export const useMusicStore = create<MusicStore>()(
       shuffle: false,
       repeat: "none",
       
+      stopMusic: () => set({ currentTrack: null, isPlaying: false, streamUrl: null }),
       setCurrentTrack: (track) => set({ currentTrack: track }),
       setIsPlaying: (playing) => set({ isPlaying: playing }),
       setVolume: (volume) => set({ volume }),
