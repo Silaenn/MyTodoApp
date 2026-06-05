@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import { Search, Music2, Play, Heart } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, Music2, Play, Heart, Sparkles, Disc } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SearchResult {
   id: string;
@@ -13,11 +14,51 @@ interface SearchResult {
   duration?: number;
 }
 
+// Animation Variants
+const headerVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" }
+  }
+};
+
+const contentVariants = {
+  hidden: { opacity: 0, scale: 0.99 },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    transition: { duration: 0.4, ease: "easeOut" }
+  }
+};
+
 const Musics = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [recommendations, setRecommendations] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const { playTrack, toggleLike, isLiked, likedTracks } = useMusicStore();
+
+  const fetchRecommendations = async () => {
+    const randomKeywords = ["lofi chill", "trending music 2024", "aesthetic vibes", "indie gems", "gaming beats"];
+    const randomSearch = randomKeywords[Math.floor(Math.random() * randomKeywords.length)];
+    
+    try {
+      const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(randomSearch)}`);
+      const data = await res.json();
+      setRecommendations(data);
+    } catch (error) {
+      console.error("Failed to fetch recommendations:", error);
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecommendations();
+  }, []);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,20 +75,20 @@ const Musics = () => {
     }
   };
 
-  const TrackCard = ({ track, compact = false }: { track: SearchResult; compact?: boolean }) => (
-    <div className={`brutal-card group flex flex-col overflow-hidden ${compact ? "p-3" : "p-4"}`}>
+  const TrackCard = ({ track, compact = false, list }: { track: SearchResult; compact?: boolean, list: SearchResult[] }) => (
+    <div className={`brutal-card group flex flex-col overflow-hidden ${compact ? "p-2 sm:p-3" : "p-4"}`}>
       <div className="relative aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
         <img
           src={track.thumbnail}
           alt={track.title}
           className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-[#0F1A0F]/40 opacity-0 transition-all group-hover:opacity-100">
+        <div className="absolute inset-0 flex items-center justify-center bg-[#3B6B4A]/40 opacity-0 transition-all group-hover:opacity-100">
           <button
-            onClick={() => playTrack(track, compact ? likedTracks : results)}
-            className="rounded-sm border-2 border-[#F5F8F4] bg-[#F5F8F4] p-3 text-[#0F1A0F] shadow-[2px_2px_0px_#0F1A0F] transition-all hover:scale-105"
+            onClick={() => playTrack(track, list)}
+            className="rounded-full border-2 border-[#F5F8F4] bg-[#F5F8F4] p-3 text-[#0F1A0F] shadow-[2px_2px_0px_#0F1A0F] transition-all hover:scale-105"
           >
-            <Play className="fill-current" size={22} />
+            <Play className="fill-current ml-0.5" size={20} />
           </button>
         </div>
         <button
@@ -58,33 +99,40 @@ const Musics = () => {
               : "bg-[#F5F8F4] text-[#0F1A0F] hover:bg-[#D4A843]"
           }`}
         >
-          <Heart size={14} fill={isLiked(track.id) ? "currentColor" : "none"} />
+          <Heart size={12} fill={isLiked(track.id) ? "currentColor" : "none"} />
         </button>
       </div>
 
       <div className="mt-3 flex flex-col gap-1">
-        <h3 className="truncate text-base font-black leading-tight text-[#0F1A0F]">
+        <h3 className={`truncate font-black leading-tight text-[#0F1A0F] ${compact ? "text-[11px]" : "text-base"}`}>
           {track.title}
         </h3>
-        <p className="truncate text-[10px] font-bold uppercase tracking-[0.25em] text-[#3B6B4A]">
+        <p className={`truncate font-bold uppercase tracking-[0.2em] text-[#3B6B4A] ${compact ? "text-[8px]" : "text-[10px]"}`}>
           {track.artist}
         </p>
       </div>
 
-      <button
-        onClick={() => playTrack(track, compact ? likedTracks : results)}
-        className="mt-3 w-full brutal-btn brutal-btn-secondary py-2 text-xs"
-      >
-        Play track
-      </button>
+      {!compact && (
+        <button
+          onClick={() => playTrack(track, list)}
+          className="mt-3 w-full brutal-btn brutal-btn-secondary py-2 text-xs"
+        >
+          Play track
+        </button>
+      )}
     </div>
   );
 
   return (
-    <div className="w-full pb-32">
+    <div className="w-full h-[calc(100vh-60px)] flex flex-col overflow-hidden">
 
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-[4px_4px_0px_#0F1A0F]">
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={headerVariants}
+        className="mb-6 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-[4px_4px_0px_#0F1A0F] shrink-0"
+      >
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
@@ -128,53 +176,77 @@ const Musics = () => {
             Search
           </button>
         </form>
+      </motion.div>
+
+      {/* Content Area */}
+      <div className="flex-1 min-h-0 relative">
+        <AnimatePresence mode="wait">
+          {loading || (initialLoading && !results.length) ? (
+            <motion.div 
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#E8EDE6] z-20"
+            >
+              <div className="h-14 w-14 animate-spin rounded-sm border-4 border-[#0F1A0F] border-t-[#3B6B4A]" />
+              <p className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+                Scanning frequencies...
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="content"
+              initial="hidden"
+              animate="visible"
+              variants={contentVariants}
+              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden pb-32"
+            >
+              {/* Liked Playlist Section */}
+              {likedTracks.length > 0 && !query && (
+                <div className="mb-12">
+                  <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
+                     <Heart className="text-[#8B4A2B]" size={28} fill="currentColor" />
+                    <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+                      Liked <span className="text-[#3B6B4A]">playlist</span>
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">
+                    {likedTracks.map((track) => (
+                      <TrackCard key={track.id} track={track} compact list={likedTracks} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Recommendations OR Results Title */}
+              {!query && recommendations.length > 0 && (
+                <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
+                  <Music2 className="text-[#D4A843]" size={28} />
+                  <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+                    Weekly <span className="text-[#3B6B4A]">picks</span>
+                  </h2>
+                </div>
+              )}
+
+              {/* Results Grid */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {(query ? results : recommendations).length > 0 ? (
+                  (query ? results : recommendations).map((m) => (
+                    <TrackCard key={m.id} track={m} list={query ? results : recommendations} />
+                  ))
+                ) : query && !loading ? (
+                  <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center min-h-[400px] lg:min-h-[500px]">
+                    <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
+                      No matches found.
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-
-      {/* Liked Playlist */}
-      {likedTracks.length > 0 && !query && (
-        <div className="mb-16">
-          <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
-            <div className="h-8 w-8 rounded-sm border-2 border-[#0F1A0F] bg-[#3B6B4A] shadow-[2px_2px_0px_#0F1A0F]" />
-            <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
-              Liked <span className="text-[#3B6B4A]">playlist</span>
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">
-            {likedTracks.map((track) => (
-              <TrackCard key={track.id} track={track} compact />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Results */}
-      {loading ? (
-        <div className="flex flex-col items-center justify-center gap-6 h-[calc(100vh-380px)]">
-          <div className="h-14 w-14 animate-spin rounded-sm border-4 border-[#0F1A0F] border-t-[#3B6B4A]" />
-          <p className="text-2xl font-black tracking-tight text-[#0F1A0F]">
-            Scanning frequencies...
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {results.length > 0 ? (
-            results.map((m) => <TrackCard key={m.id} track={m} />)
-          ) : query && !loading ? (
-            <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center min-h-[calc(100vh-280px)]">
-              <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
-                No matches found.
-              </p>
-            </div>
-          ) : !likedTracks.length ? (
-            <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] min-h-[calc(100vh-280px)]">
-              <Music2 size={80} className="mb-6 text-[#0F1A0F]/20" />
-              <p className="text-3xl font-black tracking-tight text-[#0F1A0F]">
-                Search to discover music
-              </p>
-            </div>
-          ) : null}
-        </div>
-      )}
     </div>
   );
 };

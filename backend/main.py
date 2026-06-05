@@ -22,12 +22,12 @@ async def search_songs(q: str = Query(...)):
         'noplaylist': True,
         'extract_flat': True,
         'quiet': True,
+        'skip_download': True,
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        # Append "music" to the query to get better results
-        # Adding topic:music or just music helps filter out non-music content
-        search_query = f"ytsearch10:{q} music"
+        # Increased to 20 results
+        search_query = f"ytsearch20:{q} music"
         search_results = ydl.extract_info(search_query, download=False)
 
         entries = []
