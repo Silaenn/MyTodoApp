@@ -251,7 +251,7 @@ const Tasks = () => {
               variants={listContainerVariants}
               className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden"
             >
-              <div className="grid gap-4 flex-col px-1">
+              <div className="min-h-full flex flex-col gap-4 px-1">
                 {filteredAndSortedTasks.length > 0 ? (
                   filteredAndSortedTasks.map((task) => (
                     <div
@@ -309,7 +309,7 @@ const Tasks = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] p-10 text-center min-h-[400px] lg:min-h-[600px]">
+                  <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8">
                     <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
                       {searchQuery ? "No matching tasks." : "No tasks found."}
                     </p>
