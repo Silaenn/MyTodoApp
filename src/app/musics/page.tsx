@@ -225,7 +225,7 @@ const Musics = () => {
               initial="hidden"
               animate="visible"
               variants={contentVariants}
-              className={`h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden ${currentTrack ? "pb-40" : "pb-10"}`}
+              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden"
             >
               {/* Liked Playlist Section */}
               {likedTracks.length > 0 && !searchExecuted && (
@@ -236,7 +236,7 @@ const Musics = () => {
                       Liked <span className="text-[#3B6B4A]">playlist</span>
                     </h2>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6">
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6 px-1 py-2">
                     {likedTracks.map((track) => (
                       <TrackCard key={track.id} track={track} compact list={likedTracks} />
                     ))}
@@ -264,7 +264,7 @@ const Musics = () => {
               </div>
 
               {/* Results Grid */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 px-1 py-2">
                 {(!searchExecuted ? recommendations : results).length > 0 ? (
                   (!searchExecuted ? recommendations : results).map((m) => (
                     <TrackCard key={m.id} track={m} list={!searchExecuted ? recommendations : results} />
@@ -277,6 +277,9 @@ const Musics = () => {
                   </div>
                 ) : null}
               </div>
+              
+              {/* Dynamic Spacer */}
+              <div className={`transition-all duration-300 ${currentTrack ? "h-32" : "h-0"}`} />
             </motion.div>
           )}
         </AnimatePresence>

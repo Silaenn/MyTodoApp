@@ -249,9 +249,9 @@ const Tasks = () => {
               initial="hidden"
               animate="visible"
               variants={listContainerVariants}
-              className={`h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden ${currentTrack ? "pb-40" : "pb-10"}`}
+              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden"
             >
-              <div className="grid gap-4 flex-col py-2">
+              <div className="grid gap-4 flex-col px-1">
                 {filteredAndSortedTasks.length > 0 ? (
                   filteredAndSortedTasks.map((task) => (
                     <div
@@ -315,6 +315,8 @@ const Tasks = () => {
                     </p>
                   </div>
                 )}
+                {/* Dynamic Spacer */}
+                <div className={`transition-all duration-300 ${currentTrack ? "h-32" : "h-0"}`} />
               </div>
             </motion.div>
           )}
