@@ -136,10 +136,10 @@ const Home = ({ session }: { session: Session | null }) => {
         </div>
       </motion.section>
 
-      <div className="flex-1 grid grid-cols-1 gap-12 lg:grid-cols-2">
-
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col lg:flex-row gap-12 min-h-0">
         {/* Tasks Section */}
-        <motion.section variants={sectionVariants} className="flex flex-col space-y-6">
+        <motion.section variants={sectionVariants} className="flex-1 flex flex-col space-y-6 min-h-0">
           <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4 shrink-0">
             <div className="flex items-center gap-4">
               <Clock className="text-[#D4A843]" size={28} />
@@ -156,7 +156,7 @@ const Home = ({ session }: { session: Session | null }) => {
             </Link>
           </div>
 
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col min-h-0">
             <AnimatePresence mode="wait">
               {loading ? (
                 <motion.div 
@@ -231,7 +231,7 @@ const Home = ({ session }: { session: Session | null }) => {
         </motion.section>
 
         {/* Music Section */}
-        <motion.section variants={sectionVariants} className="flex flex-col space-y-6">
+        <motion.section variants={sectionVariants} className="flex-1 flex flex-col space-y-6 min-h-0">
           <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4 shrink-0">
             <div className="flex items-center gap-4">
               <Heart className="text-[#8B4A2B]" size={28} fill="currentColor" />
@@ -248,7 +248,7 @@ const Home = ({ session }: { session: Session | null }) => {
             </Link>
           </div>
 
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col min-h-0">
             <AnimatePresence mode="wait">
               {likedTracks.length > 0 ? (
                 <motion.div 
@@ -308,10 +308,10 @@ const Home = ({ session }: { session: Session | null }) => {
             </AnimatePresence>
           </div>
         </motion.section>
-        
-        {/* Dynamic Spacer */}
-        <div className={`transition-all duration-300 ${currentTrack ? "h-32" : "h-0"}`} />
       </div>
+
+      {/* Dynamic Spacer */}
+      <div className={`transition-all duration-300 shrink-0 ${currentTrack ? "h-32" : "h-0"}`} />
     </motion.div>
   );
 };
