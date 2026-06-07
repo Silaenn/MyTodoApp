@@ -52,6 +52,13 @@ const Home = ({ session }: { session: Session | null }) => {
     try {
       const res = await fetch("/api/tasks");
       const data = await res.json();
+      
+      if (!Array.isArray(data)) {
+        setTasks([]);
+        setTotalActiveTasks(0);
+        return;
+      }
+
       const activeTasks = data.filter((t: Task) => !t.is_done);
       setTotalActiveTasks(activeTasks.length);
       setTasks(activeTasks.slice(0, 5));
@@ -63,8 +70,12 @@ const Home = ({ session }: { session: Session | null }) => {
   };
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    if (session) {
+      fetchTasks();
+    } else {
+      setLoading(false);
+    }
+  }, [session]);
 
   return (
     <motion.div 

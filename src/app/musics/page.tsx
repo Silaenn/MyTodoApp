@@ -51,7 +51,11 @@ const Musics = () => {
     try {
       const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(randomSearch)}`);
       const data = await res.json();
-      setRecommendations(data);
+      if (Array.isArray(data)) {
+        setRecommendations(data);
+      } else {
+        setRecommendations([]);
+      }
     } catch (error) {
       console.error("Failed to fetch recommendations:", error);
     } finally {
@@ -75,7 +79,11 @@ const Musics = () => {
     try {
       const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(query)}`);
       const data = await res.json();
-      setResults(data);
+      if (Array.isArray(data)) {
+        setResults(data);
+      } else {
+        setResults([]);
+      }
       setSearchExecuted(true);
     } catch (error) {
       console.error("Search failed:", error);
