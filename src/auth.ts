@@ -10,6 +10,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 2 * 60 * 60, // 2 Jam inactivity logout
+    updateAge: 0, // Update session setiap kali ada request (Sliding Session)
+  },
   callbacks: {
     async signIn({ user }) {
       if (!user.email) return false;

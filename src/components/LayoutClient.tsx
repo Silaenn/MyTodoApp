@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import Dashboard from "@/components/Dashboard";
 import Footer from "@/components/Footer";
@@ -26,6 +26,34 @@ export default function LayoutClient({
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isLoginOrRegister = pathname === "/login" || pathname === "/register";
+
+  // Auto-refresh session when active
+  useEffect(() => {
+    if (!session) return;
+
+    const refreshSession = async () => {
+      // Fetch session endpoint to trigger updateAge: 0
+      await fetch("/api/auth/session");
+    };
+
+    let timeout: NodeJS.Timeout;
+    const handleActivity = () => {
+      clearTimeout(timeout);
+      // Debounce refresh call (misal: panggil refresh hanya sekali setiap 5 menit jika aktif)
+      timeout = setTimeout(refreshSession, 5 * 60 * 1000); 
+    };
+
+    window.addEventListener("mousemove", handleActivity);
+    window.addEventListener("keydown", handleActivity);
+    window.addEventListener("click", handleActivity);
+
+    return () => {
+      window.removeEventListener("mousemove", handleActivity);
+      window.removeEventListener("keydown", handleActivity);
+      window.removeEventListener("click", handleActivity);
+      clearTimeout(timeout);
+    };
+  }, [session]);
 
   return (
     <>

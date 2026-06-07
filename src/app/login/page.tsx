@@ -1,9 +1,21 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { signIn } from "next-auth/react";
-import { LogIn } from "lucide-react";
+import { LogIn, Loader2 } from "lucide-react";
 
 const LoginPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      await signIn("google", { callbackUrl: "/" });
+    } catch (error) {
+      console.error("Login failed:", error);
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#E8EDE6] flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Decorative shapes */}
@@ -34,11 +46,21 @@ const LoginPage = () => {
               Just sync your frequency.
             </p>
             <button
-              onClick={() => signIn("google", { callbackUrl: "/tasks" })}
-              className="w-full inline-flex items-center justify-center gap-3 rounded-md border-2 border-[#0F1A0F] bg-[#3B6B4A] px-6 py-4 text-xl font-black uppercase italic text-[#F5F8F4] shadow-[5px_5px_0px_#0F1A0F] transition-all hover:shadow-[7px_7px_0px_#0F1A0F] hover:-translate-x-px hover:-translate-y-px active:shadow-[2px_2px_0px_#0F1A0F] active:translate-x-0.5 active:translate-y-0.5"
+              onClick={handleLogin}
+              disabled={isLoading}
+              className="w-full inline-flex items-center justify-center gap-3 rounded-md border-2 border-[#0F1A0F] bg-[#3B6B4A] px-6 py-4 text-xl font-black uppercase italic text-[#F5F8F4] shadow-[5px_5px_0px_#0F1A0F] transition-all hover:shadow-[7px_7px_0px_#0F1A0F] hover:-translate-x-px hover:-translate-y-px active:shadow-[2px_2px_0px_#0F1A0F] active:translate-x-0.5 active:translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:active:translate-x-0 disabled:active:translate-y-0"
             >
-              <LogIn size={22} className="stroke-[3px]" />
-              Sync with Google
+              {isLoading ? (
+                <>
+                  <Loader2 size={22} className="stroke-[3px] animate-spin" />
+                  Syncing...
+                </>
+              ) : (
+                <>
+                  <LogIn size={22} className="stroke-[3px]" />
+                  Sync with Google
+                </>
+              )}
             </button>
           </div>
 
