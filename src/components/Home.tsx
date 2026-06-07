@@ -93,14 +93,14 @@ const Home = ({ session }: { session: Session | null }) => {
         <div className="absolute right-16 top-16 h-20 w-20 rounded-full border-2 border-[#0F1A0F] bg-[#3B6B4A] opacity-20" />
         <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-4xl flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
+            <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
               Today
             </p>
-            <h1 className="mt-3 text-3xl font-black tracking-tight text-[#0F1A0F] lg:text-5xl">
+            <h1 className="mt-3 text-[#0F1A0F]">
               Welcome {" "}
               <span className="text-[#3B6B4A]">{session?.user?.name || "Explorer"}</span>
             </h1>
-            <p className="mt-4 text-sm font-medium text-[#5A6E5A] md:text-base">
+            <p className="mt-4 text-sm font-bold text-[#5A6E5A] md:text-base">
               {new Date().toLocaleDateString("en-US", {
                 weekday: "long",
                 day: "numeric",
@@ -116,7 +116,7 @@ const Home = ({ session }: { session: Session | null }) => {
               ) : (
                 <span className="block text-3xl font-black text-[#0F1A0F]">{totalActiveTasks}</span>
               )}
-              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#0F1A0F]/70">
+              <span className="text-[10px] font-bold uppercase tracking-brutal text-[#0F1A0F]/70">
                 Active tasks
               </span>
             </div>
@@ -128,7 +128,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   {likedTracks.length}
                 </span>
               )}
-              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#F5F8F4]/80">
+              <span className="text-[10px] font-bold uppercase tracking-brutal text-[#F5F8F4]/80">
                 Saved tracks
               </span>
             </div>
@@ -143,7 +143,7 @@ const Home = ({ session }: { session: Session | null }) => {
           <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4 shrink-0">
             <div className="flex items-center gap-4">
               <Clock className="text-[#D4A843]" size={28} />
-              <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F] md:text-3xl">
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight text-[#0F1A0F]">
                 Priority{" "}
                 <span className="text-[#3B6B4A]">tasks</span>
               </h2>
@@ -189,10 +189,10 @@ const Home = ({ session }: { session: Session | null }) => {
                           {task.title.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="mb-1 line-clamp-1 text-base font-bold text-[#0F1A0F]">
+                          <p className="mb-1 line-clamp-1 text-base font-bold text-[#0F1A0F] leading-tight">
                             {task.title}
                           </p>
-                          <span className="rounded-sm border border-[#0F1A0F]/30 bg-[#E8EDE6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-[#5A6E5A]">
+                          <span className="rounded-sm border border-[#0F1A0F]/30 bg-[#E8EDE6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
                             {task.category}
                           </span>
                         </div>
@@ -212,7 +212,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   className="flex-1 flex flex-col gap-4"
                 >
                   <div className="flex-1 flex items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8">
-                    <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#5A6E5A]">
+                    <p className="text-sm font-bold uppercase tracking-brutal text-[#5A6E5A]">
                       All clear. No tasks pending.
                     </p>
                   </div>
@@ -220,7 +220,7 @@ const Home = ({ session }: { session: Session | null }) => {
                     href="/tasks"
                     className="group flex min-h-[60px] items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 text-center transition-all hover:border-[#3B6B4A] hover:bg-[#F5F8F4] p-4 shrink-0"
                   >
-                    <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#5A6E5A] group-hover:text-[#3B6B4A]">
+                    <span className="text-xs font-bold uppercase tracking-brutal text-[#5A6E5A] group-hover:text-[#3B6B4A]">
                       + Create a new task
                     </span>
                   </Link>
@@ -235,7 +235,7 @@ const Home = ({ session }: { session: Session | null }) => {
           <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4 shrink-0">
             <div className="flex items-center gap-4">
               <Heart className="text-[#8B4A2B]" size={28} fill="currentColor" />
-              <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F] md:text-3xl">
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight text-[#0F1A0F]">
                 Favorite{" "}
                 <span className="text-[#3B6B4A]">tracks</span>
               </h2>
@@ -281,7 +281,7 @@ const Home = ({ session }: { session: Session | null }) => {
                       <p className="mb-0.5 truncate text-[11px] font-bold leading-tight text-[#0F1A0F]">
                         {track.title}
                       </p>
-                      <p className="truncate text-[9px] font-bold uppercase tracking-[0.1em] text-[#3B6B4A]">
+                      <p className="truncate text-[9px] font-bold uppercase tracking-brutal text-[#3B6B4A]">
                         {track.artist}
                       </p>
                     </div>
@@ -294,7 +294,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   animate={{ opacity: 1 }}
                   className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8"
                 >
-                  <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#5A6E5A]">
+                  <p className="text-sm font-bold uppercase tracking-brutal text-[#5A6E5A]">
                     No tracks saved yet.
                   </p>
                   <Link

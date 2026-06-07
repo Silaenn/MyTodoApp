@@ -89,10 +89,10 @@ const LoginPage = () => {
         <div className="rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-10 shadow-brutal-lg text-center space-y-8">
           {/* Logo */}
           <motion.div variants={itemVariants}>
-            <h1 className="text-6xl font-black uppercase tracking-tighter text-[#0F1A0F]">
+            <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter text-[#0F1A0F]">
               TASK<span className="text-[#3B6B4A]">TUNE</span>
             </h1>
-            <p className="mt-2 text-xs font-black uppercase tracking-[0.4em] text-[#5A6E5A]">
+            <p className="mt-2 text-xs font-bold uppercase tracking-brutal text-[#5A6E5A]">
               Productivity. Simplified.
             </p>
           </motion.div>
@@ -110,7 +110,7 @@ const LoginPage = () => {
               variants={itemVariants}
               onClick={handleLogin}
               disabled={isLoading}
-              className={`w-full inline-flex items-center justify-center gap-3 rounded-md border-2 border-[#0F1A0F] px-6 py-4 text-xl font-black uppercase italic shadow-brutal
+              className={`w-full inline-flex items-center justify-center gap-3 rounded-md border-2 border-[#0F1A0F] px-6 py-4 text-xl font-black uppercase shadow-brutal
                 ${isLoading 
                   ? "bg-[#5A6E5A] text-[#F5F8F4]/50 cursor-not-allowed shadow-none translate-x-0.5 translate-y-0.5 grayscale" 
                   : "bg-[#3B6B4A] text-[#F5F8F4] hover:shadow-brutal-lg hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
@@ -132,7 +132,7 @@ const LoginPage = () => {
 
           {/* Footer note */}
           <motion.div variants={itemVariants} className="pt-4 border-t-2 border-[#0F1A0F]/10">
-            <p className="text-[10px] font-black uppercase tracking-widest text-[#5A6E5A]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#5A6E5A]">
               Data secured via Auth.js v5
             </p>
           </motion.div>
@@ -143,10 +143,10 @@ const LoginPage = () => {
           variants={itemVariants}
           className="mt-6 flex justify-between px-2"
         >
-          <span className="text-[9px] font-black uppercase tracking-widest text-[#0F1A0F]/30">
+          <span className="text-[9px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
             Auth: Auth.js v5
           </span>
-          <span className="text-[9px] font-black uppercase tracking-widest text-[#0F1A0F]/30">
+          <span className="text-[9px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
             Channel: Encrypted
           </span>
         </motion.div>

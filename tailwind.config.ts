@@ -27,6 +27,9 @@ const config: Config = {
       borderRadius: {
         brutal: "6px",
       },
+      letterSpacing: {
+        brutal: "0.3em",
+      },
       boxShadow: {
         "brutal-sm":        "2px 2px 0px #0F1A0F",
         "brutal":           "4px 4px 0px #0F1A0F",

@@ -151,13 +151,13 @@ const Tasks = () => {
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
+            <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
               Task board
             </p>
-            <h1 className="mt-2 text-5xl font-black tracking-tight text-[#0F1A0F]">
+            <h1 className="mt-2 text-[#0F1A0F]">
               Manage <span className="text-[#3B6B4A]">tasks</span>
             </h1>
-            <p className="mt-2 text-sm font-medium text-[#5A6E5A]">
+            <p className="mt-2 text-sm font-bold text-[#5A6E5A]">
               {tasks.length} total · {tasks.filter(t => !t.is_done).length} remaining
             </p>
           </div>
@@ -236,7 +236,7 @@ const Tasks = () => {
               exit={{ opacity: 0 }}
               className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#E8EDE6]"
             >
-              <p className="text-4xl font-black tracking-tight text-[#3B6B4A]">
+              <p className="text-4xl font-black tracking-tighter text-[#3B6B4A]">
                 Loading tasks...
               </p>
               <div className="h-3 w-56 overflow-hidden rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-sm">
@@ -278,11 +278,11 @@ const Tasks = () => {
                               {task.category.toUpperCase()}
                             </span>
                           </div>
-                          <h3 className={`text-2xl font-black tracking-tight text-[#0F1A0F] ${task.is_done ? "line-through opacity-50" : ""}`}>
+                          <h3 className={`${task.is_done ? "line-through opacity-50" : ""}`}>
                             {task.title}
                           </h3>
                           <div className="mt-3 flex items-center gap-2">
-                            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#5A6E5A]">
+                            <span className="text-xs font-bold uppercase tracking-brutal text-[#5A6E5A]">
                               Deadline:
                             </span>
                             <span className={`rounded-sm border border-[#0F1A0F]/20 px-2 py-0.5 text-xs font-bold ${

@@ -83,7 +83,7 @@ const Dashboard = ({
               className="flex justify-between items-center mb-8 border-b-2 border-[#0F1A0F] pb-6"
             >
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
+                <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
                   Workspace
                 </p>
                 <h2 className="text-3xl font-black tracking-tight text-[#0F1A0F]">
@@ -108,7 +108,7 @@ const Dashboard = ({
                     <Link
                       href={link.href}
                       onClick={onClose}
-                      className={`relative flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] px-4 py-3.5 font-bold tracking-wide transition-all ${
+                      className={`relative flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] px-4 py-3.5 font-bold tracking-tight transition-all ${
                         isActive
                           ? "bg-[#3B6B4A] text-[#F5F8F4] shadow-brutal"
                           : "bg-[#F5F8F4] text-[#0F1A0F] shadow-brutal-sm hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px"
@@ -143,10 +143,10 @@ const Dashboard = ({
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-black truncate leading-none mb-1 text-[#0F1A0F]">
+                <p className="text-sm font-bold truncate leading-tight mb-1 text-[#0F1A0F]">
                   {user?.name || "Guest"}
                 </p>
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#3B6B4A] truncate">
+                <p className="text-[10px] font-bold uppercase tracking-brutal text-[#3B6B4A] truncate">
                   Online
                 </p>
               </div>

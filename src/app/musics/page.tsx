@@ -132,7 +132,7 @@ const Musics = () => {
         <h3 className={`truncate font-black leading-tight text-[#0F1A0F] ${compact ? "text-[11px]" : "text-base"}`}>
           {track.title}
         </h3>
-        <p className={`truncate font-bold uppercase tracking-[0.2em] text-[#3B6B4A] ${compact ? "text-[8px]" : "text-[10px]"}`}>
+        <p className={`truncate font-bold uppercase tracking-brutal text-[#3B6B4A] ${compact ? "text-[8px]" : "text-[10px]"}`}>
           {track.artist}
         </p>
       </div>
@@ -160,10 +160,10 @@ const Musics = () => {
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
+            <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
               Music search
             </p>
-            <h1 className="mt-2 text-5xl font-black tracking-tight text-[#0F1A0F]">
+            <h1 className="mt-2 text-[#0F1A0F]">
               Vibe <span className="text-[#3B6B4A]">discovery</span>
             </h1>
           </div>
@@ -274,7 +274,7 @@ const Musics = () => {
                     </div>
                   ) : searchExecuted && !loading ? (
                     <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8">
-                      <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
+                      <p className="text-sm font-bold uppercase tracking-brutal text-[#5A6E5A]">
                         No matches found for &quot;{query}&quot;
                       </p>
                     </div>
