@@ -82,12 +82,12 @@ const Home = ({ session }: { session: Session | null }) => {
       initial="hidden"
       animate="visible"
       variants={mainContainerVariants}
-      className="w-full flex-1 flex flex-col px-4 space-y-10"
+      className="w-full flex-1 flex flex-col space-y-10"
     >
       {/* Hero Section */}
       <motion.section 
         variants={sectionVariants}
-        className="relative overflow-hidden rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-[4px_4px_0px_#0F1A0F]"
+        className="relative overflow-hidden rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-brutal"
       >
         <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full border-2 border-[#0F1A0F] bg-[#D4A843] opacity-30" />
         <div className="absolute right-16 top-16 h-20 w-20 rounded-full border-2 border-[#0F1A0F] bg-[#3B6B4A] opacity-20" />
@@ -110,7 +110,7 @@ const Home = ({ session }: { session: Session | null }) => {
           </div>
 
           <div className="grid w-full grid-cols-2 gap-4 md:w-auto">
-            <div className="rounded-md border-2 border-[#0F1A0F] bg-[#D4A843] p-5 text-center shadow-[4px_4px_0px_#0F1A0F]">
+            <div className="rounded-md border-2 border-[#0F1A0F] bg-[#D4A843] p-5 text-center shadow-brutal">
               {loading ? (
                 <div className="h-8 w-12 mx-auto animate-pulse rounded-sm bg-[#0F1A0F]/20" />
               ) : (
@@ -120,7 +120,7 @@ const Home = ({ session }: { session: Session | null }) => {
                 Active tasks
               </span>
             </div>
-            <div className="rounded-md border-2 border-[#0F1A0F] bg-[#3B6B4A] p-5 text-center shadow-[4px_4px_0px_#0F1A0F]">
+            <div className="rounded-md border-2 border-[#0F1A0F] bg-[#3B6B4A] p-5 text-center shadow-brutal">
               {loading ? (
                 <div className="h-8 w-12 mx-auto animate-pulse rounded-sm bg-[#F5F8F4]/20" />
               ) : (
@@ -150,7 +150,7 @@ const Home = ({ session }: { session: Session | null }) => {
             </div>
             <Link
               href="/tasks"
-              className="inline-flex items-center gap-1 rounded-md border-2 border-[#0F1A0F] bg-[#D4A843] px-4 py-2 text-xs font-bold text-[#0F1A0F] shadow-[3px_3px_0px_#0F1A0F] transition-all hover:shadow-[5px_5px_0px_#0F1A0F] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#0F1A0F] active:translate-x-0.5 active:translate-y-0.5"
+              className="inline-flex items-center gap-1 rounded-md border-2 border-[#0F1A0F] bg-[#D4A843] px-4 py-2 text-xs font-bold text-[#0F1A0F] shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -182,7 +182,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   {tasks.map((task) => (
                     <div
                       key={task.id}
-                      className="h-24 group flex items-center justify-between gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-5 shadow-[4px_4px_0px_#0F1A0F] transition-all hover:shadow-[6px_6px_0px_#3B6B4A] hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
+                      className="min-h-[6rem] group flex items-center justify-between gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-5 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
                     >
                       <div className="flex items-center gap-4">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border-2 border-[#0F1A0F] bg-[#D4A843] font-black text-[#0F1A0F] transition-colors group-hover:bg-[#3B6B4A] group-hover:text-[#F5F8F4]">
@@ -242,7 +242,7 @@ const Home = ({ session }: { session: Session | null }) => {
             </div>
             <Link
               href="/musics"
-              className="inline-flex items-center gap-1 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-2 text-xs font-bold text-[#0F1A0F] shadow-[3px_3px_0px_#0F1A0F] transition-all hover:shadow-[5px_5px_0px_#0F1A0F] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#0F1A0F] active:translate-x-0.5 active:translate-y-0.5"
+              className="inline-flex items-center gap-1 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-2 text-xs font-bold text-[#0F1A0F] shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
             >
               Browse <ArrowRight size={14} />
             </Link>
@@ -256,12 +256,12 @@ const Home = ({ session }: { session: Session | null }) => {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className="grid grid-cols-2 sm:grid-cols-3 gap-4 px-1 py-2"
+                className="grid grid-cols-2 sm:grid-cols-3 gap-4 py-2"
                 >
                   {likedTracks.slice(0, 6).map((track) => (
                     <div
                       key={track.id}
-                      className="group flex flex-col rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-2 shadow-[4px_4px_0px_#0F1A0F] transition-all hover:shadow-[6px_6px_0px_#3B6B4A] hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
+                      className="group flex flex-col rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-2 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
                     >
                       <div className="relative mb-2 aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
                         <img
@@ -273,7 +273,7 @@ const Home = ({ session }: { session: Session | null }) => {
                           onClick={() => playTrack(track)}
                           className="absolute inset-0 flex items-center justify-center bg-[#3B6B4A]/40 opacity-0 transition-all group-hover:opacity-100"
                         >
-                          <div className="rounded-full border-2 border-[#F5F8F4] bg-[#F5F8F4] p-2 shadow-[2px_2px_0px_#0F1A0F]">
+                          <div className="rounded-full border-2 border-[#F5F8F4] bg-[#F5F8F4] p-2 shadow-brutal-sm">
                             <Play fill="#0F1A0F" size={16} className="text-[#0F1A0F] ml-0.5" />
                           </div>
                         </button>
@@ -299,7 +299,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   </p>
                   <Link
                     href="/musics"
-                    className="mt-4 inline-flex items-center gap-1 rounded-md border-2 border-[#0F1A0F] bg-[#3B6B4A] px-4 py-2 text-xs font-bold text-[#F5F8F4] shadow-[3px_3px_0px_#0F1A0F]"
+                    className="mt-4 inline-flex items-center gap-1 rounded-md border-2 border-[#0F1A0F] bg-[#3B6B4A] px-4 py-2 text-xs font-bold text-[#F5F8F4] shadow-brutal-sm"
                   >
                     Explore music
                   </Link>

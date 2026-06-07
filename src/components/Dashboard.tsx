@@ -92,7 +92,7 @@ const Dashboard = ({
               </div>
               <button
                 onClick={onClose}
-                className="md:hidden inline-flex items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] p-2 shadow-[2px_2px_0px_#0F1A0F] transition-all hover:shadow-[3px_3px_0px_#0F1A0F] active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+                className="md:hidden inline-flex items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] p-2 shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
               >
                 <X size={20} className="text-[#0F1A0F]" />
               </button>
@@ -110,8 +110,8 @@ const Dashboard = ({
                       onClick={onClose}
                       className={`relative flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] px-4 py-3.5 font-bold tracking-wide transition-all ${
                         isActive
-                          ? "bg-[#3B6B4A] text-[#F5F8F4] shadow-[4px_4px_0px_#0F1A0F]"
-                          : "bg-[#F5F8F4] text-[#0F1A0F] shadow-[3px_3px_0px_#0F1A0F] hover:shadow-[5px_5px_0px_#0F1A0F] hover:-translate-x-px hover:-translate-y-px"
+                          ? "bg-[#3B6B4A] text-[#F5F8F4] shadow-brutal"
+                          : "bg-[#F5F8F4] text-[#0F1A0F] shadow-brutal-sm hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px"
                       }`}
                     >
                       {isActive && (
@@ -128,8 +128,8 @@ const Dashboard = ({
 
           <motion.div variants={itemVariants} className="space-y-3">
             {/* User Card */}
-            <div className="flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-4 shadow-[3px_3px_0px_#0F1A0F]">
-              <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-[#0F1A0F] flex-shrink-0 shadow-[2px_2px_0px_#0F1A0F]">
+            <div className="flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-4 shadow-brutal-sm">
+              <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-[#0F1A0F] flex-shrink-0 shadow-brutal-sm">
                 {user?.image ? (
                   <img
                     src={user.image ?? undefined}
@@ -152,7 +152,7 @@ const Dashboard = ({
               </div>
               <button
                 onClick={() => signOut()}
-                className="inline-flex items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#E8EDE6] p-2 shadow-[2px_2px_0px_#0F1A0F] transition-all hover:bg-[#8B4A2B] hover:text-[#F5F8F4] hover:shadow-[3px_3px_0px_#0F1A0F] active:shadow-none"
+                className="inline-flex items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#E8EDE6] p-2 shadow-brutal-sm transition-all hover:bg-[#8B4A2B] hover:text-[#F5F8F4] hover:shadow-brutal active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
                 title="Logout"
               >
                 <LogOut size={16} className="text-[#0F1A0F]" />

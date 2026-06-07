@@ -111,7 +111,7 @@ const Musics = () => {
         <div className="absolute inset-0 flex items-center justify-center bg-[#3B6B4A]/40 opacity-0 transition-all group-hover:opacity-100">
           <button
             onClick={() => playTrack(track, list)}
-            className="rounded-full border-2 border-[#F5F8F4] bg-[#F5F8F4] p-3 text-[#0F1A0F] shadow-[2px_2px_0px_#0F1A0F] transition-all hover:scale-105"
+            className="rounded-full border-2 border-[#F5F8F4] bg-[#F5F8F4] p-3 text-[#0F1A0F] shadow-brutal-sm transition-all hover:scale-105"
           >
             <Play className="fill-current ml-0.5" size={20} />
           </button>
@@ -120,7 +120,7 @@ const Musics = () => {
           onClick={() => toggleLike(track)}
           className={`absolute right-2 top-2 rounded-sm border-2 border-[#0F1A0F] p-1.5 transition-all ${
             isLiked(track.id)
-              ? "bg-[#8B4A2B] text-[#F5F8F4] shadow-[2px_2px_0px_#0F1A0F]"
+              ? "bg-[#8B4A2B] text-[#F5F8F4] shadow-brutal-sm"
               : "bg-[#F5F8F4] text-[#0F1A0F] hover:bg-[#D4A843]"
           }`}
         >
@@ -140,7 +140,7 @@ const Musics = () => {
       {!compact && (
         <button
           onClick={() => playTrack(track, list)}
-          className="mt-3 w-full brutal-btn brutal-btn-secondary py-2 text-xs"
+          className="mt-3 w-full brutal-btn brutal-btn-secondary py-2 text-xs shadow-brutal-sm"
         >
           Play track
         </button>
@@ -156,7 +156,7 @@ const Musics = () => {
         initial="hidden"
         animate="visible"
         variants={headerVariants}
-        className="mb-6 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-[4px_4px_0px_#0F1A0F] shrink-0"
+        className="mb-6 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-brutal shrink-0"
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -168,7 +168,7 @@ const Musics = () => {
             </h1>
           </div>
 
-          <div className="flex items-center gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#E8EDE6] p-4 shadow-[3px_3px_0px_#0F1A0F]">
+          <div className="flex items-center gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#E8EDE6] p-4 shadow-brutal-sm">
             <Heart size={22} fill="currentColor" className="text-[#8B4A2B]" />
             <div>
               <span className="block text-[10px] font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
@@ -191,12 +191,12 @@ const Musics = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by title or artist..."
-              className="brutal-input pl-12"
+              className="brutal-input pl-12 shadow-brutal"
             />
           </div>
           <button
             type="submit"
-            className="brutal-btn brutal-btn-primary px-8"
+            className="brutal-btn brutal-btn-primary px-8 shadow-brutal"
           >
             Search
           </button>
@@ -225,7 +225,7 @@ const Musics = () => {
               initial="hidden"
               animate="visible"
               variants={contentVariants}
-              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden flex flex-col"
+              className="h-full overflow-y-auto custom-scrollbar overflow-x-hidden flex flex-col"
             >
               <div className="flex-1 flex flex-col">
                 {/* Liked Playlist Section */}
@@ -237,7 +237,7 @@ const Musics = () => {
                         Liked <span className="text-[#3B6B4A]">playlist</span>
                       </h2>
                     </div>
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6 px-1 py-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 py-2">
                       {likedTracks.map((track) => (
                         <TrackCard key={track.id} track={track} compact list={likedTracks} />
                       ))}
@@ -265,7 +265,7 @@ const Musics = () => {
                 </div>
 
                 {/* Results Grid */}
-                <div className="flex-1 flex flex-col px-1 py-2">
+                <div className="flex-1 flex flex-col py-2">
                   {(!searchExecuted ? recommendations : results).length > 0 ? (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                       {(!searchExecuted ? recommendations : results).map((m) => (

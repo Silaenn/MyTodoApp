@@ -101,7 +101,7 @@ export function DialogDemo({
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[460px] z-[100] border-4 border-[#0F1A0F] bg-[#F5F8F4] shadow-[8px_8px_0px_#0F1A0F] rounded-none">
+      <DialogContent className="sm:max-w-[460px] z-[100] border-4 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-lg rounded-none">
         <form onSubmit={handleSubmit}>
           <DialogHeader className="border-b-2 border-[#0F1A0F] pb-4 mb-5">
             <DialogTitle className="text-3xl font-black italic">
@@ -113,6 +113,7 @@ export function DialogDemo({
           </DialogHeader>
 
           <div className="grid gap-5">
+            {/* ... (grid content) */}
             <div className="grid gap-2">
               <Label
                 htmlFor="name"
@@ -157,7 +158,7 @@ export function DialogDemo({
                 <SelectTrigger id="category" className="brutal-input bg-[#F5F8F4]">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent className="z-[110] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[4px_4px_0px_#0F1A0F]">
+                <SelectContent className="z-[110] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal">
                   <SelectItem value="work" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Work</SelectItem>
                   <SelectItem value="study" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Study</SelectItem>
                   <SelectItem value="hobby" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Hobby</SelectItem>
@@ -168,11 +169,11 @@ export function DialogDemo({
             </div>
           </div>
 
-          <DialogFooter className="pt-6 gap-3">
+          <DialogFooter className="mt-8 border-t-2 border-[#0F1A0F] pt-6 gap-3">
             <DialogClose asChild>
               <button
                 type="button"
-                className="brutal-btn brutal-btn-outline"
+                className="brutal-btn brutal-btn-outline shadow-brutal-sm"
               >
                 Cancel
               </button>
@@ -180,7 +181,7 @@ export function DialogDemo({
             <button
               type="submit"
               disabled={loading}
-              className="brutal-btn brutal-btn-primary disabled:opacity-50"
+              className="brutal-btn brutal-btn-primary shadow-brutal-sm disabled:opacity-50"
             >
               {loading ? "Saving..." : (task ? "Update task" : "Save task")}
             </button>

@@ -68,11 +68,11 @@ const Footer = () => {
         onEnded={handleEnded}
       />
 
-      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-[6px_6px_0px_#0F1A0F] md:bottom-8 md:left-[20rem] md:right-8">
+      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-brutal-lg md:bottom-8 md:left-[19rem] md:right-8">
         {/* Close Button - Top Right Corner */}
         <button 
           onClick={stopMusic}
-          className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[3px_3px_0px_#0F1A0F] transition-all hover:bg-[#FF0000] hover:text-[#F5F8F4] active:shadow-none active:translate-x-0.5 active:translate-y-0.5 z-[60]"
+          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-sm transition-all hover:bg-[#FF0000] hover:text-[#F5F8F4] active:shadow-none active:translate-x-0.5 active:translate-y-0.5 z-[60]"
           title="Close Player"
         >
           <X size={18} className="stroke-[3px]" />
@@ -80,7 +80,7 @@ const Footer = () => {
 
         {/* Track Info */}
         <div className="flex items-center gap-4 sm:gap-6 w-[35%]">
-          <div className="flex-shrink-0 overflow-hidden rounded-sm border-2 border-[#0F1A0F] shadow-[3px_3px_0px_#0F1A0F]">
+          <div className="flex-shrink-0 overflow-hidden rounded-sm border-2 border-[#0F1A0F] shadow-brutal-sm">
             <img
               className={`w-14 h-14 sm:w-16 sm:h-16 object-cover transition-all duration-500 ${
                 isPlaying ? "grayscale-0 scale-105" : "grayscale opacity-60"
@@ -119,7 +119,7 @@ const Footer = () => {
             </button>
             <button
               onClick={togglePlay}
-              className={`flex h-13 w-13 sm:h-14 sm:w-14 items-center justify-center rounded-md border-2 border-[#0F1A0F] font-black shadow-[3px_3px_0px_#0F1A0F] transition-all hover:shadow-[5px_5px_0px_#0F1A0F] hover:-translate-x-px hover:-translate-y-px active:shadow-[1px_1px_0px_#0F1A0F] active:translate-x-0.5 active:translate-y-0.5 ${
+              className={`flex h-13 w-13 sm:h-14 sm:w-14 items-center justify-center rounded-md border-2 border-[#0F1A0F] font-black shadow-brutal transition-all hover:shadow-brutal-lg hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5 ${
                 isPlaying
                   ? "bg-[#D4A843] text-[#0F1A0F]"
                   : "bg-[#3B6B4A] text-[#F5F8F4]"

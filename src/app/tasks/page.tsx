@@ -147,7 +147,7 @@ const Tasks = () => {
         initial="hidden"
         animate="visible"
         variants={headerVariants}
-        className="mb-6 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-[4px_4px_0px_#0F1A0F] shrink-0"
+        className="mb-6 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-brutal shrink-0"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -174,19 +174,19 @@ const Tasks = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search tasks..."
-              className="brutal-input pl-10 h-11"
+              className="brutal-input pl-10 h-11 !shadow-brutal"
             />
           </div>
 
           <div className="flex gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="brutal-btn brutal-btn-outline h-11 capitalize min-w-[140px]">
+                <button className="brutal-btn brutal-btn-outline h-11 capitalize min-w-[140px] shadow-brutal-sm">
                   Filter: {category}
                   <ChevronDown size={15} />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="min-w-[180px] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[4px_4px_0px_#0F1A0F]">
+              <DropdownMenuContent className="min-w-[180px] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal">
                 <DropdownMenuLabel className="font-bold">Category</DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-[#0F1A0F]/20" />
                 <DropdownMenuRadioGroup value={category} onValueChange={setCategory}>
@@ -205,12 +205,12 @@ const Tasks = () => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="brutal-btn brutal-btn-outline h-11 min-w-[140px]">
+                <button className="brutal-btn brutal-btn-outline h-11 min-w-[140px] shadow-brutal-sm">
                   <ArrowUpDown size={15} />
                   Sort: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="min-w-[180px] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[4px_4px_0px_#0F1A0F]">
+              <DropdownMenuContent className="min-w-[180px] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal">
                 <DropdownMenuLabel className="font-bold">Sort By</DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-[#0F1A0F]/20" />
                 <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
@@ -239,7 +239,7 @@ const Tasks = () => {
               <p className="text-4xl font-black tracking-tight text-[#3B6B4A]">
                 Loading tasks...
               </p>
-              <div className="h-3 w-56 overflow-hidden rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-[3px_3px_0px_#0F1A0F]">
+              <div className="h-3 w-56 overflow-hidden rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-sm">
                 <div className="h-full w-1/3 animate-pulse bg-[#3B6B4A]" />
               </div>
             </motion.div>
@@ -249,9 +249,9 @@ const Tasks = () => {
               initial="hidden"
               animate="visible"
               variants={listContainerVariants}
-              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden"
+              className="h-full overflow-y-auto custom-scrollbar overflow-x-hidden"
             >
-              <div className="min-h-full flex flex-col gap-4 px-1">
+              <div className="min-h-full flex flex-col gap-4">
                 {filteredAndSortedTasks.length > 0 ? (
                   filteredAndSortedTasks.map((task) => (
                     <div
@@ -300,7 +300,7 @@ const Tasks = () => {
                         <DialogDemo task={task} onSuccess={fetchTasks} />
                         <button
                           onClick={() => deleteTask(task.id)}
-                          className="brutal-btn brutal-btn-accent"
+                          className="brutal-btn brutal-btn-accent shadow-brutal-sm"
                         >
                           <Trash2 size={15} />
                           Delete
