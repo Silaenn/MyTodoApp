@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { LogOut, X, User, Home, CheckSquare, Music } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { motion } from "framer-motion";
 
 const navLinks = [
   { label: "Home", href: "/", icon: Home },
@@ -16,6 +17,30 @@ type UserProfile = {
   id?: string | null;
   image?: string | null;
   name?: string | null;
+};
+
+const sidebarVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { x: -20, opacity: 0 },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+    },
+  },
 };
 
 const Dashboard = ({
@@ -32,7 +57,9 @@ const Dashboard = ({
   return (
     <>
       {isOpen && (
-        <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           className="fixed inset-0 bg-[#0F1A0F]/50 z-[60] md:hidden"
           onClick={onClose}
         />
@@ -43,10 +70,18 @@ const Dashboard = ({
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
-        <div className="flex h-full flex-col justify-between p-6">
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={sidebarVariants}
+          className="flex h-full flex-col justify-between p-6"
+        >
           <div>
             {/* Logo */}
-            <div className="flex justify-between items-center mb-8 border-b-2 border-[#0F1A0F] pb-6">
+            <motion.div 
+              variants={itemVariants}
+              className="flex justify-between items-center mb-8 border-b-2 border-[#0F1A0F] pb-6"
+            >
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#5A6E5A]">
                   Workspace
@@ -61,7 +96,7 @@ const Dashboard = ({
               >
                 <X size={20} className="text-[#0F1A0F]" />
               </button>
-            </div>
+            </motion.div>
 
             {/* Nav */}
             <nav className="space-y-3">
@@ -69,28 +104,29 @@ const Dashboard = ({
                 const isActive = pathname === link.href;
                 const Icon = link.icon;
                 return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={onClose}
-                    className={`relative flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] px-4 py-3.5 font-bold tracking-wide transition-all ${
-                      isActive
-                        ? "bg-[#3B6B4A] text-[#F5F8F4] shadow-[4px_4px_0px_#0F1A0F]"
-                        : "bg-[#F5F8F4] text-[#0F1A0F] shadow-[3px_3px_0px_#0F1A0F] hover:shadow-[5px_5px_0px_#0F1A0F] hover:-translate-x-px hover:-translate-y-px"
-                    }`}
-                  >
-                    {isActive && (
-                      <span className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-sm bg-[#D4A843]" />
-                    )}
-                    <Icon size={18} className={isActive ? "text-[#F5F8F4]" : "text-[#5A6E5A]"} />
-                    <span className={isActive ? "pl-1" : ""}>{link.label}</span>
-                  </Link>
+                  <motion.div key={link.href} variants={itemVariants}>
+                    <Link
+                      href={link.href}
+                      onClick={onClose}
+                      className={`relative flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] px-4 py-3.5 font-bold tracking-wide transition-all ${
+                        isActive
+                          ? "bg-[#3B6B4A] text-[#F5F8F4] shadow-[4px_4px_0px_#0F1A0F]"
+                          : "bg-[#F5F8F4] text-[#0F1A0F] shadow-[3px_3px_0px_#0F1A0F] hover:shadow-[5px_5px_0px_#0F1A0F] hover:-translate-x-px hover:-translate-y-px"
+                      }`}
+                    >
+                      {isActive && (
+                        <span className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-sm bg-[#D4A843]" />
+                      )}
+                      <Icon size={18} className={isActive ? "text-[#F5F8F4]" : "text-[#5A6E5A]"} />
+                      <span className={isActive ? "pl-1" : ""}>{link.label}</span>
+                    </Link>
+                  </motion.div>
                 );
               })}
             </nav>
           </div>
 
-          <div className="space-y-3">
+          <motion.div variants={itemVariants} className="space-y-3">
             {/* User Card */}
             <div className="flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-4 shadow-[3px_3px_0px_#0F1A0F]">
               <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-[#0F1A0F] flex-shrink-0 shadow-[2px_2px_0px_#0F1A0F]">
@@ -122,8 +158,8 @@ const Dashboard = ({
                 <LogOut size={16} className="text-[#0F1A0F]" />
               </button>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </aside>
     </>
   );

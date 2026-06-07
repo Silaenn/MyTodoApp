@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import Dashboard from "@/components/Dashboard";
 import Footer from "@/components/Footer";
+import { motion } from "framer-motion";
 
 type SessionUser = {
   id?: string | null;
@@ -15,6 +16,20 @@ type SessionUser = {
 type SessionLike = {
   user?: SessionUser | null;
 } | null;
+
+const contentVariants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring",
+      stiffness: 70,
+      damping: 15,
+      delay: 0.3, // Slight delay to let dashboard start first
+    },
+  },
+};
 
 export default function LayoutClient({
   children,
@@ -72,7 +87,12 @@ export default function LayoutClient({
         }`}
       >
         {!isLoginOrRegister && (
-          <div className="flex items-center gap-4 mb-6 md:hidden">
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="flex items-center gap-4 mb-6 md:hidden"
+          >
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="brutal-btn brutal-btn-primary h-11 w-11 p-0"
@@ -82,10 +102,25 @@ export default function LayoutClient({
             <h1 className="text-xl font-black tracking-tight text-[#0F1A0F]">
               TASKTUNE
             </h1>
-          </div>
+          </motion.div>
         )}
-        <div className="flex-1 flex flex-col">{children}</div>
-        {!isLoginOrRegister && pathname !== "/profile" && <Footer />}
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={contentVariants}
+          className="flex-1 flex flex-col"
+        >
+          {children}
+        </motion.div>
+        {!isLoginOrRegister && pathname !== "/profile" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+          >
+            <Footer />
+          </motion.div>
+        )}
       </main>
     </>
   );
