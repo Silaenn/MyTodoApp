@@ -60,13 +60,13 @@ const Dashboard = ({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-[#0F1A0F]/50 z-[60] md:hidden"
+          className="fixed inset-0 bg-brutal-ink/50 z-[60] md:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-[70] md:flex flex-col w-72 h-screen border-r-2 border-[#0F1A0F] bg-[#E8EDE6] transition-transform duration-300 ${
+        className={`fixed left-0 top-0 z-[70] md:flex flex-col w-72 h-screen border-r-2 border-brutal-ink bg-brutal-parchment transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -80,21 +80,21 @@ const Dashboard = ({
             {/* Logo */}
             <motion.div 
               variants={itemVariants}
-              className="flex justify-between items-center mb-8 border-b-2 border-[#0F1A0F] pb-6"
+              className="flex justify-between items-center mb-8 border-b-2 border-brutal-ink pb-6"
             >
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
+                <p className="text-[10px] font-bold uppercase tracking-brutal text-brutal-muted">
                   Workspace
                 </p>
-                <h2 className="text-3xl font-black tracking-tight text-[#0F1A0F]">
-                  TASK<span className="text-[#3B6B4A]">TUNE</span>
+                <h2 className="text-3xl font-black tracking-tight text-brutal-ink">
+                  TASK<span className="text-brutal-primary">TUNE</span>
                 </h2>
               </div>
               <button
                 onClick={onClose}
-                className="md:hidden inline-flex items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] p-2 shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+                className="md:hidden inline-flex items-center justify-center rounded-sm border-2 border-brutal-ink bg-brutal-paper p-2 shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
               >
-                <X size={20} className="text-[#0F1A0F]" />
+                <X size={20} className="text-brutal-ink" />
               </button>
             </motion.div>
 
@@ -108,16 +108,16 @@ const Dashboard = ({
                     <Link
                       href={link.href}
                       onClick={onClose}
-                      className={`relative flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] px-4 py-3.5 font-bold tracking-tight transition-all ${
+                      className={`relative flex items-center gap-3 rounded-md border-2 border-brutal-ink px-4 py-3.5 font-bold tracking-tight transition-all ${
                         isActive
-                          ? "bg-[#3B6B4A] text-[#F5F8F4] shadow-brutal"
-                          : "bg-[#F5F8F4] text-[#0F1A0F] shadow-brutal-sm hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px"
+                          ? "bg-brutal-primary text-brutal-paper shadow-brutal"
+                          : "bg-brutal-paper text-brutal-ink shadow-brutal-sm hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px"
                       }`}
                     >
                       {isActive && (
-                        <span className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-sm bg-[#D4A843]" />
+                        <span className="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-sm bg-brutal-secondary" />
                       )}
-                      <Icon size={18} className={isActive ? "text-[#F5F8F4]" : "text-[#5A6E5A]"} />
+                      <Icon size={18} className={isActive ? "text-brutal-paper" : "text-brutal-muted"} />
                       <span className={isActive ? "pl-1" : ""}>{link.label}</span>
                     </Link>
                   </motion.div>
@@ -128,8 +128,8 @@ const Dashboard = ({
 
           <motion.div variants={itemVariants} className="space-y-3">
             {/* User Card */}
-            <div className="flex items-center gap-3 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-4 shadow-brutal-sm">
-              <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-[#0F1A0F] flex-shrink-0 shadow-brutal-sm">
+            <div className="flex items-center gap-3 rounded-md border-2 border-brutal-ink bg-brutal-paper p-4 shadow-brutal-sm">
+              <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-brutal-ink flex-shrink-0 shadow-brutal-sm">
                 {user?.image ? (
                   <img
                     src={user.image ?? undefined}
@@ -137,25 +137,25 @@ const Dashboard = ({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-[#D4A843]">
-                    <User size={18} className="text-[#0F1A0F]" />
+                  <div className="w-full h-full flex items-center justify-center bg-brutal-secondary">
+                    <User size={18} className="text-brutal-ink" />
                   </div>
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold truncate leading-tight mb-1 text-[#0F1A0F]">
+                <p className="text-sm font-bold truncate leading-tight mb-1 text-brutal-ink">
                   {user?.name || "Guest"}
                 </p>
-                <p className="text-[10px] font-bold uppercase tracking-brutal text-[#3B6B4A] truncate">
+                <p className="text-[10px] font-bold uppercase tracking-brutal text-brutal-primary truncate">
                   Online
                 </p>
               </div>
               <button
                 onClick={() => signOut()}
-                className="inline-flex items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#E8EDE6] p-2 shadow-brutal-sm transition-all hover:bg-[#8B4A2B] hover:text-[#F5F8F4] hover:shadow-brutal active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+                className="inline-flex items-center justify-center rounded-sm border-2 border-brutal-ink bg-brutal-parchment p-2 shadow-brutal-sm transition-all hover:bg-brutal-accent hover:text-brutal-paper hover:shadow-brutal active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
                 title="Logout"
               >
-                <LogOut size={16} className="text-[#0F1A0F]" />
+                <LogOut size={16} className="text-brutal-ink" />
               </button>
             </div>
           </motion.div>

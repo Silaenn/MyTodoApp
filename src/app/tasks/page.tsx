@@ -27,10 +27,10 @@ const categoryOptions = ["all", "work", "personal", "hobby", "urgent", "study"];
 
 const categoryColors: Record<string, string> = {
   work:     "brutal-badge-primary",
-  personal: "bg-[#8B4A2B] text-[#F5F8F4]",
+  personal: "bg-brutal-accent text-brutal-paper",
   hobby:    "brutal-badge-secondary",
-  urgent:   "bg-[#FF0000] text-[#F5F8F4]",
-  study:    "bg-[#3B6B4A] text-[#F5F8F4]",
+  urgent:   "bg-[#FF0000] text-brutal-paper",
+  study:    "bg-brutal-primary text-brutal-paper",
   all:      "brutal-badge-muted",
 };
 
@@ -234,13 +234,13 @@ const Tasks = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#E8EDE6]"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-brutal-parchment"
             >
-              <p className="text-4xl font-black tracking-tighter text-[#3B6B4A]">
+              <p className="text-4xl font-black tracking-tighter text-brutal-primary">
                 Loading tasks...
               </p>
-              <div className="h-3 w-56 overflow-hidden rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-sm">
-                <div className="h-full w-1/3 animate-pulse bg-[#3B6B4A]" />
+              <div className="h-3 w-56 overflow-hidden rounded-sm border-2 border-brutal-ink bg-brutal-paper shadow-brutal-sm">
+                <div className="h-full w-1/3 animate-pulse bg-brutal-primary" />
               </div>
             </motion.div>
           ) : (
@@ -263,7 +263,7 @@ const Tasks = () => {
                       <div className="flex flex-1 items-start gap-4">
                         <button 
                           onClick={() => toggleDone(task)}
-                          className={`mt-1.5 transition-colors ${task.is_done ? "text-[#3B6B4A]" : "text-[#5A6E5A] hover:text-[#3B6B4A]"}`}
+                          className={`mt-1.5 transition-colors ${task.is_done ? "text-brutal-primary" : "text-brutal-muted hover:text-brutal-primary"}`}
                         >
                           {task.is_done ? <CheckCircle2 size={24} /> : <Circle size={24} />}
                         </button>
@@ -282,13 +282,13 @@ const Tasks = () => {
                             {task.title}
                           </h3>
                           <div className="mt-3 flex items-center gap-2">
-                            <span className="text-xs font-bold uppercase tracking-brutal text-[#5A6E5A]">
+                            <span className="text-xs font-bold uppercase tracking-brutal text-brutal-muted">
                               Deadline:
                             </span>
-                            <span className={`rounded-sm border border-[#0F1A0F]/20 px-2 py-0.5 text-xs font-bold ${
+                            <span className={`rounded-sm border border-brutal-ink/20 px-2 py-0.5 text-xs font-bold ${
                               task.deadline && new Date(task.deadline) < new Date() && !task.is_done
                                 ? "bg-red-100 text-red-600 border-red-200"
-                                : "bg-[#E8EDE6] text-[#3B6B4A]"
+                                : "bg-brutal-parchment text-brutal-primary"
                             }`}>
                               {task.deadline || "None"}
                             </span>

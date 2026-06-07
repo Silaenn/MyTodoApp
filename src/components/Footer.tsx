@@ -80,7 +80,7 @@ const Footer = () => {
 
         {/* Track Info */}
         <div className="flex items-center gap-4 sm:gap-6 w-[35%]">
-          <div className="flex-shrink-0 overflow-hidden rounded-sm border-2 border-[#0F1A0F] shadow-brutal-sm">
+          <div className="flex-shrink-0 overflow-hidden rounded-sm border-2 border-brutal-ink shadow-brutal-sm">
             <img
               className={`w-14 h-14 sm:w-16 sm:h-16 object-cover transition-all duration-500 ${
                 isPlaying ? "grayscale-0 scale-105" : "grayscale opacity-60"
@@ -90,12 +90,12 @@ const Footer = () => {
             />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="font-black tracking-tight text-base sm:text-lg leading-none truncate mb-1 text-[#0F1A0F]">
+            <span className="font-black tracking-tight text-base sm:text-lg leading-none truncate mb-1 text-brutal-ink">
               {currentTrack.title}
             </span>
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-[#3B6B4A] animate-pulse" />
-              <span className="text-[10px] sm:text-xs font-bold text-[#3B6B4A] uppercase tracking-[0.2em] truncate">
+              <span className="w-2 h-2 bg-brutal-primary animate-pulse" />
+              <span className="text-[10px] sm:text-xs font-bold text-brutal-primary uppercase tracking-brutal truncate">
                 {currentTrack.artist}
               </span>
             </div>
@@ -107,22 +107,22 @@ const Footer = () => {
           <div className="flex items-center gap-6 sm:gap-8">
             <button 
               onClick={toggleShuffle}
-              className={`hidden sm:block transition-colors ${shuffle ? "text-[#3B6B4A]" : "text-[#5A6E5A] hover:text-[#3B6B4A]"}`}
+              className={`hidden sm:block transition-colors ${shuffle ? "text-brutal-primary" : "text-brutal-muted hover:text-brutal-primary"}`}
             >
               <Shuffle size={22} className={shuffle ? "stroke-[3px]" : ""} />
             </button>
             <button 
               onClick={prevTrack}
-              className="text-[#0F1A0F] hover:text-[#3B6B4A] transition-colors hover:-translate-x-0.5"
+              className="text-brutal-ink hover:text-brutal-primary transition-colors hover:-translate-x-0.5"
             >
               <SkipBack size={28} fill="currentColor" />
             </button>
             <button
               onClick={togglePlay}
-              className={`flex h-13 w-13 sm:h-14 sm:w-14 items-center justify-center rounded-md border-2 border-[#0F1A0F] font-black shadow-brutal transition-all hover:shadow-brutal-lg hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5 ${
+              className={`flex h-13 w-13 sm:h-14 sm:w-14 items-center justify-center rounded-md border-2 border-brutal-ink font-black shadow-brutal transition-all hover:shadow-brutal-lg hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5 ${
                 isPlaying
-                  ? "bg-[#D4A843] text-[#0F1A0F]"
-                  : "bg-[#3B6B4A] text-[#F5F8F4]"
+                  ? "bg-brutal-secondary text-brutal-ink"
+                  : "bg-brutal-primary text-brutal-paper"
               }`}
             >
               {isPlaying
@@ -132,13 +132,13 @@ const Footer = () => {
             </button>
             <button 
               onClick={nextTrack}
-              className="text-[#0F1A0F] hover:text-[#3B6B4A] transition-colors hover:translate-x-0.5"
+              className="text-brutal-ink hover:text-brutal-primary transition-colors hover:translate-x-0.5"
             >
               <SkipForward size={28} fill="currentColor" />
             </button>
             <button 
               onClick={toggleRepeat}
-              className={`hidden sm:block transition-colors ${repeat !== "none" ? "text-[#3B6B4A]" : "text-[#5A6E5A] hover:text-[#3B6B4A]"}`}
+              className={`hidden sm:block transition-colors ${repeat !== "none" ? "text-brutal-primary" : "text-brutal-muted hover:text-brutal-primary"}`}
             >
               {repeat === "one" ? <Repeat1 size={22} className="stroke-[3px]" /> : <Repeat size={22} className={repeat === "all" ? "stroke-[3px]" : ""} />}
             </button>
@@ -146,11 +146,11 @@ const Footer = () => {
 
           {/* Progress Bar */}
           <div className="hidden sm:flex items-center gap-4 w-full max-w-[600px]">
-            <span className="text-[10px] font-bold text-[#5A6E5A] uppercase tracking-widest tabular-nums">
+            <span className="text-[10px] font-bold text-brutal-muted uppercase tracking-widest tabular-nums">
               {formatTime(progress)}
             </span>
             <div
-              className="h-3 flex-1 rounded-sm border-2 border-[#0F1A0F] bg-[#E8EDE6] relative cursor-pointer overflow-hidden"
+              className="h-3 flex-1 rounded-sm border-2 border-brutal-ink bg-brutal-parchment relative cursor-pointer overflow-hidden"
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const percent = (e.clientX - rect.left) / rect.width;
@@ -158,11 +158,11 @@ const Footer = () => {
               }}
             >
               <div
-                className="absolute top-0 left-0 h-full bg-[#3B6B4A] transition-all"
+                className="absolute top-0 left-0 h-full bg-brutal-primary transition-all"
                 style={{ width: `${(progress / duration) * 100}%` }}
               />
             </div>
-            <span className="text-[10px] font-bold text-[#5A6E5A] uppercase tracking-widest tabular-nums">
+            <span className="text-[10px] font-bold text-brutal-muted uppercase tracking-widest tabular-nums">
               {formatTime(duration)}
             </span>
           </div>
@@ -170,13 +170,13 @@ const Footer = () => {
 
         {/* Volume */}
         <div className="hidden lg:flex items-center gap-6 w-[35%] justify-end">
-          <button className="text-[#5A6E5A] hover:text-[#3B6B4A] transition-colors">
+          <button className="text-brutal-muted hover:text-brutal-primary transition-colors">
             <ListMusic size={24} />
           </button>
           <div className="flex items-center gap-3 group">
-            <Volume2 size={22} className="text-[#5A6E5A]" />
+            <Volume2 size={22} className="text-brutal-muted" />
             <div 
-              className="h-3 w-28 rounded-sm border-2 border-[#0F1A0F] bg-[#E8EDE6] relative cursor-pointer overflow-hidden"
+              className="h-3 w-28 rounded-sm border-2 border-brutal-ink bg-brutal-parchment relative cursor-pointer overflow-hidden"
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const newVolume = (e.clientX - rect.left) / rect.width;
@@ -184,7 +184,7 @@ const Footer = () => {
               }}
             >
               <div 
-                className="absolute top-0 left-0 h-full bg-[#D4A843]" 
+                className="absolute top-0 left-0 h-full bg-brutal-secondary" 
                 style={{ width: `${volume * 100}%` }}
               />
             </div>
