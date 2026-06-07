@@ -225,61 +225,65 @@ const Musics = () => {
               initial="hidden"
               animate="visible"
               variants={contentVariants}
-              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden"
+              className="h-full overflow-y-auto px-4 custom-scrollbar overflow-x-hidden flex flex-col"
             >
-              {/* Liked Playlist Section */}
-              {likedTracks.length > 0 && !searchExecuted && (
-                <div className="mb-12">
-                  <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
-                    <Heart className="text-[#8B4A2B]" size={28} fill="currentColor" />
-                    <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
-                      Liked <span className="text-[#3B6B4A]">playlist</span>
-                    </h2>
+              <div className="flex-1 flex flex-col">
+                {/* Liked Playlist Section */}
+                {likedTracks.length > 0 && !searchExecuted && (
+                  <div className="mb-12 shrink-0">
+                    <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
+                      <Heart className="text-[#8B4A2B]" size={28} fill="currentColor" />
+                      <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+                        Liked <span className="text-[#3B6B4A]">playlist</span>
+                      </h2>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6 px-1 py-2">
+                      {likedTracks.map((track) => (
+                        <TrackCard key={track.id} track={track} compact list={likedTracks} />
+                      ))}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-6 px-1 py-2">
-                    {likedTracks.map((track) => (
-                      <TrackCard key={track.id} track={track} compact list={likedTracks} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Title Section (Recommendations or Results) */}
-              <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4">
-                {!searchExecuted ? (
-                  <>
-                    <Disc className="text-[#D4A843]" size={28} />
-                    <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
-                      Weekly <span className="text-[#3B6B4A]">picks</span>
-                    </h2>
-                  </>
-                ) : (
-                  <>
-                    <Search className="text-[#3B6B4A]" size={28} />
-                    <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
-                      Search <span className="text-[#3B6B4A]">results</span>
-                    </h2>
-                  </>
                 )}
-              </div>
 
-              {/* Results Grid */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 px-1 py-2">
-                {(!searchExecuted ? recommendations : results).length > 0 ? (
-                  (!searchExecuted ? recommendations : results).map((m) => (
-                    <TrackCard key={m.id} track={m} list={!searchExecuted ? recommendations : results} />
-                  ))
-                ) : searchExecuted && !loading ? (
-                  <div className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center min-h-[400px] lg:min-h-[500px]">
-                    <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
-                      No matches found for &quot;{query}&quot;
-                    </p>
-                  </div>
-                ) : null}
+                {/* Title Section (Recommendations or Results) */}
+                <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4 shrink-0">
+                  {!searchExecuted ? (
+                    <>
+                      <Disc className="text-[#D4A843]" size={28} />
+                      <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+                        Weekly <span className="text-[#3B6B4A]">picks</span>
+                      </h2>
+                    </>
+                  ) : (
+                    <>
+                      <Search className="text-[#3B6B4A]" size={28} />
+                      <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+                        Search <span className="text-[#3B6B4A]">results</span>
+                      </h2>
+                    </>
+                  )}
+                </div>
+
+                {/* Results Grid */}
+                <div className="flex-1 flex flex-col px-1 py-2">
+                  {(!searchExecuted ? recommendations : results).length > 0 ? (
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                      {(!searchExecuted ? recommendations : results).map((m) => (
+                        <TrackCard key={m.id} track={m} list={!searchExecuted ? recommendations : results} />
+                      ))}
+                    </div>
+                  ) : searchExecuted && !loading ? (
+                    <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8">
+                      <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
+                        No matches found for &quot;{query}&quot;
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
               </div>
               
               {/* Dynamic Spacer */}
-              <div className={`transition-all duration-300 ${currentTrack ? "h-32" : "h-0"}`} />
+              <div className={`transition-all duration-300 ${currentTrack ? "h-32" : "h-0"} shrink-0`} />
             </motion.div>
           )}
         </AnimatePresence>
