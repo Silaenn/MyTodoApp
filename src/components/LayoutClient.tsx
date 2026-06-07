@@ -84,7 +84,7 @@ export default function LayoutClient({
             </h1>
           </div>
         )}
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 flex flex-col">{children}</div>
         {!isLoginOrRegister && pathname !== "/profile" && <Footer />}
       </main>
     </>

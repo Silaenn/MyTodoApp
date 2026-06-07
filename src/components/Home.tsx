@@ -82,7 +82,7 @@ const Home = ({ session }: { session: Session | null }) => {
       initial="hidden"
       animate="visible"
       variants={mainContainerVariants}
-      className={`w-full px-4 space-y-10 ${currentTrack ? "pb-40" : "pb-10"}`}
+      className={`w-full flex-1 flex flex-col px-4 space-y-10 ${currentTrack ? "pb-40" : "pb-10"}`}
     >
       {/* Hero Section */}
       <motion.section 
@@ -136,11 +136,11 @@ const Home = ({ session }: { session: Session | null }) => {
         </div>
       </motion.section>
 
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+      <div className="flex-1 grid grid-cols-1 gap-12 lg:grid-cols-2">
 
         {/* Tasks Section */}
-        <motion.section variants={sectionVariants} className="space-y-6">
-          <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4">
+        <motion.section variants={sectionVariants} className="flex flex-col space-y-6">
+          <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4 shrink-0">
             <div className="flex items-center gap-4">
               <Clock className="text-[#D4A843]" size={28} />
               <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F] md:text-3xl">
@@ -156,7 +156,7 @@ const Home = ({ session }: { session: Session | null }) => {
             </Link>
           </div>
 
-          <div className="space-y-4">
+          <div className="flex-1 flex flex-col">
             <AnimatePresence mode="wait">
               {loading ? (
                 <motion.div 
@@ -164,11 +164,12 @@ const Home = ({ session }: { session: Session | null }) => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="space-y-4"
+                  className="flex-1 flex flex-col gap-4"
                 >
                   {[...Array(5)].map((_, i) => (
-                    <div key={i} className="h-24 animate-pulse rounded-md border-2 border-[#0F1A0F]/20 bg-[#F5F8F4]" />
+                    <div key={i} className="h-24 shrink-0 animate-pulse rounded-md border-2 border-[#0F1A0F]/20 bg-[#F5F8F4]" />
                   ))}
+                  <div className="flex-1 animate-pulse rounded-md border-2 border-[#0F1A0F]/5 bg-[#F5F8F4]/50" />
                 </motion.div>
               ) : tasks.length > 0 ? (
                 <motion.div 
@@ -208,16 +209,16 @@ const Home = ({ session }: { session: Session | null }) => {
                   key="empty"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex flex-col gap-4"
+                  className="flex-1 flex flex-col gap-4"
                 >
-                  <div className="flex min-h-[150px] items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8">
+                  <div className="flex-1 flex items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8">
                     <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#5A6E5A]">
                       All clear. No tasks pending.
                     </p>
                   </div>
                   <Link
                     href="/tasks"
-                    className="group flex min-h-[60px] items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 text-center transition-all hover:border-[#3B6B4A] hover:bg-[#F5F8F4] p-4"
+                    className="group flex min-h-[60px] items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 text-center transition-all hover:border-[#3B6B4A] hover:bg-[#F5F8F4] p-4 shrink-0"
                   >
                     <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#5A6E5A] group-hover:text-[#3B6B4A]">
                       + Create a new task
@@ -230,8 +231,8 @@ const Home = ({ session }: { session: Session | null }) => {
         </motion.section>
 
         {/* Music Section */}
-        <motion.section variants={sectionVariants} className="space-y-6">
-          <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4">
+        <motion.section variants={sectionVariants} className="flex flex-col space-y-6">
+          <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4 shrink-0">
             <div className="flex items-center gap-4">
               <Heart className="text-[#8B4A2B]" size={28} fill="currentColor" />
               <h2 className="text-2xl font-black tracking-tight text-[#0F1A0F] md:text-3xl">
@@ -247,7 +248,7 @@ const Home = ({ session }: { session: Session | null }) => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="flex-1 flex flex-col">
             <AnimatePresence mode="wait">
               {likedTracks.length > 0 ? (
                 <motion.div 
@@ -255,7 +256,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3 }}
-                  className="col-span-full grid grid-cols-3 gap-4"
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-4"
                 >
                   {likedTracks.slice(0, 6).map((track) => (
                     <div
@@ -291,7 +292,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   key="no-music"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="col-span-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center min-h-[300px] md:min-h-[550px] p-8"
+                  className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8"
                 >
                   <p className="text-sm font-bold uppercase tracking-[0.25em] text-[#5A6E5A]">
                     No tracks saved yet.
