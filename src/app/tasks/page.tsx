@@ -163,7 +163,7 @@ const Tasks = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <DialogDemo />
+            <DialogDemo onSuccess={fetchTasks} />
           </div>
         </div>
 
@@ -297,7 +297,7 @@ const Tasks = () => {
                       </div>
 
                       <div className="flex items-center gap-3 md:self-center">
-                        <DialogDemo task={task} />
+                        <DialogDemo task={task} onSuccess={fetchTasks} />
                         <button
                           onClick={() => deleteTask(task.id)}
                           className="brutal-btn brutal-btn-accent"

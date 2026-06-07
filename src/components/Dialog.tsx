@@ -31,7 +31,15 @@ interface Task {
   is_done: boolean;
 }
 
-export function DialogDemo({ task, onOpenChange }: { task?: Task; onOpenChange?: (open: boolean) => void }) {
+export function DialogDemo({ 
+  task, 
+  onOpenChange,
+  onSuccess 
+}: { 
+  task?: Task; 
+  onOpenChange?: (open: boolean) => void;
+  onSuccess?: () => void;
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -65,8 +73,11 @@ export function DialogDemo({ task, onOpenChange }: { task?: Task; onOpenChange?:
 
       if (res.ok) {
         handleOpenChange(false);
-        router.refresh();
-        if (typeof window !== "undefined") window.location.reload();
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          router.refresh();
+        }
       }
     } catch (error) {
       console.error("Failed to save task:", error);
