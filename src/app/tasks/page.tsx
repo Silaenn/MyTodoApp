@@ -249,9 +249,9 @@ const Tasks = () => {
               initial="hidden"
               animate="visible"
               variants={listContainerVariants}
-              className="h-full overflow-y-auto custom-scrollbar overflow-x-hidden"
+              className="h-full overflow-y-auto custom-scrollbar scrollbar-gutter-stable"
             >
-              <div className="min-h-full flex flex-col gap-4">
+              <div className="min-h-full flex flex-col gap-4 px-4 pt-2 pb-2">
                 {filteredAndSortedTasks.length > 0 ? (
                   filteredAndSortedTasks.map((task) => (
                     <div

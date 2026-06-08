@@ -225,9 +225,9 @@ const Musics = () => {
               initial="hidden"
               animate="visible"
               variants={contentVariants}
-              className="h-full overflow-y-auto custom-scrollbar overflow-x-hidden flex flex-col"
+              className="h-full overflow-y-auto custom-scrollbar flex flex-col scrollbar-gutter-stable"
             >
-              <div className="flex-1 flex flex-col">
+              <div className="flex-1 flex flex-col px-4 pt-2 pb-2">
                 {/* Liked Playlist Section */}
                 {likedTracks.length > 0 && !searchExecuted && (
                   <div className="mb-12 shrink-0">

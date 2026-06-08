@@ -119,7 +119,7 @@ body {
 
 /* Custom Scrollbar Class */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 14px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -135,6 +135,10 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #3B6B4A;
+}
+
+.scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
 }
 
 /* Typography */
