@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, Play, Heart, Disc } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
+import { MusicSpacer } from "@/components/MusicSpacer";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SearchResult {
@@ -42,7 +43,7 @@ const Musics = () => {
   const [searchExecuted, setSearchExecuted] = useState(false);
   
   // Extract state from music store
-  const { playTrack, toggleLike, isLiked, likedTracks, currentTrack } = useMusicStore();
+  const { playTrack, toggleLike, isLiked, likedTracks } = useMusicStore();
 
   const fetchRecommendations = async () => {
     const randomKeywords = ["lofi chill", "trending music 2024", "aesthetic vibes", "indie gems", "gaming beats"];
@@ -282,12 +283,11 @@ const Musics = () => {
                 </div>
               </div>
               
-              {/* Dynamic Spacer */}
-              <div className={`transition-all duration-300 ${currentTrack ? "h-32" : "h-0"} shrink-0`} />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      <MusicSpacer />
     </div>
   );
 };

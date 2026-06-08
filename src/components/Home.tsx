@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock, Heart, Play } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
+import { MusicSpacer } from "@/components/MusicSpacer";
 import { motion, AnimatePresence } from "framer-motion";
 import { Session } from "next-auth";
 
@@ -46,7 +47,7 @@ const Home = ({ session }: { session: Session | null }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [totalActiveTasks, setTotalActiveTasks] = useState(0);
   const [loading, setLoading] = useState(true);
-  const { likedTracks, playTrack, currentTrack } = useMusicStore();
+  const { likedTracks, playTrack } = useMusicStore();
 
   const fetchTasks = async () => {
     try {
@@ -310,8 +311,7 @@ const Home = ({ session }: { session: Session | null }) => {
         </motion.section>
       </div>
 
-      {/* Dynamic Spacer */}
-      <div className={`transition-all duration-300 shrink-0 ${currentTrack ? "h-32" : "h-0"}`} />
+      <MusicSpacer />
     </motion.div>
   );
 };

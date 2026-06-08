@@ -13,7 +13,7 @@ import {
 import { ChevronDown, Trash2, Search, ArrowUpDown, CheckCircle2, Circle } from "lucide-react";
 import { DialogDemo } from "@/components/Dialog";
 import { motion, AnimatePresence } from "framer-motion";
-import { useMusicStore } from "@/lib/music-store";
+import { MusicSpacer } from "@/components/MusicSpacer";
 
 interface Task {
   id: string;
@@ -60,8 +60,7 @@ const Tasks = () => {
   const [sortBy, setSortBy] = useState("newest");
   const [loading, setLoading] = useState(true);
   
-  // Get music store state
-  const { currentTrack } = useMusicStore();
+
 
   const fetchTasks = async () => {
     try {
@@ -315,13 +314,12 @@ const Tasks = () => {
                     </p>
                   </div>
                 )}
-                {/* Dynamic Spacer */}
-                <div className={`transition-all duration-300 ${currentTrack ? "h-32" : "h-0"}`} />
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      <MusicSpacer />
     </div>
   );
 };
