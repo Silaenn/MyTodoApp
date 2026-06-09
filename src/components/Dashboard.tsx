@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { LogOut, X, User, Home, CheckSquare, Music } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 const navLinks = [
   { label: "Home", href: "/", icon: Home },
@@ -19,7 +19,7 @@ type UserProfile = {
   name?: string | null;
 };
 
-const sidebarVariants = {
+const sidebarVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -30,7 +30,7 @@ const sidebarVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { x: -20, opacity: 0 },
   visible: {
     x: 0,

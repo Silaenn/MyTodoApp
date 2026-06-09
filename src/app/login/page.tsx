@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { LogIn, Loader2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +17,7 @@ const LoginPage = () => {
     }
   };
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
@@ -30,7 +30,7 @@ const LoginPage = () => {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     visible: {
       opacity: 1,
@@ -39,7 +39,7 @@ const LoginPage = () => {
     },
   };
 
-  const floatingVariants = (delay: number) => ({
+  const floatingVariants: (delay: number) => Variants = (delay: number) => ({
     initial: { y: 0 },
     animate: {
       y: [0, -15, 0],

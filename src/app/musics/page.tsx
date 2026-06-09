@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Search, Play, Heart, Disc } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 import { MusicSpacer } from "@/components/MusicSpacer";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 interface SearchResult {
   id: string;
@@ -16,7 +16,7 @@ interface SearchResult {
 }
 
 // Animation Variants
-const headerVariants = {
+const headerVariants: Variants = {
   hidden: { opacity: 0, y: -20 },
   visible: { 
     opacity: 1, 
@@ -25,7 +25,7 @@ const headerVariants = {
   }
 };
 
-const contentVariants = {
+const contentVariants: Variants = {
   hidden: { opacity: 0, scale: 0.99 },
   visible: { 
     opacity: 1, 

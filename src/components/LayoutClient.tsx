@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import Dashboard from "@/components/Dashboard";
 import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 type SessionUser = {
   id?: string | null;
@@ -17,7 +17,7 @@ type SessionLike = {
   user?: SessionUser | null;
 } | null;
 
-const contentVariants = {
+const contentVariants: Variants = {
   hidden: { opacity: 0, x: 20 },
   visible: {
     opacity: 1,
