@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Trash2, Search, ArrowUpDown, CheckCircle2, Circle } from "lucide-react";
 import { DialogDemo } from "@/components/Dialog";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { MusicSpacer } from "@/components/MusicSpacer";
 
 interface Task {
@@ -35,7 +35,7 @@ const categoryColors: Record<string, string> = {
 };
 
 // Animation Variants
-const headerVariants = {
+const headerVariants: Variants = {
   hidden: { opacity: 0, y: -20 },
   visible: { 
     opacity: 1, 
@@ -44,7 +44,7 @@ const headerVariants = {
   }
 };
 
-const listContainerVariants = {
+const listContainerVariants: Variants = {
   hidden: { opacity: 0, scale: 0.99 },
   visible: { 
     opacity: 1, 

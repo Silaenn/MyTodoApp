@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Clock, Heart, Play } from "lucide-react";
+import { ArrowRight, Clock, Heart, Play } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 import { MusicSpacer } from "@/components/MusicSpacer";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Session } from "next-auth";
 
 interface Task {
@@ -16,7 +16,7 @@ interface Task {
 }
 
 // Parent container for all sections
-const mainContainerVariants = {
+const mainContainerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -28,7 +28,7 @@ const mainContainerVariants = {
 };
 
 // Animation for each major block (Hero, Task Section, Music Section)
-const sectionVariants = {
+const sectionVariants: Variants = {
   hidden: { opacity: 0, y: 30, scale: 0.98 },
   visible: {
     opacity: 1,
