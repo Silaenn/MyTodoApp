@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Clock, Heart, Play } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 import { MusicSpacer } from "@/components/MusicSpacer";
@@ -266,9 +267,11 @@ const Home = ({ session }: { session: Session | null }) => {
                       className="group flex flex-col rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-2 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
                     >
                       <div className="relative mb-2 aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
-                        <img
-                          src={track.thumbnail}
+                        <Image
+                          src={track.thumbnail || "images/no_image.png"}
                           alt={track.title}
+                          fill
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                           className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
                         />
                         <button

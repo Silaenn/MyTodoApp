@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { LogOut, X, User, Home, CheckSquare, Music } from "lucide-react";
@@ -131,10 +132,13 @@ const Dashboard = ({
             <div className="flex items-center gap-3 rounded-md border-2 border-brutal-ink bg-brutal-paper p-4 shadow-brutal-sm">
               <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-brutal-ink flex-shrink-0 shadow-brutal-sm">
                 {user?.image ? (
-                  <img
-                    src={user.image ?? undefined}
+                  <Image
+                    src={user.image || "/images/no_image.png"}
                     alt={user.name ?? "User"}
+                    width={44}
+                    height={44}
                     className="w-full h-full object-cover"
+                    priority
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-brutal-secondary">

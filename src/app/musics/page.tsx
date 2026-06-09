@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { Search, Play, Heart, Disc } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 import { MusicSpacer } from "@/components/MusicSpacer";
@@ -104,9 +105,11 @@ const Musics = () => {
   const TrackCard = ({ track, compact = false, list }: { track: SearchResult; compact?: boolean, list: SearchResult[] }) => (
     <div className={`brutal-card group flex flex-col overflow-hidden ${compact ? "p-2 sm:p-3" : "p-4"}`}>
       <div className="relative aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
-        <img
-          src={track.thumbnail}
+        <Image
+          src={track.thumbnail || "images/no_image.png"}
           alt={track.title}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
           className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-[#3B6B4A]/40 opacity-0 transition-all group-hover:opacity-100">

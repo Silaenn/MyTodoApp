@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
+import Image from "next/image";
 import { Repeat1, Repeat, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, ListMusic, X } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 
@@ -80,13 +81,15 @@ const Footer = () => {
 
         {/* Track Info */}
         <div className="flex items-center gap-4 sm:gap-6 w-[35%]">
-          <div className="flex-shrink-0 overflow-hidden rounded-sm border-2 border-brutal-ink shadow-brutal-sm">
-            <img
-              className={`w-14 h-14 sm:w-16 sm:h-16 object-cover transition-all duration-500 ${
+          <div className="flex-shrink-0 overflow-hidden rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative w-14 h-14 sm:w-16 sm:h-16">
+            <Image
+              className={`object-cover transition-all duration-500 ${
                 isPlaying ? "grayscale-0 scale-105" : "grayscale opacity-60"
               }`}
-              src={currentTrack.thumbnail || "/images/BG-3.jpg"}
+              src={currentTrack.thumbnail || "/images/no_image.png"}
               alt={currentTrack.title}
+              fill
+              sizes="64px"
             />
           </div>
           <div className="flex flex-col min-w-0">
