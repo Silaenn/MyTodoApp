@@ -181,8 +181,9 @@ const Home = ({ session }: { session: Session | null }) => {
                   className="space-y-4"
                 >
                   {tasks.map((task) => (
-                    <div
+                    <Link
                       key={task.id}
+                      href="/tasks"
                       className="min-h-[6rem] group flex items-center justify-between gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-5 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-[#3B6B4A] hover:-translate-x-px hover:-translate-y-px"
                     >
                       <div className="flex items-center gap-4">
@@ -198,11 +199,11 @@ const Home = ({ session }: { session: Session | null }) => {
                           </span>
                         </div>
                       </div>
-                      <CheckCircle2
-                        className="shrink-0 text-[#0F1A0F]/20 transition-colors group-hover:text-[#3B6B4A]"
+                      <ArrowRight
+                        className="shrink-0 text-[#0F1A0F]/20 transition-all group-hover:text-[#3B6B4A] group-hover:translate-x-1"
                         size={22}
                       />
-                    </div>
+                    </Link>
                   ))}
                 </motion.div>
               ) : (
