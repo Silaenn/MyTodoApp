@@ -96,23 +96,42 @@ export const useMusicStore = create<MusicStore>()(
         }
       },
 
-      nextTrack: () => {
-        const { queue, currentIndex, shuffle, repeat, playTrack } = get();
-        if (queue.length === 0) return;
+      nextTrack: async () => {
+        const { currentTrack, playTrack } = get();
+        if (!currentTrack) return;
 
-        let nextIndex = currentIndex;
-        if (shuffle) {
-          nextIndex = Math.floor(Math.random() * queue.length);
-        } else {
-          nextIndex = (currentIndex + 1) % queue.length;
-          // If it reached the end and repeat is none, stop
-          if (nextIndex === 0 && repeat === "none" && currentIndex !== -1) {
-            set({ isPlaying: false });
-            return;
+        try {
+          // Spotify-style Radio Mode: Langsung cari rekomendasi berdasarkan lagu yang baru selesai
+          const res = await fetch(`http://localhost:8000/recommendations/${currentTrack.id}`);
+          const recommendations = await res.json();
+          
+          if (recommendations && recommendations.length > 0) {
+            // Pilih lagu pertama dari rekomendasi (biasanya yang paling relevan/segenre)
+            const nextRecommendedTrack = recommendations[0];
+            
+            // Masukkan ke antrean dan putar langsung
+            set((state) => ({
+              queue: [...state.queue, nextRecommendedTrack],
+              currentIndex: state.queue.length
+            }));
+            
+            playTrack(nextRecommendedTrack);
+          } else {
+            // Fallback jika rekomendasi gagal: gunakan logika queue biasa
+            const { queue, currentIndex, shuffle, repeat } = get();
+            if (queue.length === 0) return;
+
+            let nextIndex = (currentIndex + 1) % queue.length;
+            if (nextIndex === 0 && repeat === "none") {
+              set({ isPlaying: false });
+              return;
+            }
+            playTrack(queue[nextIndex]);
           }
+        } catch (error) {
+          console.error("Failed to fetch recommendations for autoplay:", error);
+          set({ isPlaying: false });
         }
-        
-        playTrack(queue[nextIndex]);
       },
 
       prevTrack: () => {

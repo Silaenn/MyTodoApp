@@ -152,18 +152,25 @@ const Footer = () => {
             <span className="text-[10px] font-bold text-brutal-muted uppercase tracking-widest tabular-nums">
               {formatTime(progress)}
             </span>
-            <div
-              className="h-3 flex-1 rounded-sm border-2 border-brutal-ink bg-brutal-parchment relative cursor-pointer overflow-hidden"
-              onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const percent = (e.clientX - rect.left) / rect.width;
-                if (audioRef.current) audioRef.current.currentTime = percent * duration;
-              }}
-            >
-              <div
-                className="absolute top-0 left-0 h-full bg-brutal-primary transition-all"
-                style={{ width: `${(progress / duration) * 100}%` }}
+            <div className="relative flex-1 h-3 group">
+              <input
+                type="range"
+                min={0}
+                max={duration || 0}
+                value={progress}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  if (audioRef.current) audioRef.current.currentTime = val;
+                  setProgress(val);
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
+              <div className="h-full w-full rounded-sm border-2 border-brutal-ink bg-brutal-parchment overflow-hidden">
+                <div
+                  className="h-full bg-brutal-primary transition-all duration-100"
+                  style={{ width: `${(progress / (duration || 1)) * 100}%` }}
+                />
+              </div>
             </div>
             <span className="text-[10px] font-bold text-brutal-muted uppercase tracking-widest tabular-nums">
               {formatTime(duration)}
@@ -176,20 +183,27 @@ const Footer = () => {
           <button className="text-brutal-muted hover:text-brutal-primary transition-colors">
             <ListMusic size={24} />
           </button>
-          <div className="flex items-center gap-3 group">
+          <div className="flex items-center gap-3 group relative h-3 w-28">
             <Volume2 size={22} className="text-brutal-muted" />
-            <div 
-              className="h-3 w-28 rounded-sm border-2 border-brutal-ink bg-brutal-parchment relative cursor-pointer overflow-hidden"
-              onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const newVolume = (e.clientX - rect.left) / rect.width;
-                setVolume(Math.max(0, Math.min(1, newVolume)));
-              }}
-            >
-              <div 
-                className="absolute top-0 left-0 h-full bg-brutal-secondary" 
-                style={{ width: `${volume * 100}%` }}
+            <div className="relative flex-1 h-full">
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={volume}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  setVolume(val);
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
+              <div className="h-full w-full rounded-sm border-2 border-brutal-ink bg-brutal-parchment overflow-hidden">
+                <div 
+                  className="h-full bg-brutal-secondary transition-all" 
+                  style={{ width: `${volume * 100}%` }}
+                />
+              </div>
             </div>
           </div>
         </div>

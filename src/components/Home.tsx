@@ -48,7 +48,10 @@ const Home = ({ session }: { session: Session | null }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [totalActiveTasks, setTotalActiveTasks] = useState(0);
   const [loading, setLoading] = useState(true);
-  const { likedTracks, playTrack } = useMusicStore();
+  
+  // Use selectors to prevent unnecessary re-renders
+  const likedTracks = useMusicStore((state) => state.likedTracks);
+  const playTrack = useMusicStore((state) => state.playTrack);
 
   const fetchTasks = async () => {
     try {

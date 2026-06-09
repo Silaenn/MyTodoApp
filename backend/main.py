@@ -56,6 +56,43 @@ async def get_stream_url(url: str = Query(...)):
         info = ydl.extract_info(url, download=False)
         return {"stream_url": info.get("url"), "title": info.get("title")}
 
+
+@app.get("/recommendations/{video_id}")
+async def get_recommendations(video_id: str):
+    ydl_opts = {
+        'quiet': True,
+        'extract_flat': True,
+        'skip_download': True,
+    }
+
+    url = f"https://www.youtube.com/watch?v={video_id}"
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        try:
+            # Kita mengambil info video saat ini, yt-dlp akan menyertakan 'related_videos' di metadata
+            info = ydl.extract_info(url, download=False)
+
+            # YouTube biasanya memberikan related videos dalam entri atau metadata khusus
+            related = info.get('entries') or info.get('related_videos') or []
+
+            recommendations = []
+            for entry in related:
+                if entry.get("id"):
+                    recommendations.append({
+                        "id": entry.get("id"),
+                        "title": entry.get("title"),
+                        "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
+                        "artist": entry.get("uploader") or entry.get("artist") or "Unknown Artist",
+                        "url": f"https://www.youtube.com/watch?v={entry.get('id')}"
+                    })
+                if len(recommendations) >= 10:
+                    break
+
+            return recommendations
+        except Exception as e:
+            print(f"Error fetching recommendations: {e}")
+            return []
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

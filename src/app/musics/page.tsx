@@ -43,8 +43,11 @@ const Musics = () => {
   const [initialLoading, setInitialLoading] = useState(true);
   const [searchExecuted, setSearchExecuted] = useState(false);
   
-  // Extract state from music store
-  const { playTrack, toggleLike, isLiked, likedTracks } = useMusicStore();
+  // Optimize state extraction from music store using selectors
+  const playTrack = useMusicStore((state) => state.playTrack);
+  const toggleLike = useMusicStore((state) => state.toggleLike);
+  const isLiked = useMusicStore((state) => state.isLiked);
+  const likedTracks = useMusicStore((state) => state.likedTracks);
 
   const fetchRecommendations = async () => {
     const randomKeywords = ["lofi chill", "trending music 2024", "aesthetic vibes", "indie gems", "gaming beats"];
