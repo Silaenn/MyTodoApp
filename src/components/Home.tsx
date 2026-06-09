@@ -271,7 +271,7 @@ const Home = ({ session }: { session: Session | null }) => {
                     >
                       <div className="relative mb-2 aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
                         <Image
-                          src={track.thumbnail || "images/no_image.png"}
+                          src={track.thumbnail || "/images/no_image.png"}
                           alt={track.title}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
