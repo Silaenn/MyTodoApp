@@ -180,7 +180,7 @@ const Tasks = () => {
           <div className="flex gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="brutal-btn brutal-btn-outline h-11 capitalize min-w-[140px] shadow-brutal-sm">
+                <button className="brutal-btn brutal-btn-outline h-11 capitalize flex-1 sm:min-w-[150px] whitespace-nowrap shadow-brutal-sm">
                   Filter: {category}
                   <ChevronDown size={15} />
                 </button>
@@ -204,7 +204,7 @@ const Tasks = () => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="brutal-btn brutal-btn-outline h-11 min-w-[140px] shadow-brutal-sm">
+                <button className="brutal-btn brutal-btn-outline h-11 flex-1 sm:min-w-[150px] whitespace-nowrap shadow-brutal-sm">
                   <ArrowUpDown size={15} />
                   Sort: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
                 </button>

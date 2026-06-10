@@ -115,7 +115,7 @@ const Home = ({ session }: { session: Session | null }) => {
           </div>
 
           <div className="grid w-full grid-cols-2 gap-4 md:w-auto">
-            <div className="rounded-md border-2 border-[#0F1A0F] bg-[#D4A843] p-5 text-center shadow-brutal">
+            <div className="rounded-md border-2 border-[#0F1A0F] bg-[#D4A843] p-3 sm:p-5 text-center shadow-brutal">
               {loading ? (
                 <div className="h-8 w-12 mx-auto animate-pulse rounded-sm bg-[#0F1A0F]/20" />
               ) : (
@@ -125,7 +125,7 @@ const Home = ({ session }: { session: Session | null }) => {
                 Active tasks
               </span>
             </div>
-            <div className="rounded-md border-2 border-[#0F1A0F] bg-[#3B6B4A] p-5 text-center shadow-brutal">
+            <div className="rounded-md border-2 border-[#0F1A0F] bg-[#3B6B4A] p-3 sm:p-5 text-center shadow-brutal">
               {loading ? (
                 <div className="h-8 w-12 mx-auto animate-pulse rounded-sm bg-[#F5F8F4]/20" />
               ) : (
@@ -144,7 +144,7 @@ const Home = ({ session }: { session: Session | null }) => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col lg:flex-row gap-10 min-h-0">
         {/* Tasks Section */}
-        <motion.section variants={sectionVariants} className="flex-1 flex flex-col space-y-6 min-h-0">
+        <motion.section variants={sectionVariants} className="lg:flex-1 flex flex-col space-y-6 min-h-0">
           <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4 shrink-0">
             <div className="flex items-center gap-4">
               <Clock className="text-[#D4A843]" size={28} />
@@ -237,7 +237,7 @@ const Home = ({ session }: { session: Session | null }) => {
         </motion.section>
 
         {/* Music Section */}
-        <motion.section variants={sectionVariants} className="flex-1 flex flex-col space-y-6 min-h-0">
+        <motion.section variants={sectionVariants} className="lg:flex-1 flex flex-col space-y-6 min-h-0">
           <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4 shrink-0">
             <div className="flex items-center gap-4">
               <Heart className="text-[#8B4A2B]" size={28} fill="currentColor" />
@@ -262,7 +262,7 @@ const Home = ({ session }: { session: Session | null }) => {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className="grid grid-cols-2 sm:grid-cols-3 gap-4 py-2"
+                className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4 py-2"
                 >
                   {likedTracks.slice(0, 6).map((track) => (
                     <div

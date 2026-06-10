@@ -70,7 +70,7 @@ const Footer = () => {
         onEnded={handleEnded}
       />
 
-      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-brutal-lg md:bottom-8 md:left-[20rem] md:right-8 sm:left-6 sm:right-6">
+      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-brutal-lg md:bottom-8 md:left-[18rem] md:right-8 sm:left-6 sm:right-6">
         {/* Close Button - Top Right Corner */}
         <button 
           onClick={stopMusic}
@@ -81,8 +81,8 @@ const Footer = () => {
         </button>
 
         {/* Track Info */}
-        <div className="flex items-center gap-4 sm:gap-6 w-[35%]">
-          <div className={`flex-shrink-0 overflow-hidden rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative w-14 h-14 sm:w-16 sm:h-16 ${isLoading ? "animate-pulse" : ""}`}>
+        <div className="flex items-center gap-2 sm:gap-6 w-[45%] md:w-[35%] lg:w-[30%]">
+          <div className={`flex-shrink-0 overflow-hidden rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative w-12 h-12 sm:w-16 sm:h-16 ${isLoading ? "animate-pulse" : ""}`}>
             <Image
               className={`object-cover transition-all duration-500 ${
                 isPlaying && !isLoading ? "grayscale-0 scale-105" : "grayscale opacity-60"
@@ -107,8 +107,8 @@ const Footer = () => {
         </div>
 
         {/* Controls */}
-        <div className="flex flex-col items-center gap-3 sm:gap-4 flex-1 px-4">
-          <div className="flex items-center gap-6 sm:gap-8">
+        <div className="flex flex-col items-center gap-3 sm:gap-4 flex-1 px-2 sm:px-4 min-w-0">
+          <div className="flex items-center gap-4 sm:gap-8 shrink-0">
             <button 
               onClick={toggleShuffle}
               className={`hidden sm:block transition-colors ${shuffle ? "text-brutal-primary" : "text-brutal-muted hover:text-brutal-primary"}`}
@@ -149,7 +149,7 @@ const Footer = () => {
           </div>
 
           {/* Progress Bar */}
-          <div className="hidden sm:flex items-center gap-4 w-full max-w-[600px]">
+          <div className="hidden md:flex items-center gap-4 w-full max-w-[600px]">
             <span className="text-[10px] font-bold text-brutal-muted uppercase tracking-widest tabular-nums">
               {formatTime(progress)}
             </span>
@@ -180,7 +180,7 @@ const Footer = () => {
         </div>
 
         {/* Volume */}
-        <div className="hidden lg:flex items-center gap-6 w-[35%] justify-end">
+        <div className="hidden lg:flex items-center gap-6 w-[30%] justify-end">
           <button className="text-brutal-muted hover:text-brutal-primary transition-colors">
             <ListMusic size={24} />
           </button>

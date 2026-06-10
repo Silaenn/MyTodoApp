@@ -237,7 +237,7 @@ const Musics = () => {
           </div>
           <button
             type="submit"
-            className="brutal-btn brutal-btn-primary px-8 shadow-brutal"
+            className="brutal-btn brutal-btn-primary px-4 sm:px-8 shadow-brutal"
           >
             Search
           </button>
@@ -278,7 +278,7 @@ const Musics = () => {
                         Liked <span className="text-[#3B6B4A]">playlist</span>
                       </h2>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 py-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 py-2">
                       {likedTracks.map((track) => (
                         <TrackCard key={track.id} track={track} compact onPlay={handlePlayLiked} />
                       ))}
@@ -308,7 +308,7 @@ const Musics = () => {
                 {/* Results Grid */}
                 <div className="flex-1 flex flex-col py-2">
                   {(searchExecuted ? results : weeklyPicks).length > 0 ? (
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                       {(searchExecuted ? results : weeklyPicks).map((track) => (
                         <TrackCard 
                           key={track.id} 

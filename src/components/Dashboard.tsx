@@ -67,7 +67,7 @@ const Dashboard = ({
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-[70] md:flex flex-col w-72 h-screen border-r-2 border-brutal-ink bg-brutal-parchment transition-transform duration-300 ${
+        className={`fixed left-0 top-0 z-[70] md:flex flex-col w-64 h-screen border-r-2 border-brutal-ink bg-brutal-parchment transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -93,7 +93,7 @@ const Dashboard = ({
               </div>
               <button
                 onClick={onClose}
-                className="md:hidden inline-flex items-center justify-center rounded-sm border-2 border-brutal-ink bg-brutal-paper p-2 shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+                className="md:hidden inline-flex items-center justify-center rounded-sm border-2 border-brutal-ink bg-brutal-paper p-3 shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
               >
                 <X size={20} className="text-brutal-ink" />
               </button>
