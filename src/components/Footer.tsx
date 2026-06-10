@@ -10,7 +10,8 @@ const Footer = () => {
   const { 
     currentTrack, isPlaying, streamUrl, setIsPlaying, 
     nextTrack, prevTrack, shuffle, toggleShuffle, 
-    repeat, toggleRepeat, volume, setVolume, stopMusic 
+    repeat, toggleRepeat, volume, setVolume, stopMusic,
+    isLoading 
   } = useMusicStore();
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -81,10 +82,10 @@ const Footer = () => {
 
         {/* Track Info */}
         <div className="flex items-center gap-4 sm:gap-6 w-[35%]">
-          <div className="flex-shrink-0 overflow-hidden rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative w-14 h-14 sm:w-16 sm:h-16">
+          <div className={`flex-shrink-0 overflow-hidden rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative w-14 h-14 sm:w-16 sm:h-16 ${isLoading ? "animate-pulse" : ""}`}>
             <Image
               className={`object-cover transition-all duration-500 ${
-                isPlaying ? "grayscale-0 scale-105" : "grayscale opacity-60"
+                isPlaying && !isLoading ? "grayscale-0 scale-105" : "grayscale opacity-60"
               }`}
               src={currentTrack.thumbnail || "/images/no_image.png"}
               alt={currentTrack.title}
@@ -93,13 +94,13 @@ const Footer = () => {
             />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="font-black tracking-tight text-base sm:text-lg leading-none truncate mb-1 text-brutal-ink">
+            <span className={`font-black tracking-tight text-base sm:text-lg leading-none truncate mb-1 text-brutal-ink ${isLoading ? "opacity-50" : ""}`}>
               {currentTrack.title}
             </span>
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-brutal-primary animate-pulse" />
+              <span className={`w-2 h-2 bg-brutal-primary ${isPlaying ? "animate-pulse" : ""}`} />
               <span className="text-[10px] sm:text-xs font-bold text-brutal-primary uppercase tracking-brutal truncate">
-                {currentTrack.artist}
+                {isLoading ? "Loading Stream..." : currentTrack.artist}
               </span>
             </div>
           </div>

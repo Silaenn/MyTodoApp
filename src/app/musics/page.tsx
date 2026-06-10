@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import Image from "next/image";
 import { Search, Play, Heart, Disc } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
@@ -35,77 +35,20 @@ const contentVariants: Variants = {
   }
 };
 
-const Musics = () => {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [recommendations, setRecommendations] = useState<SearchResult[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [searchExecuted, setSearchExecuted] = useState(false);
-  
-  // Optimize state extraction from music store using selectors
-  const playTrack = useMusicStore((state) => state.playTrack);
+// Memoized TrackCard to prevent flickering
+const TrackCard = memo(({ 
+  track, 
+  compact = false, 
+  onPlay 
+}: { 
+  track: SearchResult; 
+  compact?: boolean; 
+  onPlay: (t: SearchResult) => void;
+}) => {
   const toggleLike = useMusicStore((state) => state.toggleLike);
   const isLiked = useMusicStore((state) => state.isLiked);
-  const likedTracks = useMusicStore((state) => state.likedTracks);
 
-  const fetchRecommendations = async () => {
-    const randomKeywords = ["lofi chill", "trending music 2024", "aesthetic vibes", "indie gems", "gaming beats"];
-    const randomSearch = randomKeywords[Math.floor(Math.random() * randomKeywords.length)];
-    
-    try {
-      const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(randomSearch)}`);
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setRecommendations(data);
-      } else {
-        setRecommendations([]);
-      }
-    } catch (error) {
-      console.error("Failed to fetch recommendations:", error);
-    } finally {
-      setInitialLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRecommendations();
-  }, []);
-
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) {
-      setSearchExecuted(false);
-      setResults([]);
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(query)}`);
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setResults(data);
-      } else {
-        setResults([]);
-      }
-      setSearchExecuted(true);
-    } catch (error) {
-      console.error("Search failed:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // If user clears the input, we show recommendations again
-  useEffect(() => {
-    if (query === "") {
-      setSearchExecuted(false);
-      setResults([]);
-    }
-  }, [query]);
-
-  const TrackCard = ({ track, compact = false, list }: { track: SearchResult; compact?: boolean, list: SearchResult[] }) => (
+  return (
     <div className={`brutal-card group flex flex-col overflow-hidden ${compact ? "p-2 sm:p-3" : "p-4"}`}>
       <div className="relative aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
         <Image
@@ -117,7 +60,7 @@ const Musics = () => {
         />
         <div className="absolute inset-0 flex items-center justify-center bg-[#3B6B4A]/40 opacity-0 transition-all group-hover:opacity-100">
           <button
-            onClick={() => playTrack(track, list)}
+            onClick={() => onPlay(track)}
             className="rounded-full border-2 border-[#F5F8F4] bg-[#F5F8F4] p-3 text-[#0F1A0F] shadow-brutal-sm transition-all hover:scale-105"
           >
             <Play className="fill-current ml-0.5" size={20} />
@@ -146,7 +89,7 @@ const Musics = () => {
 
       {!compact && (
         <button
-          onClick={() => playTrack(track, list)}
+          onClick={() => onPlay(track)}
           className="mt-3 w-full brutal-btn brutal-btn-secondary py-2 text-xs shadow-brutal-sm"
         >
           Play track
@@ -154,6 +97,97 @@ const Musics = () => {
       )}
     </div>
   );
+});
+
+TrackCard.displayName = "TrackCard";
+
+const Musics = () => {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [weeklyPicks, setWeeklyPicks] = useState<SearchResult[]>([]);
+  const [radioQueue, setRadioQueue] = useState<SearchResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [searchExecuted, setSearchExecuted] = useState(false);
+  
+  const playTrack = useMusicStore((state) => state.playTrack);
+  const likedTracks = useMusicStore((state) => state.likedTracks);
+
+  const fetchWeeklyPicks = useCallback(async () => {
+    const randomKeywords = ["lofi chill", "trending music 2024", "aesthetic vibes", "indie gems", "gaming beats"];
+    const randomSearch = randomKeywords[Math.floor(Math.random() * randomKeywords.length)];
+    
+    try {
+      const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(randomSearch)}`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setWeeklyPicks(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch picks:", error);
+    } finally {
+      setInitialLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchWeeklyPicks();
+  }, [fetchWeeklyPicks]);
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) {
+      setSearchExecuted(false);
+      setResults([]);
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        // Update results immediately
+        setResults(data);
+        setSearchExecuted(true);
+        
+        // Background fetch for Radio Mode WITHOUT affecting results state
+        if (data.length > 0) {
+          fetch(`http://localhost:8000/recommendations/${data[0].id}`)
+            .then(r => r.json())
+            .then(recData => {
+              if (Array.isArray(recData)) {
+                setRadioQueue(recData);
+              }
+            }).catch(err => console.error("Radio fetch failed", err));
+        }
+      }
+    } catch (error) {
+      console.error("Search failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePlayWithRadio = useCallback((track: SearchResult) => {
+    const fullQueue = [track, ...radioQueue.filter(r => r.id !== track.id)];
+    playTrack(track, fullQueue);
+  }, [radioQueue, playTrack]);
+
+  const handlePlayLiked = useCallback((track: SearchResult) => {
+    playTrack(track, likedTracks);
+  }, [likedTracks, playTrack]);
+
+  const handlePlayWeekly = useCallback((track: SearchResult) => {
+    playTrack(track, weeklyPicks);
+  }, [weeklyPicks, playTrack]);
+
+  useEffect(() => {
+    if (query === "") {
+      setSearchExecuted(false);
+      setResults([]);
+    }
+  }, [query]);
 
   return (
     <div className="w-full h-[calc(100vh-60px)] flex flex-col overflow-hidden">
@@ -213,7 +247,7 @@ const Musics = () => {
       {/* Content Area */}
       <div className="flex-1 min-h-0 relative">
         <AnimatePresence mode="wait">
-          {loading || (initialLoading && !recommendations.length) ? (
+          {loading || (initialLoading && !weeklyPicks.length) ? (
             <motion.div 
               key="loading"
               initial={{ opacity: 0 }}
@@ -246,13 +280,13 @@ const Musics = () => {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 py-2">
                       {likedTracks.map((track) => (
-                        <TrackCard key={track.id} track={track} compact list={likedTracks} />
+                        <TrackCard key={track.id} track={track} compact onPlay={handlePlayLiked} />
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Title Section (Recommendations or Results) */}
+                {/* Title Section (Weekly Picks or Results) */}
                 <div className="mb-6 flex items-center gap-4 border-b-2 border-[#0F1A0F] pb-4 shrink-0">
                   {!searchExecuted ? (
                     <>
@@ -273,10 +307,14 @@ const Musics = () => {
 
                 {/* Results Grid */}
                 <div className="flex-1 flex flex-col py-2">
-                  {(!searchExecuted ? recommendations : results).length > 0 ? (
+                  {(searchExecuted ? results : weeklyPicks).length > 0 ? (
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                      {(!searchExecuted ? recommendations : results).map((m) => (
-                        <TrackCard key={m.id} track={m} list={!searchExecuted ? recommendations : results} />
+                      {(searchExecuted ? results : weeklyPicks).map((track) => (
+                        <TrackCard 
+                          key={track.id} 
+                          track={track} 
+                          onPlay={searchExecuted ? handlePlayWithRadio : handlePlayWeekly}
+                        />
                       ))}
                     </div>
                   ) : searchExecuted && !loading ? (
