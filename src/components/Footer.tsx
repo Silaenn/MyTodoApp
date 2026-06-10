@@ -70,7 +70,7 @@ const Footer = () => {
         onEnded={handleEnded}
       />
 
-      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-brutal-lg md:bottom-8 md:left-[18rem] md:right-8 sm:left-6 sm:right-6">
+      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-brutal-lg md:bottom-8 md:left-[7rem] lg:left-[20rem] md:right-8 sm:left-6 sm:right-6">
         {/* Close Button - Top Right Corner */}
         <button 
           onClick={stopMusic}
@@ -81,7 +81,7 @@ const Footer = () => {
         </button>
 
         {/* Track Info */}
-        <div className="flex items-center gap-2 sm:gap-6 w-[45%] md:w-[35%] lg:w-[30%]">
+        <div className="flex items-center gap-2 sm:gap-6 w-[40%] md:w-[35%] lg:w-[30%]">
           <div className={`flex-shrink-0 overflow-hidden rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative w-12 h-12 sm:w-16 sm:h-16 ${isLoading ? "animate-pulse" : ""}`}>
             <Image
               className={`object-cover transition-all duration-500 ${
@@ -149,7 +149,7 @@ const Footer = () => {
           </div>
 
           {/* Progress Bar */}
-          <div className="hidden md:flex items-center gap-4 w-full max-w-[600px]">
+          <div className="hidden sm:flex items-center gap-4 w-full max-w-[600px]">
             <span className="text-[10px] font-bold text-brutal-muted uppercase tracking-widest tabular-nums">
               {formatTime(progress)}
             </span>
@@ -180,12 +180,12 @@ const Footer = () => {
         </div>
 
         {/* Volume */}
-        <div className="hidden lg:flex items-center gap-6 w-[30%] justify-end">
-          <button className="text-brutal-muted hover:text-brutal-primary transition-colors">
+        <div className="flex items-center gap-3 sm:gap-6 w-[30%] justify-end">
+          <button className="hidden sm:block text-brutal-muted hover:text-brutal-primary transition-colors">
             <ListMusic size={24} />
           </button>
-          <div className="flex items-center gap-3 group relative h-3 w-28">
-            <Volume2 size={22} className="text-brutal-muted" />
+          <div className="flex items-center gap-2 sm:gap-3 group relative h-3 w-16 sm:w-28">
+            <Volume2 size={20} className="text-brutal-muted shrink-0" />
             <div className="relative flex-1 h-full">
               <input
                 type="range"
