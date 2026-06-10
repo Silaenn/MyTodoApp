@@ -70,7 +70,7 @@ const Footer = () => {
         onEnded={handleEnded}
       />
 
-      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-brutal-lg md:bottom-8 md:left-[19rem] md:right-8">
+      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-brutal-lg md:bottom-8 md:left-[20rem] md:right-8 sm:left-6 sm:right-6">
         {/* Close Button - Top Right Corner */}
         <button 
           onClick={stopMusic}

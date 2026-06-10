@@ -90,7 +90,7 @@ export function DialogDemo({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {task ? (
-          <button className="brutal-btn brutal-btn-outline p-2">
+          <button className="brutal-btn brutal-btn-outline p-2.5">
             <Edit2 size={15} />
           </button>
         ) : (
@@ -101,7 +101,7 @@ export function DialogDemo({
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[460px] z-[100] border-4 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-lg rounded-none">
+      <DialogContent className="sm:max-w-[460px] z-[100] border-4 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-lg rounded-lg">
         <form onSubmit={handleSubmit}>
           <DialogHeader className="border-b-2 border-[#0F1A0F] pb-4 mb-5">
             <DialogTitle className="text-3xl font-black italic">

@@ -142,7 +142,7 @@ const Home = ({ session }: { session: Session | null }) => {
       </motion.section>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col lg:flex-row gap-12 min-h-0">
+      <div className="flex-1 flex flex-col lg:flex-row gap-10 min-h-0">
         {/* Tasks Section */}
         <motion.section variants={sectionVariants} className="flex-1 flex flex-col space-y-6 min-h-0">
           <div className="flex items-center justify-between border-b-2 border-[#0F1A0F] pb-4 shrink-0">

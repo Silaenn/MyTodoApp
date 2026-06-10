@@ -100,7 +100,7 @@ const Dashboard = ({
             </motion.div>
 
             {/* Nav */}
-            <nav className="space-y-3">
+            <nav className="space-y-4">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 const Icon = link.icon;

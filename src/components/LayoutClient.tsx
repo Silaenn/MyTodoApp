@@ -108,7 +108,7 @@ export default function LayoutClient({
           initial="hidden"
           animate="visible"
           variants={contentVariants}
-          className="flex-1 flex flex-col"
+          className="flex-1 flex flex-col w-full"
         >
           {children}
         </motion.div>
