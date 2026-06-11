@@ -204,7 +204,7 @@ const Musics = () => {
             <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
               Music search
             </p>
-            <h1 className="mt-2 text-2xl sm:text-3xl text-[#0F1A0F]">
+            <h1 className="mt-2 sm:mt-3 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#0F1A0F] leading-tight">
               Vibe <span className="text-[#3B6B4A]">discovery</span>
             </h1>
           </div>

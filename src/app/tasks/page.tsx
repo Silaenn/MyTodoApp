@@ -153,10 +153,10 @@ const Tasks = () => {
             <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
               Task board
             </p>
-            <h1 className="mt-1 text-2xl sm:text-3xl text-[#0F1A0F]">
+            <h1 className="mt-2 sm:mt-3 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#0F1A0F] leading-tight">
               Manage <span className="text-[#3B6B4A]">tasks</span>
             </h1>
-            <p className="mt-1 text-xs sm:text-sm font-bold text-[#5A6E5A]">
+            <p className="mt-3 sm:mt-4 text-xs sm:text-sm font-bold text-[#5A6E5A] md:text-base">
               {tasks.length} total · {tasks.filter(t => !t.is_done).length} remaining
             </p>
           </div>
