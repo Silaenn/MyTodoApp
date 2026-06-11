@@ -203,7 +203,7 @@ const Home = ({ session }: { session: Session | null }) => {
                         </div>
                       </div>
                       <ArrowRight
-                        className="shrink-0 text-[#0F1A0F]/20 transition-all group-hover:text-[#3B6B4A] group-hover:translate-x-1 sm:size-5.5"
+                        className="shrink-0 text-[#0F1A0F]/20 transition-all group-hover:text-[#3B6B4A] group-hover:translate-x-1 sm:size-5"
                         size={18}
                       />
                     </Link>
