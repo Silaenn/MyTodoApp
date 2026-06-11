@@ -90,13 +90,13 @@ export function DialogDemo({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {task ? (
-          <button className="brutal-btn brutal-btn-outline p-2.5">
+          <button className="brutal-btn brutal-btn-outline p-2.5 w-full sm:w-auto justify-center">
             <Edit2 size={15} />
           </button>
         ) : (
-          <button className="brutal-btn brutal-btn-primary">
+          <button className="brutal-btn brutal-btn-primary px-3 sm:px-6">
             <Plus size={18} className="stroke-[3px]" />
-            Add task
+            <span className="text-sm sm:text-base">Add task</span>
           </button>
         )}
       </DialogTrigger>

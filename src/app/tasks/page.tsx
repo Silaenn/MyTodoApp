@@ -146,17 +146,17 @@ const Tasks = () => {
         initial="hidden"
         animate="visible"
         variants={headerVariants}
-        className="mb-10 flex flex-col gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-6 shadow-brutal shrink-0"
+        className="mb-6 flex flex-col gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-4 sm:p-6 shadow-brutal shrink-0"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
               Task board
             </p>
-            <h1 className="mt-2 text-[#0F1A0F]">
+            <h1 className="mt-1 text-2xl sm:text-3xl text-[#0F1A0F]">
               Manage <span className="text-[#3B6B4A]">tasks</span>
             </h1>
-            <p className="mt-2 text-sm font-bold text-[#5A6E5A]">
+            <p className="mt-1 text-xs sm:text-sm font-bold text-[#5A6E5A]">
               {tasks.length} total · {tasks.filter(t => !t.is_done).length} remaining
             </p>
           </div>
@@ -166,23 +166,23 @@ const Tasks = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 md:flex-row">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5A6E5A]" size={18} />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search tasks..."
-              className="brutal-input pl-10 h-11 !shadow-brutal"
+              className="brutal-input pl-10 h-11 !shadow-brutal text-sm sm:text-base"
             />
           </div>
 
-          <div className="flex gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-row">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="brutal-btn brutal-btn-outline h-11 capitalize flex-1 sm:min-w-[150px] whitespace-nowrap shadow-brutal-sm">
-                  Filter: {category}
-                  <ChevronDown size={15} />
+                <button className="brutal-btn brutal-btn-outline h-11 capitalize flex items-center justify-center gap-2 sm:min-w-[140px] whitespace-nowrap shadow-brutal-sm px-2 text-xs sm:text-sm">
+                  <span className="truncate">Filter: {category}</span>
+                  <ChevronDown size={14} className="shrink-0" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="min-w-[180px] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal">
@@ -204,9 +204,9 @@ const Tasks = () => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="brutal-btn brutal-btn-outline h-11 flex-1 sm:min-w-[150px] whitespace-nowrap shadow-brutal-sm">
-                  <ArrowUpDown size={15} />
-                  Sort: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
+                <button className="brutal-btn brutal-btn-outline h-11 flex items-center justify-center gap-2 sm:min-w-[140px] whitespace-nowrap shadow-brutal-sm px-2 text-xs sm:text-sm">
+                  <ArrowUpDown size={14} className="shrink-0" />
+                  <span className="truncate">Sort: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}</span>
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="min-w-[180px] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal">
@@ -250,41 +250,41 @@ const Tasks = () => {
               variants={listContainerVariants}
               className="h-full overflow-y-auto custom-scrollbar scrollbar-gutter-stable"
             >
-              <div className="min-h-full flex flex-col gap-4 px-4 pt-2 pb-2">
+              <div className="min-h-full flex flex-col gap-4 px-2 sm:px-4 pt-2 pb-4">
                 {filteredAndSortedTasks.length > 0 ? (
                   filteredAndSortedTasks.map((task) => (
                     <div
                       key={task.id}
-                      className={`brutal-card flex flex-col gap-5 p-5 md:flex-row md:items-center md:justify-between transition-all ${
+                      className={`brutal-card flex flex-col gap-4 p-4 sm:p-5 sm:flex-row sm:items-center sm:justify-between transition-all ${
                         task.is_done ? "opacity-60 grayscale-[0.5]" : ""
                       }`}
                     >
-                      <div className="flex flex-1 items-start gap-4">
+                      <div className="flex flex-1 items-start gap-3 sm:gap-4 min-w-0">
                         <button 
                           onClick={() => toggleDone(task)}
-                          className={`mt-1.5 transition-colors ${task.is_done ? "text-brutal-primary" : "text-brutal-muted hover:text-brutal-primary"}`}
+                          className={`mt-1 transition-colors shrink-0 ${task.is_done ? "text-brutal-primary" : "text-brutal-muted hover:text-brutal-primary"}`}
                         >
-                          {task.is_done ? <CheckCircle2 size={24} /> : <Circle size={24} />}
+                          {task.is_done ? <CheckCircle2 size={22} className="sm:size-6" /> : <Circle size={22} className="sm:size-6" />}
                         </button>
 
-                        <div className="flex-1">
-                          <div className="mb-2 flex items-center gap-2 flex-wrap">
+                        <div className="flex-1 min-w-0">
+                          <div className="mb-1.5 flex items-center gap-2 flex-wrap">
                             <span
-                              className={`brutal-badge ${
+                              className={`brutal-badge text-[10px] sm:text-xs ${
                                 categoryColors[task.category.toLowerCase()] ?? categoryColors.all
                               }`}
                             >
                               {task.category.toUpperCase()}
                             </span>
                           </div>
-                          <h3 className={`${task.is_done ? "line-through opacity-50" : ""}`}>
+                          <h3 className={`text-base sm:text-lg font-bold break-words ${task.is_done ? "line-through opacity-50" : ""}`}>
                             {task.title}
                           </h3>
-                          <div className="mt-3 flex items-center gap-2">
-                            <span className="text-xs font-bold uppercase tracking-brutal text-brutal-muted">
+                          <div className="mt-2 flex items-center gap-2 flex-wrap">
+                            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-brutal text-brutal-muted">
                               Deadline:
                             </span>
-                            <span className={`rounded-sm border border-brutal-ink/20 px-2 py-0.5 text-xs font-bold ${
+                            <span className={`rounded-sm border border-brutal-ink/20 px-2 py-0.5 text-[10px] sm:text-xs font-bold ${
                               task.deadline && new Date(task.deadline) < new Date() && !task.is_done
                                 ? "bg-red-100 text-red-600 border-red-200"
                                 : "bg-brutal-parchment text-brutal-primary"
@@ -295,14 +295,14 @@ const Tasks = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3 md:self-center">
+                      <div className="grid grid-cols-2 gap-2 mt-2 sm:mt-0 sm:flex sm:items-center sm:gap-3 sm:self-center">
                         <DialogDemo task={task} onSuccess={fetchTasks} />
                         <button
                           onClick={() => deleteTask(task.id)}
-                          className="brutal-btn brutal-btn-accent shadow-brutal-sm"
+                          className="brutal-btn brutal-btn-accent shadow-brutal-sm flex items-center justify-center gap-2 py-2 px-3 sm:h-11 sm:w-auto"
                         >
-                          <Trash2 size={15} />
-                          Delete
+                          <Trash2 size={14} />
+                          <span className="text-xs sm:text-sm">Delete</span>
                         </button>
                       </div>
                     </div>
