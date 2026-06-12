@@ -40,6 +40,7 @@ const config: Config = {
       },
       animation: {
         vibrate: "vibrate 0.3s linear infinite",
+        shimmer: 'shimmer 1.5s infinite',
       },
       keyframes: {
         vibrate: {
@@ -48,6 +49,10 @@ const config: Config = {
           "50%":  { transform: "translateX(1px) translateY(-1px)" },
           "75%":  { transform: "translateX(-1px) translateY(-1px)" },
         },
+        shimmer: {
+          "0%" : { transform: "translateX(-100%)" },
+          "100%" : { transform: "translateX(200%)" }
+        }
       },
     },
   },

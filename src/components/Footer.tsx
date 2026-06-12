@@ -129,10 +129,12 @@ const Footer = () => {
                   : "bg-brutal-primary text-brutal-paper"
               }`}
             >
-              {isPlaying
-                ? <Pause size={24} fill="currentColor" />
-                : <Play size={24} fill="currentColor" className="ml-0.5" />
-              }
+               {isLoading
+                  ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  : isPlaying
+                    ? <Pause size={24} fill="currentColor" />
+                    : <Play size={24} fill="currentColor" className="ml-0.5" />
+                }
             </button>
             <button 
               onClick={nextTrack}
@@ -167,10 +169,17 @@ const Footer = () => {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
               <div className="h-full w-full rounded-sm border-2 border-brutal-ink bg-brutal-parchment overflow-hidden">
-                <div
-                  className="h-full bg-brutal-primary transition-all duration-100"
-                  style={{ width: `${(progress / (duration || 1)) * 100}%` }}
-                />
+                {isLoading
+                  ? // Shimmer effect
+                    <div className="h-full w-full relative overflow-hidden">
+                      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-[#3B6B4A]/40 to-transparent" />
+                    </div>
+                  : // Progress bar normal
+                    <div
+                      className="h-full bg-brutal-primary transition-all duration-100"
+                      style={{ width: `${(progress / (duration || 1)) * 100}%` }}
+                    />
+                }
               </div>
             </div>
             <span className="text-[10px] font-bold text-brutal-muted uppercase tracking-widest tabular-nums">
