@@ -68,17 +68,30 @@ async def search_songs(q: str = Query(...)):
 async def get_stream_url(url: str = Query(...)):
     ydl_opts = {
         **YDL_COMMON_OPTS,
-        'format': 'bestaudio/best',
+        'format': 'bestaudio[protocol!=m3u8][protocol!=m3u8_native]/bestaudio',
         'skip_download': True,
     }
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            return {"stream_url": info.get("url"), "title": info.get("title")}
+
+            # Cek apakah URL yang dipilih HLS, kalau iya fallback ke search audio lain
+            selected_url = info.get("url")
+            ext = info.get("ext", "")
+            protocol = info.get("protocol", "")
+
+            print(
+                f"Format: {ext}, Protocol: {protocol}, URL: {selected_url[:80]}...")
+
+            return {
+                "stream_url": selected_url,
+                "title": info.get("title"),
+                "ext": ext,
+                "protocol": protocol
+            }
     except Exception as e:
         print(f"Stream error for {url}: {e}")
-        # Return a JSON error instead of crashing to keep CORS headers
         return {"error": str(e), "stream_url": None}
 
 

@@ -7,7 +7,9 @@ export interface Track {
   artist: string;
   thumbnail: string;
   url: string;
-  streamUrl?: string; // Cache untuk link stream agar instan
+  streamUrl?: string;
+  ext?: string;
+  protocol?: string;
 }
 
 type RepeatMode = "none" | "one" | "all";
@@ -26,13 +28,30 @@ interface MusicStore {
 
   setCurrentTrack: (track: Track) => void;
   setIsPlaying: (playing: boolean) => void;
+  setVolume: (volume: number) => void;
+  toggleShuffle: () => void;
+  toggleRepeat: () => void;
+  stopMusic: () => void;
+  setQueue: (tracks: Track[]) => void;
+  addToQueue: (track: Track) => void;
   playTrack: (track: Track, newQueue?: Track[]) => Promise<void>;
   preloadNext: (nextIndex: number) => Promise<void>;
+  nextTrack: () => Promise<void>;
+  prevTrack: () => void;
   toggleLike: (track: Track) => void;
+  isLiked: (trackId: string) => boolean;
 }
 
-// Tambahkan di luar store untuk tracking fetch yang sedang berjalan
+// Track fetch yang sedang berjalan agar bisa di-abort
 let currentAbortController: AbortController | null = null;
+
+const isHLS = (url: string | null | undefined, protocol?: string, ext?: string): boolean => {
+  if (!url) return false;
+  if (protocol && (protocol === "m3u8" || protocol === "m3u8_native")) return true;
+  if (ext && ext === "m3u8") return true;
+  if (url.includes(".m3u8") || url.includes("manifest.googlevideo.com")) return true;
+  return false;
+};
 
 export const useMusicStore = create<MusicStore>()(
   persist(
@@ -47,27 +66,29 @@ export const useMusicStore = create<MusicStore>()(
       shuffle: false,
       repeat: "none",
       isLoading: false,
-      
+
       stopMusic: () => {
         if (currentAbortController) currentAbortController.abort();
         set({ currentTrack: null, isPlaying: false, streamUrl: null, isLoading: false });
       },
+
       setCurrentTrack: (track) => set({ currentTrack: track }),
       setIsPlaying: (playing) => set({ isPlaying: playing }),
       setVolume: (volume) => set({ volume }),
       toggleShuffle: () => set((state) => ({ shuffle: !state.shuffle })),
-      toggleRepeat: () => set((state) => {
-        const modes: RepeatMode[] = ["none", "all", "one"];
-        const currentIndex = modes.indexOf(state.repeat);
-        const nextMode = modes[(currentIndex + 1) % modes.length];
-        return { repeat: nextMode };
-      }),
-      
+      toggleRepeat: () =>
+        set((state) => {
+          const modes: RepeatMode[] = ["none", "all", "one"];
+          const idx = modes.indexOf(state.repeat);
+          return { repeat: modes[(idx + 1) % modes.length] };
+        }),
+
       setQueue: (tracks) => set({ queue: tracks }),
-      addToQueue: (track) => set((state) => ({ queue: [...state.queue, track] })),
-      
+      addToQueue: (track) =>
+        set((state) => ({ queue: [...state.queue, track] })),
+
       playTrack: async (track, newQueue) => {
-        // Batalkan fetch lagu sebelumnya jika masih berjalan
+        // Batalkan fetch sebelumnya
         if (currentAbortController) {
           currentAbortController.abort();
         }
@@ -76,27 +97,26 @@ export const useMusicStore = create<MusicStore>()(
 
         const { queue } = get();
         let currentQueue = newQueue || queue;
-        
+
         let index = currentQueue.findIndex((t) => t.id === track.id);
         if (index === -1) {
           currentQueue = [...currentQueue, track];
           index = currentQueue.length - 1;
         }
 
-        // 1. CEK APAKAH SUDAH ADA DI CACHE (PRELOADED)
+        // Cek cache (preloaded)
         const trackWithCache = currentQueue[index];
-        if (trackWithCache.streamUrl) {
+        if (trackWithCache.streamUrl && !isHLS(trackWithCache.streamUrl, trackWithCache.protocol, trackWithCache.ext)) {
           console.log("Using cached stream for:", track.title);
-          set({ 
-            currentTrack: trackWithCache, 
-            isPlaying: true, 
-            streamUrl: trackWithCache.streamUrl, 
+          set({
+            currentTrack: trackWithCache,
+            isPlaying: true,
+            streamUrl: trackWithCache.streamUrl,
             queue: currentQueue,
             currentIndex: index,
-            isLoading: false
+            isLoading: false,
           });
-          
-          // Siapkan preload untuk lagu SETELAHNYA lagi
+
           const nextIdx = index + 1;
           if (nextIdx < currentQueue.length) {
             get().preloadNext(nextIdx);
@@ -104,40 +124,51 @@ export const useMusicStore = create<MusicStore>()(
           return;
         }
 
-        set({ 
-          currentTrack: track, 
-          isPlaying: false, 
-          streamUrl: null, 
+        set({
+          currentTrack: track,
+          isPlaying: false,
+          streamUrl: null,
           queue: currentQueue,
           currentIndex: index,
-          isLoading: true
+          isLoading: true,
         });
 
         try {
-          const res = await fetch(`http://localhost:8000/stream?url=${encodeURIComponent(track.url)}`, { signal });
+          const res = await fetch(
+            `http://localhost:8000/stream?url=${encodeURIComponent(track.url)}`,
+            { signal }
+          );
           const data = await res.json();
-          
+
           if (data.stream_url) {
+            // Deteksi HLS — skip ke lagu berikutnya kalau format tidak didukung browser
+            if (isHLS(data.stream_url, data.protocol, data.ext)) {
+              console.warn(
+                `HLS/live stream detected for "${track.title}", skipping...`
+              );
+              set({ isLoading: false });
+              get().nextTrack();
+              return;
+            }
+
             set({ streamUrl: data.stream_url, isPlaying: true, isLoading: false });
-            
-            // 2. BEGITU LAGU JALAN, SIAPKAN LAGU SELANJUTNYA (PRELOAD)
+
+            // Preload lagu selanjutnya
             const nextIdx = index + 1;
             if (nextIdx < currentQueue.length) {
               get().preloadNext(nextIdx);
             }
           } else {
-            console.error("No stream URL in response:", data.error || "Unknown error");
+            console.error("No stream URL:", data.error || "Unknown error");
             set({ isLoading: false });
-            // OTOMATIS SKIP KE LAGU BERIKUTNYA JIKA GAGAL
             get().nextTrack();
           }
         } catch (error: any) {
-          if (error.name === 'AbortError') {
-            console.log("Fetch aborted for track:", track.title);
+          if (error.name === "AbortError") {
+            console.log("Fetch aborted for:", track.title);
           } else {
             console.error("Failed to get stream URL:", error);
             set({ isLoading: false });
-            // OTOMATIS SKIP KE LAGU BERIKUTNYA JIKA GAGAL
             get().nextTrack();
           }
         }
@@ -146,40 +177,52 @@ export const useMusicStore = create<MusicStore>()(
       preloadNext: async (nextIndex: number) => {
         const { queue } = get();
         if (nextIndex >= queue.length) return;
-        
+
         const nextTrack = queue[nextIndex];
-        if (nextTrack.streamUrl) return; // Sudah di-preload
+        // Skip preload kalau sudah ada cache atau sudah diketahui HLS
+        if (nextTrack.streamUrl) return;
 
         try {
-          console.log("Preloading next stream for:", nextTrack.title);
-          const res = await fetch(`http://localhost:8000/stream?url=${encodeURIComponent(nextTrack.url)}`);
+          console.log("Preloading next:", nextTrack.title);
+          const res = await fetch(
+            `http://localhost:8000/stream?url=${encodeURIComponent(nextTrack.url)}`
+          );
           const data = await res.json();
-          if (data.stream_url) {
-            const updatedQueue = [...get().queue];
-            // Pastikan track-nya masih sama (ID mencocokkan)
+
+          if (data.stream_url && !isHLS(data.stream_url, data.protocol, data.ext)) {
             const currentQueue = get().queue;
-            if (currentQueue[nextIndex] && currentQueue[nextIndex].id === nextTrack.id) {
+            // Pastikan track masih sama (belum diganti user)
+            if (
+              currentQueue[nextIndex] &&
+              currentQueue[nextIndex].id === nextTrack.id
+            ) {
               const finalQueue = [...currentQueue];
-              finalQueue[nextIndex] = { ...finalQueue[nextIndex], streamUrl: data.stream_url };
+              finalQueue[nextIndex] = {
+                ...finalQueue[nextIndex],
+                streamUrl: data.stream_url,
+                ext: data.ext,
+                protocol: data.protocol,
+              };
               set({ queue: finalQueue });
-              console.log("Preload success for:", nextTrack.title);
+              console.log("Preload success:", nextTrack.title);
             }
+          } else if (isHLS(data.stream_url, data.protocol, data.ext)) {
+            // Tandai sebagai HLS agar saat giliran diplay langsung di-skip
+            console.warn("Preload: HLS detected for", nextTrack.title, "— will skip when played");
           }
         } catch (e) {
-          console.error("Preload failed", e);
+          console.error("Preload failed:", e);
         }
       },
 
       nextTrack: async () => {
-        const { currentTrack, playTrack, repeat, queue, currentIndex, addToQueue } = get();
-        
-        // Jika mode repeat "one", putar ulang lagu yang sama
+        const { currentTrack, playTrack, repeat, queue, currentIndex } = get();
+
         if (repeat === "one" && currentTrack) {
           playTrack(currentTrack);
           return;
         }
 
-        // Cek apakah ada lagu berikutnya di antrean
         const hasNextInQueue = currentIndex < queue.length - 1;
 
         if (hasNextInQueue) {
@@ -187,29 +230,27 @@ export const useMusicStore = create<MusicStore>()(
           return;
         }
 
-        // Jika tidak ada lagu berikutnya di antrean:
-        // 1. Jika repeat "all", kembali ke awal
         if (repeat === "all" && queue.length > 0) {
           await playTrack(queue[0]);
           return;
         }
 
-        // 2. Jika repeat "none", aktifkan Radio Mode (rekomendasi)
+        // Radio Mode — ambil rekomendasi kalau queue habis
         if (currentTrack) {
           try {
-            console.log("Fetching Radio Mode recommendations for:", currentTrack.title);
-            const res = await fetch(`http://localhost:8000/recommendations/${currentTrack.id}`);
+            console.log("Radio Mode: fetching recommendations for", currentTrack.title);
+            const res = await fetch(
+              `http://localhost:8000/recommendations/${currentTrack.id}`
+            );
             const recommendations = await res.json();
-            
+
             if (Array.isArray(recommendations) && recommendations.length > 0) {
-              // Ambil satu lagu acak dari rekomendasi agar tidak monoton
-              const randomIndex = Math.floor(Math.random() * Math.min(recommendations.length, 5));
-              const nextTrack = recommendations[randomIndex];
-              
+              const randomIdx = Math.floor(
+                Math.random() * Math.min(recommendations.length, 5)
+              );
+              const nextTrack = recommendations[randomIdx];
               console.log("Radio Mode found:", nextTrack.title);
-              
-              // Tambahkan ke antrean dan putar
-              // Kita tidak mengganti antrean, tapi menambahkannya (seperti Spotify)
+
               const updatedQueue = [...queue, nextTrack];
               await playTrack(nextTrack, updatedQueue);
               return;
@@ -219,7 +260,6 @@ export const useMusicStore = create<MusicStore>()(
           }
         }
 
-        // Jika semua gagal, berhenti
         set({ isPlaying: false });
       },
 
@@ -234,12 +274,11 @@ export const useMusicStore = create<MusicStore>()(
       toggleLike: (track) => {
         const { likedTracks } = get();
         const isAlreadyLiked = likedTracks.some((t) => t.id === track.id);
-        
-        if (isAlreadyLiked) {
-          set({ likedTracks: likedTracks.filter((t) => t.id !== track.id) });
-        } else {
-          set({ likedTracks: [...likedTracks, track] });
-        }
+        set({
+          likedTracks: isAlreadyLiked
+            ? likedTracks.filter((t) => t.id !== track.id)
+            : [...likedTracks, track],
+        });
       },
 
       isLiked: (trackId) => {
@@ -248,12 +287,12 @@ export const useMusicStore = create<MusicStore>()(
     }),
     {
       name: "music-storage",
-      partialize: (state) => ({ 
+      partialize: (state) => ({
         likedTracks: state.likedTracks,
         volume: state.volume,
         shuffle: state.shuffle,
-        repeat: state.repeat
-      }), 
+        repeat: state.repeat,
+      }),
     }
   )
 );

@@ -46,7 +46,8 @@ const TrackCard = memo(({
   onPlay: (t: SearchResult) => void;
 }) => {
   const toggleLike = useMusicStore((state) => state.toggleLike);
-  const isLiked = useMusicStore((state) => state.isLiked);
+  const likedTracks = useMusicStore((state) => state.likedTracks);
+  const liked = likedTracks.some((t) => t.id === track.id);
 
   return (
     <div className={`brutal-card group flex flex-col overflow-hidden ${compact ? "p-2 sm:p-3" : "p-3 sm:p-4"}`}>
@@ -69,12 +70,12 @@ const TrackCard = memo(({
         <button
           onClick={() => toggleLike(track)}
           className={`absolute right-1.5 top-1.5 sm:right-2 sm:top-2 rounded-sm border-2 border-[#0F1A0F] p-1 sm:p-1.5 transition-all ${
-            isLiked(track.id)
+            liked
               ? "bg-[#8B4A2B] text-[#F5F8F4] shadow-brutal-sm"
               : "bg-[#F5F8F4] text-[#0F1A0F] hover:bg-[#D4A843]"
           }`}
         >
-          <Heart size={10} className="sm:size-3" fill={isLiked(track.id) ? "currentColor" : "none"} />
+          <Heart size={10} className="sm:size-3" fill={liked ? "currentColor" : "none"} />
         </button>
       </div>
 
