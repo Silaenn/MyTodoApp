@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
-import { Repeat1, Repeat, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, ListMusic, X } from "lucide-react";
+import { Repeat1, Repeat, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, X } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 
 const Footer = () => {
@@ -190,9 +190,6 @@ const Footer = () => {
 
         {/* Volume */}
         <div className="flex items-center gap-3 sm:gap-6 w-[30%] justify-end">
-          <button className="hidden sm:block text-brutal-muted hover:text-brutal-primary transition-colors">
-            <ListMusic size={24} />
-          </button>
           <div className="flex items-center gap-2 sm:gap-3 group relative h-3 w-16 sm:w-28">
             <Volume2 size={20} className="text-brutal-muted shrink-0" />
             <div className="relative flex-1 h-full">
