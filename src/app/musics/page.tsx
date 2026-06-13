@@ -140,10 +140,12 @@ const Musics = () => {
     if (!query.trim()) {
       setSearchExecuted(false);
       setResults([]);
+      setRadioQueue([]);
       return;
     }
     
     setLoading(true);
+    setRadioQueue([]); // Clear old recommendations immediately
     try {
       const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(query)}`);
       const data = await res.json();

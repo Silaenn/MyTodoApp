@@ -237,6 +237,9 @@ export const useMusicStore = create<MusicStore>()(
 
         // Radio Mode — ambil rekomendasi kalau queue habis
         if (currentTrack) {
+          // Set loading state immediately so UI reacts
+          set({ isLoading: true, isPlaying: false, streamUrl: null });
+          
           try {
             console.log("Radio Mode: fetching recommendations for", currentTrack.title);
             const res = await fetch(
@@ -260,7 +263,7 @@ export const useMusicStore = create<MusicStore>()(
           }
         }
 
-        set({ isPlaying: false });
+        set({ isPlaying: false, isLoading: false });
       },
 
       prevTrack: () => {

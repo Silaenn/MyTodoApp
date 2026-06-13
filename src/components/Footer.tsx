@@ -34,6 +34,15 @@ const Footer = () => {
     }
   }, [isPlaying, streamUrl]);
 
+  // Force stop and clear audio when loading new track
+  useEffect(() => {
+    if (isLoading && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = "";
+      audioRef.current.load();
+    }
+  }, [isLoading]);
+
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       setProgress(audioRef.current.currentTime);
