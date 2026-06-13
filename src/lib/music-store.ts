@@ -35,6 +35,7 @@ interface MusicStore {
   setQueue: (tracks: Track[]) => void;
   addToQueue: (track: Track) => void;
   playTrack: (track: Track, newQueue?: Track[]) => Promise<void>;
+  fetchRadioRecommendations: (trackId: string) => Promise<void>;
   preloadNext: (nextIndex: number) => Promise<void>;
   nextTrack: () => Promise<void>;
   prevTrack: () => void;
@@ -117,10 +118,9 @@ export const useMusicStore = create<MusicStore>()(
             isLoading: false,
           });
 
-          const nextIdx = index + 1;
-          if (nextIdx < currentQueue.length) {
-            get().preloadNext(nextIdx);
-          }
+          // Preload next 2 tracks aggressively
+          get().preloadNext(index + 1);
+          get().preloadNext(index + 2);
           return;
         }
 
@@ -141,49 +141,72 @@ export const useMusicStore = create<MusicStore>()(
           const data = await res.json();
 
           if (data.stream_url) {
-            // Deteksi HLS — skip ke lagu berikutnya kalau format tidak didukung browser
             if (isHLS(data.stream_url, data.protocol, data.ext)) {
-              console.warn(
-                `HLS/live stream detected for "${track.title}", skipping...`
-              );
               set({ isLoading: false });
               get().nextTrack();
               return;
             }
 
-            set({ streamUrl: data.stream_url, isPlaying: true, isLoading: false });
+            // Update the track in queue with its streamUrl for future use
+            const updatedQueue = [...get().queue];
+            if (updatedQueue[index] && updatedQueue[index].id === track.id) {
+              updatedQueue[index] = { ...updatedQueue[index], streamUrl: data.stream_url, ext: data.ext, protocol: data.protocol };
+            }
 
-            // Preload lagu selanjutnya
-            const nextIdx = index + 1;
-            if (nextIdx < currentQueue.length) {
-              get().preloadNext(nextIdx);
+            set({ streamUrl: data.stream_url, isPlaying: true, isLoading: false, queue: updatedQueue });
+
+            // Preload next 2 tracks aggressively
+            get().preloadNext(index + 1);
+            get().preloadNext(index + 2);
+            
+            // Proactively check if we need to fetch radio recommendations
+            if (index >= updatedQueue.length - 2) {
+              get().fetchRadioRecommendations(track.id);
             }
           } else {
-            console.error("No stream URL:", data.error || "Unknown error");
             set({ isLoading: false });
             get().nextTrack();
           }
-        } catch (error: any) {
-          if (error.name === "AbortError") {
-            console.log("Fetch aborted for:", track.title);
-          } else {
-            console.error("Failed to get stream URL:", error);
+        } catch (error: unknown) {
+          if (error instanceof Error && error.name !== "AbortError") {
             set({ isLoading: false });
             get().nextTrack();
           }
         }
       },
 
+      fetchRadioRecommendations: async (trackId: string) => {
+        const { queue } = get();
+        try {
+          console.log("Proactive Radio Mode: fetching recommendations...");
+          const res = await fetch(`http://localhost:8000/recommendations/${trackId}`);
+          const recommendations = await res.json();
+
+          if (Array.isArray(recommendations) && recommendations.length > 0) {
+            // Add only recommendations that aren't already in queue
+            const newTracks = recommendations.filter(rec => !queue.some(q => q.id === rec.id)).slice(0, 5);
+            if (newTracks.length > 0) {
+              set({ queue: [...queue, ...newTracks] });
+              console.log("Proactive Radio Mode: added", newTracks.length, "tracks to queue");
+              // Preload the first recommendation immediately
+              const nextIdx = queue.length;
+              get().preloadNext(nextIdx);
+            }
+          }
+        } catch (error) {
+          console.error("Proactive Radio error:", error);
+        }
+      },
+
       preloadNext: async (nextIndex: number) => {
         const { queue } = get();
-        if (nextIndex >= queue.length) return;
+        if (nextIndex < 0 || nextIndex >= queue.length) return;
 
         const nextTrack = queue[nextIndex];
-        // Skip preload kalau sudah ada cache atau sudah diketahui HLS
         if (nextTrack.streamUrl) return;
 
         try {
-          console.log("Preloading next:", nextTrack.title);
+          console.log("Preloading:", nextTrack.title);
           const res = await fetch(
             `http://localhost:8000/stream?url=${encodeURIComponent(nextTrack.url)}`
           );
@@ -191,11 +214,7 @@ export const useMusicStore = create<MusicStore>()(
 
           if (data.stream_url && !isHLS(data.stream_url, data.protocol, data.ext)) {
             const currentQueue = get().queue;
-            // Pastikan track masih sama (belum diganti user)
-            if (
-              currentQueue[nextIndex] &&
-              currentQueue[nextIndex].id === nextTrack.id
-            ) {
+            if (currentQueue[nextIndex] && currentQueue[nextIndex].id === nextTrack.id) {
               const finalQueue = [...currentQueue];
               finalQueue[nextIndex] = {
                 ...finalQueue[nextIndex],
@@ -206,9 +225,6 @@ export const useMusicStore = create<MusicStore>()(
               set({ queue: finalQueue });
               console.log("Preload success:", nextTrack.title);
             }
-          } else if (isHLS(data.stream_url, data.protocol, data.ext)) {
-            // Tandai sebagai HLS agar saat giliran diplay langsung di-skip
-            console.warn("Preload: HLS detected for", nextTrack.title, "— will skip when played");
           }
         } catch (e) {
           console.error("Preload failed:", e);
@@ -223,9 +239,7 @@ export const useMusicStore = create<MusicStore>()(
           return;
         }
 
-        const hasNextInQueue = currentIndex < queue.length - 1;
-
-        if (hasNextInQueue) {
+        if (currentIndex < queue.length - 1) {
           await playTrack(queue[currentIndex + 1]);
           return;
         }
@@ -235,31 +249,14 @@ export const useMusicStore = create<MusicStore>()(
           return;
         }
 
-        // Radio Mode — ambil rekomendasi kalau queue habis
+        // Final fallback if proactive fetch failed or was too slow
         if (currentTrack) {
-          // Set loading state immediately so UI reacts
           set({ isLoading: true, isPlaying: false, streamUrl: null });
-          
-          try {
-            console.log("Radio Mode: fetching recommendations for", currentTrack.title);
-            const res = await fetch(
-              `http://localhost:8000/recommendations/${currentTrack.id}`
-            );
-            const recommendations = await res.json();
-
-            if (Array.isArray(recommendations) && recommendations.length > 0) {
-              const randomIdx = Math.floor(
-                Math.random() * Math.min(recommendations.length, 5)
-              );
-              const nextTrack = recommendations[randomIdx];
-              console.log("Radio Mode found:", nextTrack.title);
-
-              const updatedQueue = [...queue, nextTrack];
-              await playTrack(nextTrack, updatedQueue);
-              return;
-            }
-          } catch (error) {
-            console.error("Radio Mode error:", error);
+          await get().fetchRadioRecommendations(currentTrack.id);
+          const updatedQueue = get().queue;
+          if (currentIndex < updatedQueue.length - 1) {
+            await playTrack(updatedQueue[currentIndex + 1]);
+            return;
           }
         }
 
