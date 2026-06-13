@@ -2,8 +2,9 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
-import { Repeat1, Repeat, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, X } from "lucide-react";
+import { Repeat1, Repeat, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, X, ChevronDown } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Footer = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -15,6 +16,7 @@ const Footer = () => {
   } = useMusicStore();
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -70,148 +72,210 @@ const Footer = () => {
         onEnded={handleEnded}
       />
 
-      <footer className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] px-4 py-4 shadow-brutal-lg md:bottom-8 md:left-[7rem] lg:left-[20rem] md:right-8 sm:left-6 sm:right-6">
-        {/* Close Button - Top Right Corner */}
-        <button 
-          onClick={stopMusic}
-          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-sm border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-sm transition-all hover:bg-[#FF0000] hover:text-[#F5F8F4] active:shadow-none active:translate-x-0.5 active:translate-y-0.5 z-[60]"
-          title="Close Player"
-        >
-          <X size={18} className="stroke-[3px]" />
-        </button>
-
-        {/* Track Info */}
-        <div className="flex items-center gap-2 sm:gap-6 w-[40%] md:w-[35%] lg:w-[30%]">
-          <div className={`flex-shrink-0 overflow-hidden rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative w-12 h-12 sm:w-16 sm:h-16 ${isLoading ? "animate-pulse" : ""}`}>
-            <Image
-              className={`object-cover transition-all duration-500 ${
-                isPlaying && !isLoading ? "grayscale-0 scale-105" : "grayscale opacity-60"
-              }`}
-              src={currentTrack.thumbnail || "/images/no_image.png"}
-              alt={currentTrack.title}
-              fill
-              sizes="64px"
+      <AnimatePresence>
+        {isExpanded && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsExpanded(false)}
+              className="fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm sm:hidden"
             />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className={`font-black tracking-tight text-base sm:text-lg leading-none truncate mb-1 text-brutal-ink ${isLoading ? "opacity-50" : ""}`}>
-              {currentTrack.title}
-            </span>
-            <div className="flex items-center gap-2">
-              <span className={`w-2 h-2 bg-brutal-primary ${isPlaying ? "animate-pulse" : ""}`} />
-              <span className="text-[10px] sm:text-xs font-bold text-brutal-primary uppercase tracking-brutal truncate">
-                {isLoading ? "Loading Stream..." : currentTrack.artist}
-              </span>
-            </div>
-          </div>
+            
+            {/* Bottom Drawer */}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-[#F5F8F4] p-6 sm:hidden rounded-t-[32px] border-t-4 border-brutal-ink h-[90vh] shadow-[0_-10px_40px_rgba(0,0,0,0.3)]"
+            >
+              {/* Handle Bar */}
+              <div className="w-12 h-1.5 bg-brutal-ink/20 rounded-full self-center mb-6" />
+
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between mb-6">
+                <button onClick={() => setIsExpanded(false)} className="p-2 border-2 border-brutal-ink rounded-sm bg-white shadow-brutal-sm">
+                  <ChevronDown size={20} />
+                </button>
+                <span className="font-black text-[10px] uppercase tracking-brutal text-brutal-muted">Now Playing</span>
+                <button onClick={() => { stopMusic(); setIsExpanded(false); }} className="p-2 border-2 border-brutal-ink rounded-sm bg-brutal-accent text-white shadow-brutal-sm">
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Album Art & Info (Side by Side or Compact) */}
+              <div className="flex flex-col items-center gap-6 overflow-y-auto no-scrollbar py-2">
+                <div className="relative aspect-square w-48 rounded-md border-4 border-brutal-ink shadow-brutal overflow-hidden shrink-0">
+                  <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className="object-cover" />
+                </div>
+                
+                <div className="text-center space-y-1 w-full px-4">
+                  <h2 className="text-xl font-black text-brutal-ink line-clamp-1">{currentTrack.title}</h2>
+                  <p className="text-xs font-bold text-brutal-primary uppercase tracking-brutal">{currentTrack.artist}</p>
+                </div>
+
+                {/* Main Playback Controls - Moved up for better reach */}
+                <div className="flex items-center justify-between w-full px-4 py-2">
+                  <button onClick={toggleShuffle} className={shuffle ? "text-brutal-primary" : "text-brutal-muted"}>
+                    <Shuffle size={20} className={shuffle ? "stroke-[3px]" : ""} />
+                  </button>
+                  <div className="flex items-center gap-6">
+                    <button onClick={prevTrack} className="text-brutal-ink"><SkipBack size={28} fill="currentColor" /></button>
+                    <button
+                      onClick={() => setIsPlaying(!isPlaying)}
+                      className="flex h-14 w-14 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal"
+                    >
+                      {isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
+                    </button>
+                    <button onClick={nextTrack} className="text-brutal-ink"><SkipForward size={28} fill="currentColor" /></button>
+                  </div>
+                  <button onClick={toggleRepeat} className={repeat !== "none" ? "text-brutal-primary" : "text-brutal-muted"}>
+                    {repeat === "one" ? <Repeat1 size={20} className="stroke-[3px]" /> : <Repeat size={20} className={repeat === "all" ? "stroke-[3px]" : ""} />}
+                  </button>
+                </div>
+
+                {/* Progress & Volume - Bottom Section */}
+                <div className="w-full space-y-6 mt-4">
+                  {/* Progress Bar */}
+                  <div className="space-y-2">
+                    <div className="h-2 w-full bg-brutal-parchment border-2 border-brutal-ink rounded-sm relative overflow-hidden">
+                      <div className="h-full bg-brutal-primary" style={{ width: `${(progress / (duration || 1)) * 100}%` }} />
+                      <input
+                        type="range" min={0} max={duration || 0} value={progress}
+                        onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = parseFloat(e.target.value); }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                    </div>
+                    <div className="flex justify-between text-[10px] font-black text-brutal-muted tabular-nums">
+                      <span>{formatTime(progress)}</span>
+                      <span>{formatTime(duration)}</span>
+                    </div>
+                  </div>
+
+                  {/* Volume Slider */}
+                  <div className="flex items-center gap-3 bg-brutal-parchment p-3 rounded-md border-2 border-brutal-ink shadow-brutal-sm">
+                    <Volume2 size={18} className="text-brutal-ink" />
+                    <div className="relative flex-1 h-1.5 bg-white border border-brutal-ink rounded-full overflow-hidden">
+                      <input
+                        type="range" min={0} max={1} step={0.01} value={volume}
+                        onChange={(e) => setVolume(parseFloat(e.target.value))}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      />
+                      <div className="h-full bg-brutal-secondary" style={{ width: `${volume * 100}%` }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <footer className="fixed bottom-4 left-4 right-4 z-50 flex flex-col rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-lg md:bottom-8 md:left-[7rem] lg:left-[20rem] md:right-8 sm:left-6 sm:right-6 overflow-hidden">
+        {/* Progress Bar - Always on top */}
+        <div className="h-1.5 w-full bg-brutal-parchment relative cursor-pointer"
+          onClick={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const clickedValue = (x / rect.width) * duration;
+            if (audioRef.current) audioRef.current.currentTime = clickedValue;
+          }}
+        >
+          <div
+            className="h-full bg-brutal-primary transition-all duration-100"
+            style={{ width: `${(progress / (duration || 1)) * 100}%` }}
+          />
         </div>
 
-        {/* Controls */}
-        <div className="flex flex-col items-center gap-3 sm:gap-4 flex-1 px-2 sm:px-4 min-w-0">
-          <div className="flex items-center gap-4 sm:gap-8 shrink-0">
-            <button 
-              onClick={toggleShuffle}
-              className={`hidden sm:block transition-colors ${shuffle ? "text-brutal-primary" : "text-brutal-muted hover:text-brutal-primary"}`}
-            >
-              <Shuffle size={22} className={shuffle ? "stroke-[3px]" : ""} />
-            </button>
-            <button 
-              onClick={prevTrack}
-              className="text-brutal-ink hover:text-brutal-primary transition-colors hover:-translate-x-0.5"
-            >
-              <SkipBack size={28} fill="currentColor" />
-            </button>
+        {/* --- MOBILE LAYOUT (< 640px) --- */}
+        <div className="flex sm:hidden items-center justify-between px-3 py-2.5 gap-2">
+          <div 
+            onClick={() => setIsExpanded(true)}
+            className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
+          >
+             <div className="flex-shrink-0 w-10 h-10 rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative overflow-hidden">
+                <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className="object-cover" />
+             </div>
+             <div className="flex flex-col min-w-0">
+                <span className="font-black text-sm truncate text-brutal-ink">{currentTrack.title}</span>
+                <span className="text-[10px] font-bold text-brutal-muted uppercase truncate">{currentTrack.artist}</span>
+             </div>
+          </div>
+
+          <div className="flex items-center gap-3">
             <button
               onClick={togglePlay}
-              className={`flex h-13 w-13 sm:h-14 sm:w-14 items-center justify-center rounded-md border-2 border-brutal-ink font-black shadow-brutal transition-all hover:shadow-brutal-lg hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5 ${
-                isPlaying
-                  ? "bg-brutal-secondary text-brutal-ink"
-                  : "bg-brutal-primary text-brutal-paper"
-              }`}
+              className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal-sm active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
             >
-               {isLoading
-                  ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  : isPlaying
-                    ? <Pause size={24} fill="currentColor" />
-                    : <Play size={24} fill="currentColor" className="ml-0.5" />
-                }
+               {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
             </button>
             <button 
-              onClick={nextTrack}
-              className="text-brutal-ink hover:text-brutal-primary transition-colors hover:translate-x-0.5"
+              onClick={stopMusic}
+              className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-paper text-brutal-accent shadow-brutal-sm active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
             >
-              <SkipForward size={28} fill="currentColor" />
+              <X size={20} className="stroke-[3px]" />
             </button>
-            <button 
-              onClick={toggleRepeat}
-              className={`hidden sm:block transition-colors ${repeat !== "none" ? "text-brutal-primary" : "text-brutal-muted hover:text-brutal-primary"}`}
-            >
-              {repeat === "one" ? <Repeat1 size={22} className="stroke-[3px]" /> : <Repeat size={22} className={repeat === "all" ? "stroke-[3px]" : ""} />}
-            </button>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="hidden sm:flex items-center gap-4 w-full max-w-[600px]">
-            <span className="text-[10px] font-bold text-brutal-muted uppercase tracking-widest tabular-nums">
-              {formatTime(progress)}
-            </span>
-            <div className="relative flex-1 h-3 group">
-              <input
-                type="range"
-                min={0}
-                max={duration || 0}
-                value={progress}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  if (audioRef.current) audioRef.current.currentTime = val;
-                  setProgress(val);
-                }}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              />
-              <div className="h-full w-full rounded-sm border-2 border-brutal-ink bg-brutal-parchment overflow-hidden">
-                {isLoading
-                  ? // Shimmer effect
-                    <div className="h-full w-full relative overflow-hidden">
-                      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-[#3B6B4A]/40 to-transparent" />
-                    </div>
-                  : // Progress bar normal
-                    <div
-                      className="h-full bg-brutal-primary transition-all duration-100"
-                      style={{ width: `${(progress / (duration || 1)) * 100}%` }}
-                    />
-                }
-              </div>
-            </div>
-            <span className="text-[10px] font-bold text-brutal-muted uppercase tracking-widest tabular-nums">
-              {formatTime(duration)}
-            </span>
           </div>
         </div>
 
-        {/* Volume */}
-        <div className="flex items-center gap-3 sm:gap-6 w-[30%] justify-end">
-          <div className="flex items-center gap-2 sm:gap-3 group relative h-3 w-16 sm:w-28">
-            <Volume2 size={20} className="text-brutal-muted shrink-0" />
-            <div className="relative flex-1 h-full">
-              <input
-                type="range"
-                min={0}
-                max={1}
-                step={0.01}
-                value={volume}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  setVolume(val);
-                }}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              />
-              <div className="h-full w-full rounded-sm border-2 border-brutal-ink bg-brutal-parchment overflow-hidden">
-                <div 
-                  className="h-full bg-brutal-secondary transition-all" 
-                  style={{ width: `${volume * 100}%` }}
+        {/* --- DESKTOP LAYOUT (>= 640px) --- */}
+        <div className="hidden sm:flex items-center justify-between px-4 py-4 gap-4">
+          {/* Left: Info */}
+          <div className="flex items-center gap-4 w-[30%] min-w-0">
+            <div className="flex-shrink-0 w-16 h-16 rounded-sm border-2 border-brutal-ink shadow-brutal relative overflow-hidden">
+              <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className="object-cover" />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="font-black text-lg truncate text-brutal-ink leading-tight">{currentTrack.title}</span>
+              <span className="text-xs font-bold text-brutal-muted uppercase tracking-brutal truncate">{currentTrack.artist}</span>
+            </div>
+          </div>
+
+          {/* Center: Controls */}
+          <div className="flex flex-col items-center flex-1 gap-1">
+            <div className="flex items-center gap-6">
+              <button onClick={toggleShuffle} className={shuffle ? "text-brutal-primary" : "text-brutal-muted"}>
+                <Shuffle size={20} className={shuffle ? "stroke-[3px]" : ""} />
+              </button>
+              <button onClick={prevTrack} className="text-brutal-ink"><SkipBack size={24} fill="currentColor" /></button>
+              <button
+                onClick={togglePlay}
+                className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal hover:-translate-y-0.5 transition-transform"
+              >
+                {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-0.5" />}
+              </button>
+              <button onClick={nextTrack} className="text-brutal-ink"><SkipForward size={24} fill="currentColor" /></button>
+              <button onClick={toggleRepeat} className={repeat !== "none" ? "text-brutal-primary" : "text-brutal-muted"}>
+                {repeat === "one" ? <Repeat1 size={20} className="stroke-[3px]" /> : <Repeat size={20} className={repeat === "all" ? "stroke-[3px]" : ""} />}
+              </button>
+            </div>
+            <span className="mt-2 text-[10px] font-bold text-brutal-muted tabular-nums">
+              {formatTime(progress)} / {formatTime(duration)}
+            </span>
+          </div>
+
+          {/* Right: Utils */}
+          <div className="flex items-center gap-4 w-[30%] justify-end">
+            <div className="flex items-center gap-3 w-32 group">
+              <Volume2 size={20} className="text-brutal-muted" />
+              <div className="relative flex-1 h-2 bg-brutal-parchment border border-brutal-ink rounded-full overflow-hidden">
+                <input
+                  type="range" min={0} max={1} step={0.01} value={volume}
+                  onChange={(e) => setVolume(parseFloat(e.target.value))}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                 />
+                <div className="h-full bg-brutal-secondary" style={{ width: `${volume * 100}%` }} />
               </div>
             </div>
+            <button 
+              onClick={stopMusic}
+              className="flex h-10 w-10 items-center justify-center rounded-sm border-2 border-brutal-ink bg-brutal-paper shadow-brutal-sm hover:bg-brutal-accent hover:text-white transition-colors"
+            >
+              <X size={20} className="stroke-[3px]" />
+            </button>
           </div>
         </div>
       </footer>
