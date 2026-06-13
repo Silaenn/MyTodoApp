@@ -106,18 +106,18 @@ const Footer = () => {
                 </button>
               </div>
 
-              {/* Album Art & Info (Side by Side or Compact) */}
+              {/* Album Art & Info */}
               <div className="flex flex-col items-center gap-6 overflow-y-auto no-scrollbar py-2">
-                <div className="relative aspect-square w-48 rounded-md border-4 border-brutal-ink shadow-brutal overflow-hidden shrink-0">
-                  <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className="object-cover" />
+                <div className={`relative aspect-square w-48 rounded-md border-4 border-brutal-ink shadow-brutal overflow-hidden shrink-0 ${isLoading ? "animate-pulse" : ""}`}>
+                  <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
                 </div>
                 
                 <div className="text-center space-y-1 w-full px-4">
-                  <h2 className="text-xl font-black text-brutal-ink line-clamp-1">{currentTrack.title}</h2>
-                  <p className="text-xs font-bold text-brutal-primary uppercase tracking-brutal">{currentTrack.artist}</p>
+                  <h2 className={`text-xl font-black text-brutal-ink line-clamp-1 ${isLoading ? "opacity-50" : ""}`}>{currentTrack.title}</h2>
+                  <p className="text-xs font-bold text-brutal-primary uppercase tracking-brutal">{isLoading ? "Loading Stream..." : currentTrack.artist}</p>
                 </div>
 
-                {/* Main Playback Controls - Moved up for better reach */}
+                {/* Main Playback Controls */}
                 <div className="flex items-center justify-between w-full px-4 py-2">
                   <button onClick={toggleShuffle} className={shuffle ? "text-brutal-primary" : "text-brutal-muted"}>
                     <Shuffle size={20} className={shuffle ? "stroke-[3px]" : ""} />
@@ -128,7 +128,10 @@ const Footer = () => {
                       onClick={() => setIsPlaying(!isPlaying)}
                       className="flex h-14 w-14 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal"
                     >
-                      {isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
+                      {isLoading
+                        ? <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        : isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />
+                      }
                     </button>
                     <button onClick={nextTrack} className="text-brutal-ink"><SkipForward size={28} fill="currentColor" /></button>
                   </div>
@@ -137,12 +140,18 @@ const Footer = () => {
                   </button>
                 </div>
 
-                {/* Progress & Volume - Bottom Section */}
+                {/* Progress & Volume */}
                 <div className="w-full space-y-6 mt-4">
                   {/* Progress Bar */}
                   <div className="space-y-2">
                     <div className="h-2 w-full bg-brutal-parchment border-2 border-brutal-ink rounded-sm relative overflow-hidden">
-                      <div className="h-full bg-brutal-primary" style={{ width: `${(progress / (duration || 1)) * 100}%` }} />
+                      {isLoading ? (
+                        <div className="h-full w-full relative overflow-hidden">
+                          <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-[#3B6B4A]/40 to-transparent" />
+                        </div>
+                      ) : (
+                        <div className="h-full bg-brutal-primary" style={{ width: `${(progress / (duration || 1)) * 100}%` }} />
+                      )}
                       <input
                         type="range" min={0} max={duration || 0} value={progress}
                         onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = parseFloat(e.target.value); }}
@@ -184,10 +193,16 @@ const Footer = () => {
             if (audioRef.current) audioRef.current.currentTime = clickedValue;
           }}
         >
-          <div
-            className="h-full bg-brutal-primary transition-all duration-100"
-            style={{ width: `${(progress / (duration || 1)) * 100}%` }}
-          />
+          {isLoading ? (
+            <div className="h-full w-full relative overflow-hidden">
+              <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-[#3B6B4A]/40 to-transparent" />
+            </div>
+          ) : (
+            <div
+              className="h-full bg-brutal-primary transition-all duration-100"
+              style={{ width: `${(progress / (duration || 1)) * 100}%` }}
+            />
+          )}
         </div>
 
         {/* --- MOBILE LAYOUT (< 640px) --- */}
@@ -196,12 +211,12 @@ const Footer = () => {
             onClick={() => setIsExpanded(true)}
             className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
           >
-             <div className="flex-shrink-0 w-10 h-10 rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative overflow-hidden">
-                <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className="object-cover" />
+             <div className={`flex-shrink-0 w-10 h-10 rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative overflow-hidden ${isLoading ? "animate-pulse" : ""}`}>
+                <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
              </div>
              <div className="flex flex-col min-w-0">
-                <span className="font-black text-sm truncate text-brutal-ink">{currentTrack.title}</span>
-                <span className="text-[10px] font-bold text-brutal-muted uppercase truncate">{currentTrack.artist}</span>
+                <span className={`font-black text-sm truncate text-brutal-ink ${isLoading ? "opacity-50" : ""}`}>{currentTrack.title}</span>
+                <span className="text-[10px] font-bold text-brutal-muted uppercase truncate">{isLoading ? "Loading..." : currentTrack.artist}</span>
              </div>
           </div>
 
@@ -210,7 +225,10 @@ const Footer = () => {
               onClick={togglePlay}
               className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal-sm active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
             >
-               {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
+               {isLoading 
+                ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                : isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />
+               }
             </button>
             <button 
               onClick={stopMusic}
@@ -225,12 +243,12 @@ const Footer = () => {
         <div className="hidden sm:flex items-center justify-between px-4 py-4 gap-4">
           {/* Left: Info */}
           <div className="flex items-center gap-4 w-[30%] min-w-0">
-            <div className="flex-shrink-0 w-16 h-16 rounded-sm border-2 border-brutal-ink shadow-brutal relative overflow-hidden">
-              <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className="object-cover" />
+            <div className={`flex-shrink-0 w-16 h-16 rounded-sm border-2 border-brutal-ink shadow-brutal relative overflow-hidden ${isLoading ? "animate-pulse" : ""}`}>
+              <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="font-black text-lg truncate text-brutal-ink leading-tight">{currentTrack.title}</span>
-              <span className="text-xs font-bold text-brutal-muted uppercase tracking-brutal truncate">{currentTrack.artist}</span>
+              <span className={`font-black text-lg truncate text-brutal-ink leading-tight ${isLoading ? "opacity-50" : ""}`}>{currentTrack.title}</span>
+              <span className="text-xs font-bold text-brutal-muted uppercase tracking-brutal truncate">{isLoading ? "Loading Stream..." : currentTrack.artist}</span>
             </div>
           </div>
 
@@ -245,7 +263,10 @@ const Footer = () => {
                 onClick={togglePlay}
                 className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal hover:-translate-y-0.5 transition-transform"
               >
-                {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-0.5" />}
+                {isLoading 
+                  ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  : isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-0.5" />
+                }
               </button>
               <button onClick={nextTrack} className="text-brutal-ink"><SkipForward size={24} fill="currentColor" /></button>
               <button onClick={toggleRepeat} className={repeat !== "none" ? "text-brutal-primary" : "text-brutal-muted"}>
