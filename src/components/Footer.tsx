@@ -20,19 +20,16 @@ const Footer = () => {
 
   useEffect(() => {
     if (audioRef.current) {
+      // Always sync volume before playing
       audioRef.current.volume = volume;
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    if (audioRef.current) {
+      
       if (isPlaying) {
         audioRef.current.play().catch(e => console.error("Playback failed:", e));
       } else {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, streamUrl]);
+  }, [isPlaying, streamUrl, volume]);
 
   // Force stop and clear audio when loading new track
   useEffect(() => {
