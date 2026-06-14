@@ -87,7 +87,7 @@ const Footer = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsExpanded(false)}
-              className="fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm sm:hidden"
+              className="fixed inset-0 z-[90] bg-brutal-ink/60 backdrop-blur-sm sm:hidden"
             />
             
             {/* Bottom Drawer */}
@@ -96,7 +96,7 @@ const Footer = () => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-[#F5F8F4] p-6 sm:hidden rounded-t-[32px] border-t-4 border-brutal-ink h-[90vh] shadow-[0_-10px_40px_rgba(0,0,0,0.3)]"
+              className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-brutal-paper p-6 sm:hidden rounded-t-[32px] border-t-4 border-brutal-ink h-[90vh] shadow-[0_-10px_40px_rgba(0,0,0,0.3)]"
             >
               {/* Handle Bar */}
               <div className="w-12 h-1.5 bg-brutal-ink/20 rounded-full self-center mb-6" />
@@ -106,7 +106,7 @@ const Footer = () => {
                 <button onClick={() => setIsExpanded(false)} className="p-2 border-2 border-brutal-ink rounded-sm bg-white shadow-brutal-sm">
                   <ChevronDown size={20} />
                 </button>
-                <span className="font-black text-[10px] uppercase tracking-brutal text-brutal-muted">Now Playing</span>
+                <span className="font-black text-tiny uppercase tracking-brutal text-brutal-muted">Now Playing</span>
                 <button onClick={() => { stopMusic(); setIsExpanded(false); }} className="p-2 border-2 border-brutal-ink rounded-sm bg-brutal-accent text-white shadow-brutal-sm">
                   <X size={18} />
                 </button>
@@ -153,7 +153,7 @@ const Footer = () => {
                     <div className="h-2 w-full bg-brutal-parchment border-2 border-brutal-ink rounded-sm relative overflow-hidden">
                       {isLoading ? (
                         <div className="h-full w-full relative overflow-hidden">
-                          <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-[#3B6B4A]/40 to-transparent" />
+                          <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-brutal-primary/40 to-transparent" />
                         </div>
                       ) : (
                         <div className="h-full bg-brutal-primary" style={{ width: `${(progress / (duration || 1)) * 100}%` }} />
@@ -164,7 +164,7 @@ const Footer = () => {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
                     </div>
-                    <div className="flex justify-between text-[10px] font-black text-brutal-muted tabular-nums">
+                    <div className="flex justify-between text-tiny font-black text-brutal-muted tabular-nums">
                       <span>{formatTime(progress)}</span>
                       <span>{formatTime(duration)}</span>
                     </div>
@@ -189,7 +189,7 @@ const Footer = () => {
         )}
       </AnimatePresence>
 
-      <footer className="fixed bottom-4 left-4 right-4 z-50 flex flex-col rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-lg md:bottom-8 md:left-[7rem] lg:left-[20rem] md:right-8 sm:left-6 sm:right-6 overflow-hidden">
+      <footer className="fixed bottom-4 left-4 right-4 z-50 flex flex-col rounded-md border-2 border-brutal-ink bg-brutal-paper shadow-brutal-lg md:bottom-8 md:left-[7rem] lg:left-[20rem] md:right-8 sm:left-6 sm:right-6 overflow-hidden">
         {/* Progress Bar - Always on top */}
         <div className="h-1.5 w-full bg-brutal-parchment relative cursor-pointer"
           onClick={(e) => {
@@ -201,7 +201,7 @@ const Footer = () => {
         >
           {isLoading ? (
             <div className="h-full w-full relative overflow-hidden">
-              <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-[#3B6B4A]/40 to-transparent" />
+              <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-brutal-primary/40 to-transparent" />
             </div>
           ) : (
             <div
@@ -222,7 +222,7 @@ const Footer = () => {
              </div>
              <div className="flex flex-col min-w-0">
                 <span className={`font-black text-sm truncate text-brutal-ink ${isLoading ? "opacity-50" : ""}`}>{currentTrack.title}</span>
-                <span className="text-[10px] font-bold text-brutal-muted uppercase truncate">{isLoading ? "Loading..." : currentTrack.artist}</span>
+                <span className="text-tiny font-bold text-brutal-muted uppercase truncate">{isLoading ? "Loading..." : currentTrack.artist}</span>
              </div>
           </div>
 
@@ -279,7 +279,7 @@ const Footer = () => {
                 {repeat === "one" ? <Repeat1 size={20} className="stroke-[3px]" /> : <Repeat size={20} className={repeat === "all" ? "stroke-[3px]" : ""} />}
               </button>
             </div>
-            <span className="mt-2 text-[10px] font-bold text-brutal-muted tabular-nums">
+            <span className="mt-2 text-tiny font-bold text-brutal-muted tabular-nums">
               {formatTime(progress)} / {formatTime(duration)}
             </span>
           </div>

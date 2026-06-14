@@ -99,7 +99,7 @@ export default function LayoutClient({
             >
               <Menu size={22} />
             </button>
-            <h1 className="text-xl font-black tracking-tight text-[#0F1A0F]">
+            <h1 className="text-xl font-black tracking-tight text-brutal-ink">
               TASKTUNE
             </h1>
           </motion.div>

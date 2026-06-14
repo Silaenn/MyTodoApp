@@ -146,17 +146,17 @@ const Tasks = () => {
         initial="hidden"
         animate="visible"
         variants={headerVariants}
-        className="mb-6 flex flex-col gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-4 sm:p-6 shadow-brutal shrink-0"
+        className="mb-6 flex flex-col gap-4 rounded-md border-2 border-brutal-ink bg-brutal-paper p-4 sm:p-6 shadow-brutal shrink-0"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
+            <p className="text-tiny font-bold uppercase tracking-brutal text-brutal-muted">
               Task board
             </p>
-            <h1 className="mt-2 sm:mt-3 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#0F1A0F] leading-tight">
-              Manage <span className="text-[#3B6B4A]">tasks</span>
+            <h1 className="mt-2 sm:mt-3 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-brutal-ink leading-tight">
+              Manage <span className="text-brutal-primary">tasks</span>
             </h1>
-            <p className="mt-3 sm:mt-4 text-xs sm:text-sm font-bold text-[#5A6E5A] md:text-base">
+            <p className="mt-3 sm:mt-4 text-xs sm:text-sm font-bold text-brutal-muted md:text-base">
               {tasks.length} total · {tasks.filter(t => !t.is_done).length} remaining
             </p>
           </div>
@@ -168,7 +168,7 @@ const Tasks = () => {
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5A6E5A]" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-brutal-muted" size={18} />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -185,15 +185,15 @@ const Tasks = () => {
                   <ChevronDown size={14} className="shrink-0" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="min-w-[180px] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal">
+              <DropdownMenuContent className="min-w-[180px] border-2 border-brutal-ink bg-brutal-paper shadow-brutal">
                 <DropdownMenuLabel className="font-bold">Category</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-[#0F1A0F]/20" />
+                <DropdownMenuSeparator className="bg-brutal-ink/20" />
                 <DropdownMenuRadioGroup value={category} onValueChange={setCategory}>
                   {categoryOptions.map((cat) => (
                     <DropdownMenuRadioItem
                       key={cat}
                       value={cat}
-                      className="cursor-pointer capitalize font-bold hover:bg-[#3B6B4A] hover:text-[#F5F8F4] focus:bg-[#3B6B4A] focus:text-[#F5F8F4]"
+                      className="cursor-pointer capitalize font-bold hover:bg-brutal-primary hover:text-brutal-paper focus:bg-brutal-primary focus:text-brutal-paper"
                     >
                       {cat}
                     </DropdownMenuRadioItem>
@@ -209,14 +209,14 @@ const Tasks = () => {
                   <span className="truncate">Sort: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}</span>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="min-w-[180px] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal">
+              <DropdownMenuContent className="min-w-[180px] border-2 border-brutal-ink bg-brutal-paper shadow-brutal">
                 <DropdownMenuLabel className="font-bold">Sort By</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-[#0F1A0F]/20" />
+                <DropdownMenuSeparator className="bg-brutal-ink/20" />
                 <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
-                  <DropdownMenuRadioItem value="newest" className="cursor-pointer font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Newest</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="oldest" className="cursor-pointer font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Oldest</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="deadline" className="cursor-pointer font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Deadline</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="title" className="cursor-pointer font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Title</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="newest" className="cursor-pointer font-bold focus:bg-brutal-primary focus:text-brutal-paper">Newest</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="oldest" className="cursor-pointer font-bold focus:bg-brutal-primary focus:text-brutal-paper">Oldest</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="deadline" className="cursor-pointer font-bold focus:bg-brutal-primary focus:text-brutal-paper">Deadline</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="title" className="cursor-pointer font-bold focus:bg-brutal-primary focus:text-brutal-paper">Title</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -270,7 +270,7 @@ const Tasks = () => {
                         <div className="flex-1 min-w-0">
                           <div className="mb-1.5 flex items-center gap-2 flex-wrap">
                             <span
-                              className={`brutal-badge text-[10px] sm:text-xs ${
+                              className={`brutal-badge text-tiny sm:text-xs ${
                                 categoryColors[task.category.toLowerCase()] ?? categoryColors.all
                               }`}
                             >
@@ -281,10 +281,10 @@ const Tasks = () => {
                             {task.title}
                           </h3>
                           <div className="mt-2 flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-brutal text-brutal-muted">
+                            <span className="text-tiny sm:text-xs font-bold uppercase tracking-brutal text-brutal-muted">
                               Deadline:
                             </span>
-                            <span className={`rounded-sm border border-brutal-ink/20 px-2 py-0.5 text-[10px] sm:text-xs font-bold ${
+                            <span className={`rounded-sm border border-brutal-ink/20 px-2 py-0.5 text-tiny sm:text-xs font-bold ${
                               task.deadline && new Date(task.deadline) < new Date() && !task.is_done
                                 ? "bg-red-100 text-red-600 border-red-200"
                                 : "bg-brutal-parchment text-brutal-primary"
@@ -308,8 +308,8 @@ const Tasks = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8">
-                    <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
+                  <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 bg-brutal-paper text-center p-8">
+                    <p className="text-sm font-bold uppercase tracking-brutal text-brutal-muted">
                       {searchQuery ? "No matching tasks." : "No tasks found."}
                     </p>
                   </div>

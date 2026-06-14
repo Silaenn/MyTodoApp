@@ -2,6 +2,13 @@ import "./globals.css";
 import { auth } from "@/auth";
 import LayoutClient from "@/components/LayoutClient";
 import type { Metadata } from "next";
+import { Space_Grotesk } from "next/font/google";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-space-grotesk",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -25,9 +32,9 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <html lang="en">
+    <html lang="en" className={spaceGrotesk.variable}>
       <body
-        className="min-h-screen flex overflow-x-hidden antialiased bg-[#E8EDE6]"
+        className="min-h-screen flex overflow-x-hidden antialiased bg-[#E8EDE6] font-sans"
         suppressHydrationWarning
       >
         <LayoutClient session={session}>

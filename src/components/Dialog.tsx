@@ -101,13 +101,13 @@ export function DialogDemo({
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[460px] z-[100] border-4 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal-lg rounded-lg">
+      <DialogContent className="sm:max-w-[460px] z-[100] border-4 border-brutal-ink bg-brutal-paper shadow-brutal-lg rounded-lg">
         <form onSubmit={handleSubmit}>
-          <DialogHeader className="border-b-2 border-[#0F1A0F] pb-4 mb-5">
+          <DialogHeader className="border-b-2 border-brutal-ink pb-4 mb-5">
             <DialogTitle className="text-3xl font-black italic">
-              {task ? "Edit" : "New"} <span className="text-[#3B6B4A]">Task</span>
+              {task ? "Edit" : "New"} <span className="text-brutal-primary">Task</span>
             </DialogTitle>
-            <DialogDescription className="font-bold text-[#5A6E5A]">
+            <DialogDescription className="font-bold text-brutal-muted">
               {task ? "Update your task details below." : "Capture the next thing you want to move forward."}
             </DialogDescription>
           </DialogHeader>
@@ -117,7 +117,7 @@ export function DialogDemo({
             <div className="grid gap-2">
               <Label
                 htmlFor="name"
-                className="text-xs font-black uppercase tracking-[0.3em] text-[#0F1A0F]"
+                className="text-tiny font-black uppercase tracking-brutal text-brutal-ink"
               >
                 Task name
               </Label>
@@ -134,7 +134,7 @@ export function DialogDemo({
             <div className="grid gap-2">
               <Label
                 htmlFor="deadline"
-                className="text-xs font-black uppercase tracking-[0.3em] text-[#0F1A0F]"
+                className="text-tiny font-black uppercase tracking-brutal text-brutal-ink"
               >
                 Deadline
               </Label>
@@ -150,26 +150,26 @@ export function DialogDemo({
             <div className="grid gap-2">
               <Label
                 htmlFor="category"
-                className="text-xs font-black uppercase tracking-[0.3em] text-[#0F1A0F]"
+                className="text-tiny font-black uppercase tracking-brutal text-brutal-ink"
               >
                 Category
               </Label>
               <Select name="category" defaultValue={task?.category || "work"}>
-                <SelectTrigger id="category" className="brutal-input bg-[#F5F8F4]">
+                <SelectTrigger id="category" className="brutal-input bg-brutal-paper">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent className="z-[110] border-2 border-[#0F1A0F] bg-[#F5F8F4] shadow-brutal">
-                  <SelectItem value="work" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Work</SelectItem>
-                  <SelectItem value="study" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Study</SelectItem>
-                  <SelectItem value="hobby" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Hobby</SelectItem>
-                  <SelectItem value="personal" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Personal</SelectItem>
-                  <SelectItem value="urgent" className="font-bold focus:bg-[#3B6B4A] focus:text-[#F5F8F4]">Urgent</SelectItem>
+                <SelectContent className="z-[110] border-2 border-brutal-ink bg-brutal-paper shadow-brutal">
+                  <SelectItem value="work" className="font-bold focus:bg-brutal-primary focus:text-brutal-paper">Work</SelectItem>
+                  <SelectItem value="study" className="font-bold focus:bg-brutal-primary focus:text-brutal-paper">Study</SelectItem>
+                  <SelectItem value="hobby" className="font-bold focus:bg-brutal-primary focus:text-brutal-paper">Hobby</SelectItem>
+                  <SelectItem value="personal" className="font-bold focus:bg-brutal-primary focus:text-brutal-paper">Personal</SelectItem>
+                  <SelectItem value="urgent" className="font-bold focus:bg-brutal-primary focus:text-brutal-paper">Urgent</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          <DialogFooter className="mt-8 border-t-2 border-[#0F1A0F] pt-6 gap-3">
+          <DialogFooter className="mt-8 border-t-2 border-brutal-ink pt-6 gap-3">
             <DialogClose asChild>
               <button
                 type="button"

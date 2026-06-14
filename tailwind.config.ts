@@ -21,8 +21,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans:   ["Space Grotesk", "sans-serif"],
-        brutal: ["Space Grotesk", "sans-serif"],
+        sans:   ["var(--font-space-grotesk)", "sans-serif"],
+        brutal: ["var(--font-space-grotesk)", "sans-serif"],
+      },
+      fontSize: {
+        tiny: "10px",
       },
       borderWidth: {
         brutal: "2px",

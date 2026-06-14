@@ -84,7 +84,7 @@ const Dashboard = ({
               className="flex justify-between items-center mb-8 border-b-2 border-brutal-ink pb-6"
             >
               <div className="lg:block md:hidden">
-                <p className="text-[10px] font-bold uppercase tracking-brutal text-brutal-muted">
+                <p className="text-tiny font-bold uppercase tracking-brutal text-brutal-muted">
                   Workspace
                 </p>
                 <h2 className="text-3xl font-black tracking-tight text-brutal-ink">
@@ -153,7 +153,7 @@ const Dashboard = ({
                 <p className="text-sm font-bold truncate leading-tight mb-1 text-brutal-ink">
                   {user?.name || "Guest"}
                 </p>
-                <p className="text-[10px] font-bold uppercase tracking-brutal text-brutal-primary truncate">
+                <p className="text-tiny font-bold uppercase tracking-brutal text-brutal-primary truncate">
                   Online
                 </p>
               </div>

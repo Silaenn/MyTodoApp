@@ -51,7 +51,7 @@ const TrackCard = memo(({
 
   return (
     <div className={`brutal-card group flex flex-col overflow-hidden ${compact ? "p-2 sm:p-3" : "p-3 sm:p-4"}`}>
-      <div className="relative aspect-square overflow-hidden rounded-sm border-2 border-[#0F1A0F]">
+      <div className="relative aspect-square overflow-hidden rounded-sm border-2 border-brutal-ink">
         <Image
           src={track.thumbnail || "/images/no_image.png"}
           alt={track.title}
@@ -59,20 +59,20 @@ const TrackCard = memo(({
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
           className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-[#3B6B4A]/40 sm:opacity-0 transition-all sm:group-hover:opacity-100">
+        <div className="absolute inset-0 flex items-center justify-center bg-brutal-primary/40 sm:opacity-0 transition-all sm:group-hover:opacity-100">
           <button
             onClick={() => onPlay(track)}
-            className="rounded-full border-2 border-[#F5F8F4] bg-[#F5F8F4] p-2.5 sm:p-3 text-[#0F1A0F] shadow-brutal-sm transition-all hover:scale-105"
+            className="rounded-full border-2 border-brutal-paper bg-brutal-paper p-2.5 sm:p-3 text-brutal-ink shadow-brutal-sm transition-all hover:scale-105"
           >
             <Play className="fill-current ml-0.5 size-4 sm:size-5" />
           </button>
         </div>
         <button
           onClick={() => toggleLike(track)}
-          className={`absolute right-1.5 top-1.5 sm:right-2 sm:top-2 rounded-sm border-2 border-[#0F1A0F] p-1 sm:p-1.5 transition-all ${
+          className={`absolute right-1.5 top-1.5 sm:right-2 sm:top-2 rounded-sm border-2 border-brutal-ink p-1 sm:p-1.5 transition-all ${
             liked
-              ? "bg-[#8B4A2B] text-[#F5F8F4] shadow-brutal-sm"
-              : "bg-[#F5F8F4] text-[#0F1A0F] hover:bg-[#D4A843]"
+              ? "bg-[#8B4A2B] text-brutal-paper shadow-brutal-sm"
+              : "bg-brutal-paper text-brutal-ink hover:bg-brutal-secondary"
           }`}
         >
           <Heart size={10} className="sm:size-3" fill={liked ? "currentColor" : "none"} />
@@ -80,10 +80,10 @@ const TrackCard = memo(({
       </div>
 
       <div className="mt-2 sm:mt-3 flex flex-col gap-1">
-        <h3 className={`truncate font-black leading-tight text-[#0F1A0F] ${compact ? "text-[10px] sm:text-[11px]" : "text-sm sm:text-base"}`}>
+        <h3 className={`truncate font-black leading-tight text-brutal-ink ${compact ? "text-tiny sm:text-[11px]" : "text-sm sm:text-base"}`}>
           {track.title}
         </h3>
-        <p className={`truncate font-bold uppercase tracking-brutal text-[#3B6B4A] ${compact ? "text-[7px] sm:text-[8px]" : "text-[9px] sm:text-[10px]"}`}>
+        <p className={`truncate font-bold uppercase tracking-brutal text-brutal-primary ${compact ? "text-tiny sm:text-tiny" : "text-tiny sm:text-tiny"}`}>
           {track.artist}
         </p>
       </div>
@@ -91,7 +91,7 @@ const TrackCard = memo(({
       {!compact && (
         <button
           onClick={() => onPlay(track)}
-          className="mt-2 sm:mt-3 w-full brutal-btn brutal-btn-secondary py-1.5 sm:py-2 text-[10px] sm:text-xs shadow-brutal-sm"
+          className="mt-2 sm:mt-3 w-full brutal-btn brutal-btn-secondary py-1.5 sm:py-2 text-tiny sm:text-xs shadow-brutal-sm"
         >
           Play track
         </button>
@@ -200,25 +200,25 @@ const Musics = () => {
         initial="hidden"
         animate="visible"
         variants={headerVariants}
-        className="mb-6 sm:mb-10 flex flex-col gap-4 sm:gap-6 rounded-md border-2 border-[#0F1A0F] bg-[#F5F8F4] p-4 sm:p-6 shadow-brutal shrink-0"
+        className="mb-6 sm:mb-10 flex flex-col gap-4 sm:gap-6 rounded-md border-2 border-brutal-ink bg-brutal-paper p-4 sm:p-6 shadow-brutal shrink-0"
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-brutal text-[#5A6E5A]">
+            <p className="text-tiny font-bold uppercase tracking-brutal text-brutal-muted">
               Music search
             </p>
-            <h1 className="mt-2 sm:mt-3 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#0F1A0F] leading-tight">
-              Vibe <span className="text-[#3B6B4A]">discovery</span>
+            <h1 className="mt-2 sm:mt-3 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-brutal-ink leading-tight">
+              Vibe <span className="text-brutal-primary">discovery</span>
             </h1>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4 rounded-md border-2 border-[#0F1A0F] bg-[#E8EDE6] p-3 sm:p-4 shadow-brutal-sm">
+          <div className="flex items-center gap-3 sm:gap-4 rounded-md border-2 border-brutal-ink bg-brutal-parchment p-3 sm:p-4 shadow-brutal-sm">
             <Heart size={20} fill="currentColor" className="text-[#8B4A2B] sm:size-[22px]" />
             <div>
-              <span className="block text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.3em] text-[#5A6E5A]">
+              <span className="block text-tiny font-bold uppercase tracking-brutal text-brutal-muted">
                 Favorite vault
               </span>
-              <span className="text-lg sm:text-xl font-black text-[#0F1A0F]">
+              <span className="text-lg sm:text-xl font-black text-brutal-ink">
                 {likedTracks.length} tracks
               </span>
             </div>
@@ -228,7 +228,7 @@ const Musics = () => {
         <form onSubmit={handleSearch} className="flex w-full gap-2 sm:gap-3 items-center">
           <div className="relative flex-1 min-w-0">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5A6E5A] z-10 shrink-0"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-brutal-muted z-10 shrink-0"
               size={18}
             />
             <input
@@ -256,10 +256,10 @@ const Musics = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#E8EDE6] z-20"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-brutal-parchment z-20"
             >
-              <div className="h-14 w-14 animate-spin rounded-sm border-4 border-[#0F1A0F] border-t-[#3B6B4A]" />
-              <p className="text-2xl font-black tracking-tight text-[#0F1A0F]">
+              <div className="h-14 w-14 animate-spin rounded-sm border-4 border-brutal-ink border-t-brutal-primary" />
+              <p className="text-2xl font-black tracking-tight text-brutal-ink">
                 Scanning frequencies...
               </p>
             </motion.div>
@@ -275,10 +275,10 @@ const Musics = () => {
                 {/* Liked Playlist Section */}
                 {likedTracks.length > 0 && !searchExecuted && (
                   <div className="mb-8 sm:mb-12 shrink-0">
-                    <div className="mb-4 sm:mb-6 flex items-center gap-3 sm:gap-4 border-b-2 border-[#0F1A0F] pb-3 sm:pb-4">
+                    <div className="mb-4 sm:mb-6 flex items-center gap-3 sm:gap-4 border-b-2 border-brutal-ink pb-3 sm:pb-4">
                       <Heart className="text-[#8B4A2B] size-6 sm:size-7" fill="currentColor" />
-                      <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[#0F1A0F]">
-                        Liked <span className="text-[#3B6B4A]">playlist</span>
+                      <h2 className="text-xl sm:text-2xl font-black tracking-tight text-brutal-ink">
+                        Liked <span className="text-brutal-primary">playlist</span>
                       </h2>
                     </div>
                     <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 py-2">
@@ -290,19 +290,19 @@ const Musics = () => {
                 )}
 
                 {/* Title Section (Weekly Picks or Results) */}
-                <div className="mb-4 sm:mb-6 flex items-center gap-3 sm:gap-4 border-b-2 border-[#0F1A0F] pb-3 sm:pb-4 shrink-0">
+                <div className="mb-4 sm:mb-6 flex items-center gap-3 sm:gap-4 border-b-2 border-brutal-ink pb-3 sm:pb-4 shrink-0">
                   {!searchExecuted ? (
                     <>
-                      <Disc className="text-[#D4A843] size-6 sm:size-7" />
-                      <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[#0F1A0F]">
-                        Weekly <span className="text-[#3B6B4A]">picks</span>
+                      <Disc className="text-brutal-secondary size-6 sm:size-7" />
+                      <h2 className="text-xl sm:text-2xl font-black tracking-tight text-brutal-ink">
+                        Weekly <span className="text-brutal-primary">picks</span>
                       </h2>
                     </>
                   ) : (
                     <>
-                      <Search className="text-[#3B6B4A] size-6 sm:size-7" />
-                      <h2 className="text-xl sm:text-2xl font-black tracking-tight text-[#0F1A0F]">
-                        Search <span className="text-[#3B6B4A]">results</span>
+                      <Search className="text-brutal-primary size-6 sm:size-7" />
+                      <h2 className="text-xl sm:text-2xl font-black tracking-tight text-brutal-ink">
+                        Search <span className="text-brutal-primary">results</span>
                       </h2>
                     </>
                   )}
@@ -321,8 +321,8 @@ const Musics = () => {
                       ))}
                     </div>
                   ) : searchExecuted && !loading ? (
-                    <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#0F1A0F]/30 bg-[#F5F8F4] text-center p-8">
-                      <p className="text-sm font-bold uppercase tracking-brutal text-[#5A6E5A]">
+                    <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 bg-brutal-paper text-center p-8">
+                      <p className="text-sm font-bold uppercase tracking-brutal text-brutal-muted">
                         No matches found for &quot;{query}&quot;
                       </p>
                     </div>
