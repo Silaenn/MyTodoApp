@@ -29,7 +29,7 @@ const categoryColors: Record<string, string> = {
   work:     "brutal-badge-primary",
   personal: "bg-brutal-accent text-brutal-paper",
   hobby:    "brutal-badge-secondary",
-  urgent:   "bg-[#FF0000] text-brutal-paper",
+  urgent:   "bg-[#D32F2F] text-brutal-paper",
   study:    "bg-brutal-primary text-brutal-paper",
   all:      "brutal-badge-muted",
 };

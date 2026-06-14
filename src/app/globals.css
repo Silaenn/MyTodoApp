@@ -25,7 +25,7 @@ body {
 
 @layer components {
   .brutal-card {
-    @apply bg-[#F5F8F4] border-2 border-[#0F1A0F] rounded-lg transition-all duration-150 shadow-brutal;
+    @apply bg-brutal-paper border-2 border-brutal-ink rounded-lg transition-all duration-150 shadow-brutal;
   }
 
   .brutal-card:hover {
@@ -34,7 +34,7 @@ body {
   }
 
   .brutal-btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md border-2 border-[#0F1A0F] px-5 py-2.5 font-bold tracking-wide transition-all duration-100 select-none shadow-brutal-sm;
+    @apply inline-flex items-center justify-center gap-2 rounded-md border-2 border-brutal-ink px-5 py-2.5 font-bold tracking-wide transition-all duration-100 select-none shadow-brutal-sm;
   }
 
   .brutal-btn:hover {
@@ -48,52 +48,52 @@ body {
   }
 
   .brutal-btn-primary {
-    @apply bg-[#3B6B4A] text-[#F5F8F4];
+    @apply bg-brutal-primary text-brutal-paper;
   }
 
   .brutal-btn-secondary {
-    @apply bg-[#D4A843] text-[#0F1A0F];
+    @apply bg-brutal-secondary text-brutal-ink;
   }
 
   .brutal-btn-accent {
-    @apply bg-[#8B4A2B] text-[#F5F8F4];
+    @apply bg-brutal-accent text-brutal-paper;
   }
 
   .brutal-btn-outline {
-    @apply bg-[#F5F8F4] text-[#0F1A0F];
+    @apply bg-brutal-paper text-brutal-ink;
   }
 
   .brutal-input {
-    @apply w-full bg-[#F5F8F4] border-2 border-[#0F1A0F] rounded-md px-4 py-2.5 font-medium text-[#0F1A0F] outline-none transition-all duration-100 shadow-brutal-sm;
+    @apply w-full bg-brutal-paper border-2 border-brutal-ink rounded-md px-4 py-2.5 font-medium text-brutal-ink outline-none transition-all duration-100 shadow-brutal-sm;
   }
 
   .brutal-input:focus {
     @apply shadow-brutal;
-    border-color: #3B6B4A;
+    border-color: var(--primary);
   }
 
   .brutal-input::placeholder {
-    color: #5A6E5A;
+    @apply text-brutal-muted;
   }
 
   .brutal-badge {
-    @apply inline-block border-2 border-[#0F1A0F] rounded px-2 py-0.5 text-xs font-bold;
+    @apply inline-block border-2 border-brutal-ink rounded px-2 py-0.5 text-xs font-bold;
   }
 
   .brutal-badge-primary {
-    @apply bg-[#3B6B4A] text-[#F5F8F4];
+    @apply bg-brutal-primary text-brutal-paper;
   }
 
   .brutal-badge-secondary {
-    @apply bg-[#D4A843] text-[#0F1A0F];
+    @apply bg-brutal-secondary text-brutal-ink;
   }
 
   .brutal-badge-accent {
-    @apply bg-[#8B4A2B] text-[#F5F8F4];
+    @apply bg-brutal-accent text-brutal-paper;
   }
 
   .brutal-badge-muted {
-    @apply bg-[#F5F8F4] text-[#5A6E5A];
+    @apply bg-brutal-paper text-brutal-muted;
   }
 }
 
@@ -103,17 +103,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #E8EDE6;
-  border-left: 2px solid #0F1A0F;
+  background: var(--background);
+  border-left: 2px solid var(--border);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3B6B4A;
-  border: 2px solid #0F1A0F;
+  background: var(--primary);
+  border: 2px solid var(--border);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #D4A843;
+  background: var(--secondary);
 }
 
 /* Custom Scrollbar Class */
@@ -127,13 +127,13 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #0F1A0F;
+  background: var(--foreground);
   border: none;
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #3B6B4A;
+  background: var(--primary);
 }
 
 .scrollbar-gutter-stable {
@@ -142,30 +142,26 @@ body {
 
 /* Typography */
 h1 {
-  @apply text-3xl md:text-5xl font-black tracking-tighter leading-tight;
-  color: #0F1A0F;
+  @apply text-3xl md:text-5xl font-black tracking-tighter leading-tight text-brutal-ink;
 }
 
 h2 {
-  @apply text-2xl md:text-3xl font-black tracking-tight leading-tight;
-  color: #0F1A0F;
+  @apply text-2xl md:text-3xl font-black tracking-tight leading-tight text-brutal-ink;
 }
 
 h3 {
-  @apply text-xl font-bold tracking-tight leading-tight;
-  color: #0F1A0F;
+  @apply text-xl font-bold tracking-tight leading-tight text-brutal-ink;
 }
 
 .font-brutal {
-  @apply tracking-tight font-bold;
-  color: #0F1A0F;
+  @apply tracking-tight font-bold text-brutal-ink;
 }
 
 .text-muted {
-  color: #5A6E5A;
+  @apply text-brutal-muted;
 }
 
 ::selection {
-  background: #D4A843;
-  color: #0F1A0F;
+  background: var(--secondary);
+  color: var(--foreground);
 }
