@@ -86,6 +86,7 @@ const Home = ({ session }: { session: Session | null }) => {
     <motion.div 
       initial="hidden"
       animate="visible"
+      exit={{ opacity: 0, y: 20 }}
       variants={mainContainerVariants}
       className="w-full flex-1 flex flex-col space-y-6 sm:space-y-10"
     >
@@ -144,7 +145,13 @@ const Home = ({ session }: { session: Session | null }) => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col lg:flex-row gap-8 sm:gap-10 min-h-0">
         {/* Tasks Section */}
-        <motion.section variants={sectionVariants} className="lg:flex-1 flex flex-col space-y-4 sm:space-y-6 min-h-0">
+        <motion.section 
+          variants={sectionVariants} 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="lg:flex-1 flex flex-col space-y-4 sm:space-y-6 min-h-0"
+        >
           <div className="flex items-center justify-between border-b-2 border-brutal-ink pb-3 sm:pb-4 shrink-0 gap-2">
             <div className="flex items-center gap-2 sm:gap-3">
               <Clock className="text-brutal-secondary size-5 sm:size-6 md:size-7" />
@@ -187,7 +194,7 @@ const Home = ({ session }: { session: Session | null }) => {
                     <Link
                       key={task.id}
                       href="/tasks"
-                      className="min-h-[5rem] sm:min-h-[6rem] group flex items-center justify-between gap-3 sm:gap-4 rounded-md border-2 border-brutal-ink bg-brutal-paper p-4 sm:p-5 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-brutal-primary hover:-translate-x-px hover:-translate-y-px"
+                      className="min-h-[5rem] sm:min-h-[6rem] group flex items-center justify-between gap-3 sm:gap-4 rounded-md border-2 border-brutal-ink bg-brutal-paper p-4 sm:p-5 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-brutal-primary hover:-translate-x-px hover:-translate-y-px hover:rotate-1"
                     >
                       <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                         <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-secondary font-black text-brutal-ink transition-colors group-hover:bg-brutal-primary group-hover:text-brutal-paper text-sm sm:text-base">
@@ -236,7 +243,13 @@ const Home = ({ session }: { session: Session | null }) => {
         </motion.section>
 
         {/* Music Section */}
-        <motion.section variants={sectionVariants} className="lg:flex-1 flex flex-col space-y-4 sm:space-y-6 min-h-0">
+        <motion.section 
+          variants={sectionVariants} 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="lg:flex-1 flex flex-col space-y-4 sm:space-y-6 min-h-0"
+        >
           <div className="flex items-center justify-between border-b-2 border-brutal-ink pb-3 sm:pb-4 shrink-0 gap-2">
             <div className="flex items-center gap-2 sm:gap-3">
               <Heart className="text-brutal-accent size-5 sm:size-6 md:size-7" fill="currentColor" />

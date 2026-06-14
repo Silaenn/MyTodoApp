@@ -139,7 +139,13 @@ const Tasks = () => {
   }, [tasks, category, searchQuery, sortBy]);
 
   return (
-    <div className="w-full h-[calc(100vh-60px)] flex flex-col overflow-hidden">
+    <motion.div 
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.3 }}
+      className="w-full h-[calc(100vh-60px)] flex flex-col overflow-hidden"
+    >
 
       {/* Header & Controls - Fixed Height */}
       <motion.div 
@@ -320,7 +326,7 @@ const Tasks = () => {
         </AnimatePresence>
       </div>
       <MusicSpacer />
-    </div>
+    </motion.div>
   );
 };
 
