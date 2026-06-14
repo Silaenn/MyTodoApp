@@ -10,8 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Trash2, Search, ArrowUpDown, CheckCircle2, Circle } from "lucide-react";
+import { ChevronDown, Search, ArrowUpDown, CheckCircle2, Circle } from "lucide-react";
 import { DialogDemo } from "@/components/Dialog";
+import { DeleteConfirm } from "@/components/DeleteConfirm";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { MusicSpacer } from "@/components/MusicSpacer";
 
@@ -81,7 +82,6 @@ const Tasks = () => {
   }, []);
 
   const deleteTask = async (id: string) => {
-    if (!confirm("Delete this task?")) return;
     try {
       await fetch(`/api/tasks/${id}`, { method: "DELETE" });
       setTasks(tasks.filter((t) => t.id !== id));
@@ -303,13 +303,10 @@ const Tasks = () => {
 
                       <div className="grid grid-cols-2 gap-2 mt-2 sm:mt-0 sm:flex sm:items-center sm:gap-4 sm:self-center">
                         <DialogDemo task={task} onSuccess={fetchTasks} />
-                        <button
-                          onClick={() => deleteTask(task.id)}
-                          className="brutal-btn brutal-btn-accent shadow-brutal-sm flex items-center justify-center gap-2 py-2 px-4 h-11 sm:w-auto"
-                        >
-                          <Trash2 size={16} />
-                          <span className="text-xs sm:text-sm font-bold">Delete</span>
-                        </button>
+                        <DeleteConfirm 
+                          title={task.title} 
+                          onConfirm={() => deleteTask(task.id)} 
+                        />
                       </div>
                     </div>
                   ))
