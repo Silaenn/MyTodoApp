@@ -101,11 +101,11 @@ const Home = ({ session }: { session: Session | null }) => {
             <p className="text-tiny font-bold uppercase tracking-brutal text-brutal-muted">
               Today
             </p>
-            <h1 className="mt-2 sm:mt-3 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-brutal-ink leading-tight">
+            <h1 className="mt-2 sm:mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-brutal-ink leading-tight">
               Welcome {" "}
-              <span className="text-brutal-primary truncate block sm:inline">{session?.user?.name || "Explorer"}</span>
+              <span className="text-brutal-primary line-clamp-1 block sm:inline">{session?.user?.name || "Explorer"}</span>
             </h1>
-            <p className="mt-3 sm:mt-4 text-xs sm:text-sm font-bold text-brutal-muted md:text-base">
+            <p className="mt-3 sm:mt-4 text-xs sm:text-sm font-bold text-brutal-muted md:text-base lg:text-lg">
               {new Date().toLocaleDateString("en-US", {
                 weekday: "long",
                 day: "numeric",
@@ -194,7 +194,7 @@ const Home = ({ session }: { session: Session | null }) => {
                           {task.title.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                          <p className="mb-0.5 sm:mb-1 line-clamp-1 text-sm sm:text-base font-bold text-brutal-ink leading-tight">
+                          <p className="mb-0.5 sm:mb-1 line-clamp-2 text-sm sm:text-base font-bold text-brutal-ink leading-tight">
                             {task.title}
                           </p>
                           <span className="rounded-sm border border-brutal-ink/30 bg-brutal-parchment px-1.5 sm:px-2 py-0.5 text-tiny sm:text-tiny font-bold uppercase tracking-brutal text-brutal-muted">
@@ -285,10 +285,10 @@ const Home = ({ session }: { session: Session | null }) => {
                           </div>
                         </button>
                       </div>
-                      <p className="mb-0.5 truncate text-tiny sm:text-[11px] font-bold leading-tight text-brutal-ink">
+                      <p className="mb-0.5 line-clamp-2 text-tiny sm:text-[11px] font-bold leading-tight text-brutal-ink">
                         {track.title}
                       </p>
-                      <p className="truncate text-tiny sm:text-tiny font-bold uppercase tracking-brutal text-brutal-primary">
+                      <p className="line-clamp-1 text-tiny sm:text-tiny font-bold uppercase tracking-brutal text-brutal-primary">
                         {track.artist}
                       </p>
                     </div>

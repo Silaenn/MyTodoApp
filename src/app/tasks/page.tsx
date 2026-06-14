@@ -277,7 +277,7 @@ const Tasks = () => {
                               {task.category.toUpperCase()}
                             </span>
                           </div>
-                          <h3 className={`text-base sm:text-lg font-bold break-words ${task.is_done ? "line-through opacity-50" : ""}`}>
+                          <h3 className={`text-base sm:text-lg font-bold line-clamp-2 ${task.is_done ? "line-through opacity-50" : ""}`}>
                             {task.title}
                           </h3>
                           <div className="mt-2 flex items-center gap-2 flex-wrap">
@@ -295,14 +295,14 @@ const Tasks = () => {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2 mt-2 sm:mt-0 sm:flex sm:items-center sm:gap-3 sm:self-center">
+                      <div className="grid grid-cols-2 gap-2 mt-2 sm:mt-0 sm:flex sm:items-center sm:gap-4 sm:self-center">
                         <DialogDemo task={task} onSuccess={fetchTasks} />
                         <button
                           onClick={() => deleteTask(task.id)}
-                          className="brutal-btn brutal-btn-accent shadow-brutal-sm flex items-center justify-center gap-2 py-2 px-3 sm:h-11 sm:w-auto"
+                          className="brutal-btn brutal-btn-accent shadow-brutal-sm flex items-center justify-center gap-2 py-2 px-4 h-11 sm:w-auto"
                         >
-                          <Trash2 size={14} />
-                          <span className="text-xs sm:text-sm">Delete</span>
+                          <Trash2 size={16} />
+                          <span className="text-xs sm:text-sm font-bold">Delete</span>
                         </button>
                       </div>
                     </div>

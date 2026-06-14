@@ -69,24 +69,25 @@ const TrackCard = memo(({
         </div>
         <button
           onClick={() => toggleLike(track)}
-          className={`absolute right-1.5 top-1.5 sm:right-2 sm:top-2 rounded-sm border-2 border-brutal-ink p-1 sm:p-1.5 transition-all ${
+          className={`absolute right-1.5 top-1.5 sm:right-2 sm:top-2 rounded-sm border-2 border-brutal-ink p-2 sm:p-1.5 transition-all ${
             liked
-              ? "bg-[#8B4A2B] text-brutal-paper shadow-brutal-sm"
+              ? "bg-brutal-accent text-brutal-paper shadow-brutal-sm"
               : "bg-brutal-paper text-brutal-ink hover:bg-brutal-secondary"
           }`}
+          aria-label="Toggle favorite"
         >
-          <Heart size={10} className="sm:size-3" fill={liked ? "currentColor" : "none"} />
+          <Heart size={14} className="sm:size-4" fill={liked ? "currentColor" : "none"} />
         </button>
-      </div>
+        </div>
 
-      <div className="mt-2 sm:mt-3 flex flex-col gap-1">
-        <h3 className={`truncate font-black leading-tight text-brutal-ink ${compact ? "text-tiny sm:text-[11px]" : "text-sm sm:text-base"}`}>
+        <div className="mt-2 sm:mt-3 flex flex-col gap-1">
+        <h3 className={`line-clamp-1 font-black leading-tight text-brutal-ink ${compact ? "text-tiny sm:text-[11px]" : "text-sm sm:text-base"}`}>
           {track.title}
         </h3>
-        <p className={`truncate font-bold uppercase tracking-brutal text-brutal-primary ${compact ? "text-tiny sm:text-tiny" : "text-tiny sm:text-tiny"}`}>
+        <p className={`line-clamp-1 font-bold uppercase tracking-brutal text-brutal-primary ${compact ? "text-tiny sm:text-tiny" : "text-tiny sm:text-tiny"}`}>
           {track.artist}
         </p>
-      </div>
+        </div>
 
       {!compact && (
         <button
