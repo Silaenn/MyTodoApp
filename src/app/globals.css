@@ -40,7 +40,7 @@ body::before {
 
 @layer components {
   .brutal-card {
-    @apply bg-brutal-paper border-2 border-brutal-ink rounded-lg transition-all duration-150 shadow-brutal;
+    @apply bg-brutal-paper border-2 border-brutal-ink rounded-md transition-all duration-150 shadow-brutal;
   }
 
   .brutal-card:hover {

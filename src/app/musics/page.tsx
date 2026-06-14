@@ -214,7 +214,7 @@ const Musics = () => {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4 rounded-md border-2 border-brutal-ink bg-brutal-parchment p-3 sm:p-4 shadow-brutal-sm">
-            <Heart size={20} fill="currentColor" className="text-[#8B4A2B] sm:size-[22px]" />
+            <Heart size={20} fill="currentColor" className="text-brutal-accent sm:size-[22px]" />
             <div>
               <span className="block text-tiny font-bold uppercase tracking-brutal text-brutal-muted">
                 Favorite vault
