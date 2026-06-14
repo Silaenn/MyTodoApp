@@ -266,7 +266,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   {likedTracks.slice(0, 6).map((track) => (
                     <div
                       key={track.id}
-                      className="group flex flex-col rounded-md border-2 border-brutal-ink bg-brutal-paper p-2 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-brutal-primary hover:-translate-x-px hover:-translate-y-px"
+                      className="group flex flex-col rounded-md border-2 border-brutal-ink bg-brutal-paper p-2 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-brutal-primary hover:-translate-x-px hover:-translate-y-px hover:-rotate-1"
                     >
                       <div className="relative mb-2 aspect-square overflow-hidden rounded-sm border-2 border-brutal-ink">
                         <Image

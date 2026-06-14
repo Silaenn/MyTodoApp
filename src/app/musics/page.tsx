@@ -276,12 +276,12 @@ const Musics = () => {
                 {likedTracks.length > 0 && !searchExecuted && (
                   <div className="mb-8 sm:mb-12 shrink-0">
                     <div className="mb-4 sm:mb-6 flex items-center gap-3 sm:gap-4 border-b-2 border-brutal-ink pb-3 sm:pb-4">
-                      <Heart className="text-[#8B4A2B] size-6 sm:size-7" fill="currentColor" />
+                      <Heart className="text-brutal-accent size-6 sm:size-7" fill="currentColor" />
                       <h2 className="text-xl sm:text-2xl font-black tracking-tight text-brutal-ink">
                         Liked <span className="text-brutal-primary">playlist</span>
                       </h2>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 py-2">
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 py-2">
                       {likedTracks.map((track) => (
                         <TrackCard key={track.id} track={track} compact onPlay={handlePlayLiked} />
                       ))}
@@ -311,7 +311,7 @@ const Musics = () => {
                 {/* Results Grid */}
                 <div className="flex-1 flex flex-col py-2">
                   {(searchExecuted ? results : weeklyPicks).length > 0 ? (
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                       {(searchExecuted ? results : weeklyPicks).map((track) => (
                         <TrackCard 
                           key={track.id} 

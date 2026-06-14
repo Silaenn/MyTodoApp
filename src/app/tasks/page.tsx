@@ -180,7 +180,7 @@ const Tasks = () => {
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-row">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="brutal-btn brutal-btn-outline h-11 capitalize flex items-center justify-center gap-2 sm:min-w-[140px] whitespace-nowrap shadow-brutal-sm px-2 text-xs sm:text-sm">
+                <button className="brutal-btn brutal-btn-outline h-11 capitalize flex items-center justify-center gap-2 sm:min-w-[140px] whitespace-nowrap shadow-brutal-sm px-4 text-xs sm:text-sm">
                   <span className="truncate">Filter: {category}</span>
                   <ChevronDown size={14} className="shrink-0" />
                 </button>
@@ -204,7 +204,7 @@ const Tasks = () => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="brutal-btn brutal-btn-outline h-11 flex items-center justify-center gap-2 sm:min-w-[140px] whitespace-nowrap shadow-brutal-sm px-2 text-xs sm:text-sm">
+                <button className="brutal-btn brutal-btn-outline h-11 flex items-center justify-center gap-2 sm:min-w-[140px] whitespace-nowrap shadow-brutal-sm px-4 text-xs sm:text-sm">
                   <ArrowUpDown size={14} className="shrink-0" />
                   <span className="truncate">Sort: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}</span>
                 </button>
