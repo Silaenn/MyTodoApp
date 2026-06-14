@@ -95,6 +95,10 @@ const Home = ({ session }: { session: Session | null }) => {
         variants={sectionVariants}
         className="relative overflow-hidden rounded-md border-2 border-brutal-ink bg-brutal-paper p-4 sm:p-6 shadow-brutal"
       >
+        {/* Ambient Glows */}
+        <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-brutal-primary/10 blur-[80px] pointer-events-none" />
+        <div className="absolute right-0 bottom-0 h-40 w-40 rounded-full bg-brutal-secondary/10 blur-[60px] pointer-events-none" />
+        
         <div className="absolute -right-8 -top-8 h-32 w-32 sm:h-40 sm:w-40 rounded-full border-2 border-brutal-ink bg-brutal-secondary opacity-30" />
         <div className="absolute right-12 top-12 sm:right-16 sm:top-16 h-16 w-16 sm:h-20 sm:w-20 rounded-full border-2 border-brutal-ink bg-brutal-primary opacity-20" />
         <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">

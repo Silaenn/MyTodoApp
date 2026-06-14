@@ -67,7 +67,7 @@ const Dashboard = ({
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-[70] md:flex flex-col w-72 md:w-20 lg:w-64 xl:w-72 h-screen border-r-2 border-brutal-ink bg-brutal-parchment transition-transform duration-300 ${
+        className={`fixed left-0 top-0 z-[70] md:flex flex-col w-72 md:w-20 lg:w-64 xl:w-72 h-screen border-r-2 border-brutal-ink bg-brutal-parchment shadow-[10px_0_30px_rgba(15,26,15,0.05)] transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
