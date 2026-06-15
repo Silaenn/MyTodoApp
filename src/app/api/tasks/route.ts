@@ -6,16 +6,26 @@ import { auth } from "@/auth";
 export async function GET() {
   try {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
+      console.log("GET /api/tasks: Unauthorized - No session email");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const userEmail = session.user.email;
+
+    console.log(`GET /api/tasks: Fetching tasks for email ${userEmail}`);
+
     const result = await turso.execute({
-      sql: "SELECT * FROM tasks WHERE user_id = ? ORDER BY created_at DESC",
-      args: [session.user.id],
+      sql: "SELECT * FROM tasks WHERE user_email = ? ORDER BY created_at DESC",
+      args: [userEmail],
     });
-    return NextResponse.json(result.rows);
-  } catch {
+
+    console.log(`GET /api/tasks: Found ${result.rows.length} tasks`);
+    
+    const tasks = result.rows.map(row => ({ ...row }));
+    return NextResponse.json(tasks);
+  } catch (error) {
+    console.error("GET /api/tasks: Error fetching tasks:", error);
     return NextResponse.json({ error: "Failed to fetch tasks" }, { status: 500 });
   }
 }
@@ -23,7 +33,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -31,12 +41,13 @@ export async function POST(request: Request) {
     const id = uuidv4();
     
     await turso.execute({
-      sql: "INSERT INTO tasks (id, title, category, deadline, user_id) VALUES (?, ?, ?, ?, ?)",
-      args: [id, title, category, deadline, session.user.id],
+      sql: "INSERT INTO tasks (id, title, category, deadline, user_email) VALUES (?, ?, ?, ?, ?)",
+      args: [id, title, category, deadline, session.user.email],
     });
     
     return NextResponse.json({ id, title, category, deadline }, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error("POST /api/tasks: Error creating task:", error);
     return NextResponse.json({ error: "Failed to create task" }, { status: 500 });
   }
 }

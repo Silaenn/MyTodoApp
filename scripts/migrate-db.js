@@ -9,16 +9,19 @@ const client = createClient({
 async function migrate() {
   console.log("Migrating Turso Database...");
   try {
-    // Add user_id column if it doesn't exist
-    // SQLite/LibSQL doesn't support ADD COLUMN IF NOT EXISTS easily without checking table info
     const tableInfo = await client.execute("PRAGMA table_info(tasks)");
     const columns = tableInfo.rows.map(row => row.name);
 
-    if (!columns.includes("user_id")) {
-      console.log("Adding 'user_id' column to 'tasks' table...");
-      await client.execute("ALTER TABLE tasks ADD COLUMN user_id TEXT");
+    if (!columns.includes("user_email")) {
+      console.log("Adding 'user_email' column to 'tasks' table...");
+      await client.execute("ALTER TABLE tasks ADD COLUMN user_email TEXT");
     } else {
-      console.log("'user_id' column already exists.");
+      console.log("'user_email' column already exists.");
+    }
+
+    if (columns.includes("user_id")) {
+      console.log("Dropping redundant 'user_id' column...");
+      await client.execute("ALTER TABLE tasks DROP COLUMN user_id");
     }
 
     console.log("Migration completed successfully.");

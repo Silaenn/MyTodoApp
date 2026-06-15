@@ -22,6 +22,7 @@ interface Task {
   category: string;
   deadline: string;
   is_done: boolean;
+  created_at?: string;
 }
 
 const categoryOptions = ["all", "work", "personal", "hobby", "urgent", "study"];
@@ -60,18 +61,23 @@ const Tasks = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [loading, setLoading] = useState(true);
-  
-
+  const [error, setError] = useState<string | null>(null);
 
   const fetchTasks = async () => {
     try {
+      setError(null);
       const res = await fetch("/api/tasks");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to fetch tasks");
+      }
       const data = await res.json();
       if (Array.isArray(data)) {
         setTasks(data);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch tasks:", error);
+      setError(error.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -124,8 +130,12 @@ const Tasks = () => {
 
     // Sorting
     result.sort((a, b) => {
-      if (sortBy === "newest") return -1;
-      if (sortBy === "oldest") return 1;
+      if (sortBy === "newest") {
+        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+      }
+      if (sortBy === "oldest") {
+        return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
+      }
       if (sortBy === "deadline") {
         if (!a.deadline) return 1;
         if (!b.deadline) return -1;
@@ -247,6 +257,24 @@ const Tasks = () => {
               <div className="h-3 w-56 overflow-hidden rounded-sm border-2 border-brutal-ink bg-brutal-paper shadow-brutal-sm">
                 <div className="h-full w-1/3 animate-pulse bg-brutal-primary" />
               </div>
+            </motion.div>
+          ) : error ? (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-brutal-parchment p-8 text-center"
+            >
+              <p className="text-2xl font-bold text-red-600">
+                Error: {error}
+              </p>
+              <button 
+                onClick={fetchTasks}
+                className="brutal-btn brutal-btn-primary px-6 h-12"
+              >
+                Try Again
+              </button>
             </motion.div>
           ) : (
             <motion.div 

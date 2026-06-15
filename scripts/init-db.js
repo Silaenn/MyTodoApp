@@ -16,6 +16,7 @@ async function init() {
         category TEXT,
         deadline TEXT,
         is_done BOOLEAN DEFAULT 0,
+        user_email TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);

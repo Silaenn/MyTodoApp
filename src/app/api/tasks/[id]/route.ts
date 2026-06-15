@@ -8,7 +8,7 @@ export async function PATCH(
 ) {
   try {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -40,10 +40,10 @@ export async function PATCH(
       return NextResponse.json({ message: "No fields to update" });
     }
 
-    args.push(id, session.user.id);
+    args.push(id, session.user.email);
 
     await turso.execute({
-      sql: `UPDATE tasks SET ${updates.join(", ")} WHERE id = ? AND user_id = ?`,
+      sql: `UPDATE tasks SET ${updates.join(", ")} WHERE id = ? AND user_email = ?`,
       args,
     });
 
@@ -60,14 +60,14 @@ export async function DELETE(
 ) {
   try {
     const session = await auth();
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await params;
     await turso.execute({
-      sql: "DELETE FROM tasks WHERE id = ? AND user_id = ?",
-      args: [id, session.user.id],
+      sql: "DELETE FROM tasks WHERE id = ? AND user_email = ?",
+      args: [id, session.user.email],
     });
     return NextResponse.json({ message: "Task deleted" });
   } catch {
