@@ -159,10 +159,10 @@ const Dashboard = ({
               </div>
               <button
                 onClick={() => signOut()}
-                className="lg:inline-flex md:hidden inline-flex items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-parchment p-2 shadow-brutal-sm transition-all hover:bg-brutal-accent hover:text-brutal-paper hover:shadow-brutal active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+                className="group lg:inline-flex md:hidden inline-flex items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-parchment p-2 shadow-brutal-sm transition-all hover:bg-brutal-accent hover:text-brutal-paper hover:shadow-brutal active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
                 title="Logout"
               >
-                <LogOut size={16} className="text-brutal-ink" />
+                <LogOut size={16} className="text-brutal-ink group-hover:text-brutal-paper" />
               </button>
             </div>
           </motion.div>
