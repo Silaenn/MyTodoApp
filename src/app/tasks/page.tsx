@@ -75,9 +75,9 @@ const Tasks = () => {
       if (Array.isArray(data)) {
         setTasks(data);
       }
-    } catch (error: any) {
-      console.error("Failed to fetch tasks:", error);
-      setError(error.message || "An unexpected error occurred");
+    } catch (err: unknown) {
+      console.error("Failed to fetch tasks:", err);
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -91,8 +91,8 @@ const Tasks = () => {
     try {
       await fetch(`/api/tasks/${id}`, { method: "DELETE" });
       setTasks(tasks.filter((t) => t.id !== id));
-    } catch (error) {
-      console.error("Failed to delete task:", error);
+    } catch (err: unknown) {
+      console.error("Failed to delete task:", err);
     }
   };
 

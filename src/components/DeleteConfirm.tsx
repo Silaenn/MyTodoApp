@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,10 +9,10 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { AlertTriangle, Trash2 } from "lucide-react";
+import { AlertTriangle, Trash2, Loader2 } from "lucide-react";
 
 interface DeleteConfirmProps {
-  onConfirm: () => void;
+  onConfirm: () => Promise<void> | void;
   title?: string;
   trigger?: React.ReactNode;
 }
@@ -22,6 +22,17 @@ export const DeleteConfirm = ({
   title = "Delete Task", 
   trigger 
 }: DeleteConfirmProps) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await onConfirm();
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -56,12 +67,18 @@ export const DeleteConfirm = ({
               </button>
             </DialogClose>
             <button
-              onClick={() => {
-                onConfirm();
-              }}
-              className="flex-1 brutal-btn brutal-btn-accent bg-red-600 text-brutal-paper h-12 text-sm font-black uppercase shadow-brutal hover:bg-red-700"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="flex-1 brutal-btn brutal-btn-accent bg-red-600 text-brutal-paper h-12 text-sm font-black uppercase shadow-brutal hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Destroy Data
+              {isDeleting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Deleting...</span>
+                </>
+              ) : (
+                "Destroy Data"
+              )}
             </button>
           </div>
         </div>
