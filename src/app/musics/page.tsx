@@ -111,6 +111,7 @@ const Musics = () => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [searchExecuted, setSearchExecuted] = useState(false);
+  const searchAbortControllerRef = React.useRef<AbortController | null>(null);
   
   const playTrack = useMusicStore((state) => state.playTrack);
   const likedTracks = useMusicStore((state) => state.likedTracks);
@@ -144,11 +145,20 @@ const Musics = () => {
       setRadioQueue([]);
       return;
     }
+
+    // Abort previous search if still running
+    if (searchAbortControllerRef.current) {
+      searchAbortControllerRef.current.abort();
+    }
+    searchAbortControllerRef.current = new AbortController();
     
     setLoading(true);
     setRadioQueue([]); // Clear old recommendations immediately
     try {
-      const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(query)}`);
+      const res = await fetch(
+        `http://localhost:8000/search?q=${encodeURIComponent(query)}`,
+        { signal: searchAbortControllerRef.current.signal }
+      );
       const data = await res.json();
       if (Array.isArray(data)) {
         // Update results immediately
@@ -163,13 +173,19 @@ const Musics = () => {
               if (Array.isArray(recData)) {
                 setRadioQueue(recData);
               }
-            }).catch(err => console.error("Radio fetch failed", err));
+            }).catch(err => {
+              if (err.name !== 'AbortError') console.error("Radio fetch failed", err);
+            });
         }
       }
-    } catch (error) {
-      console.error("Search failed:", error);
+    } catch (error: any) {
+      if (error.name !== 'AbortError') {
+        console.error("Search failed:", error);
+      }
     } finally {
-      setLoading(false);
+      if (searchAbortControllerRef.current?.signal.aborted === false) {
+        setLoading(false);
+      }
     }
   };
 
