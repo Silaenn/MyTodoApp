@@ -55,9 +55,32 @@ YDL_COMMON_OPTS = {
 
 
 def clean_title(title: str) -> str:
+    # Remove common music video suffixes
+    suffixes = [
+        r'\(?official\s+video\)?', r'\(?official\s+audio\)?', r'\(?lyric\s+video\)?',
+        r'\(?lyrics\)?', r'\(?official\)?', r'\(?hd\)?', r'\(?4k\)?', r'\(?live\)?',
+        r'\(?cover\)?', r'\(?mv\)?', r'\(?audio\)?'
+    ]
+    title = title.lower()
+    for s in suffixes:
+        title = re.sub(s, '', title)
+    
     title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
-    title = re.sub(r'[^\w\s]', '', title).lower().strip()
-    return title
+    title = re.sub(r'[^\w\s]', ' ', title)
+    return " ".join(title.split()).strip()
+
+def get_main_title(title: str) -> str:
+    # Extract the main part of the title before common separators
+    title = title.lower()
+    # Remove anything in brackets/parentheses first
+    title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
+    for sep in ['-', '|', ':', '–']:
+        if sep in title:
+            title = title.split(sep)[0]
+            break
+    # Clean up non-alphanumeric but keep spaces
+    title = re.sub(r'[^\w\s]', '', title)
+    return title.strip()
 
 
 def _run_yt_search(q: str):
@@ -144,9 +167,10 @@ def _run_yt_recommendations(video_id: str):
     url = f"https://www.youtube.com/watch?v={video_id}"
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
-        title = info.get('title', '')
+        original_title = info.get('title', '')
         uploader = info.get('uploader', '')
-        cleaned_original_title = clean_title(title)
+        
+        main_original_title = get_main_title(original_title)
 
         related = []
         if 'entries' in info and info['entries']:
@@ -155,29 +179,43 @@ def _run_yt_recommendations(video_id: str):
             related = info['related_videos']
 
         if not related:
-            search_query = f"ytsearch5:{title} {uploader} similar music"
+            search_query = f"ytsearch10:{original_title} {uploader} similar music"
             search_results = ydl.extract_info(search_query, download=False)
             if 'entries' in search_results:
                 related = search_results['entries']
 
         recommendations = []
-        seen_cleaned_titles = {cleaned_original_title}
+        seen_main_titles = {main_original_title}
+        
+        # Additional common words to filter out for discovery
+        filter_words = {'karaoke', 'instrumental', 'tutorial', 'how to', 'lesson', 'piano cover', 'guitar cover'}
 
         for entry in related:
             entry_id = entry.get("id")
             entry_title = entry.get("title") or ""
-            cleaned_entry_title = clean_title(entry_title)
+            entry_main_title = get_main_title(entry_title)
+            
+            if not entry_id or entry_id == video_id:
+                continue
+                
+            # Filter by main title similarity to avoid "same song, different uploader"
+            if entry_main_title in seen_main_titles or main_original_title in entry_main_title:
+                continue
+            
+            # Filter out junk/non-music content
+            lowered_title = entry_title.lower()
+            if any(word in lowered_title for word in filter_words):
+                continue
 
-            if entry_id and entry_id != video_id and cleaned_entry_title not in seen_cleaned_titles:
-                if len(cleaned_entry_title) > 2:
-                    recommendations.append({
-                        "id": entry_id,
-                        "title": entry_title,
-                        "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
-                        "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
-                        "url": f"https://www.youtube.com/watch?v={entry_id}"
-                    })
-                    seen_cleaned_titles.add(cleaned_entry_title)
+            if len(entry_main_title) > 2:
+                recommendations.append({
+                    "id": entry_id,
+                    "title": entry_title,
+                    "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
+                    "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
+                    "url": f"https://www.youtube.com/watch?v={entry_id}"
+                })
+                seen_main_titles.add(entry_main_title)
 
             if len(recommendations) >= 5:
                 break
