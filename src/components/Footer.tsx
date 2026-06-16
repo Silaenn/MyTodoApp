@@ -31,12 +31,10 @@ const Footer = () => {
     }
   }, [isPlaying, streamUrl, volume]);
 
-  // Force stop and clear audio when loading new track
+  // Force stop audio when loading new track without triggering "not suitable" error
   useEffect(() => {
     if (isLoading && audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.src = "";
-      audioRef.current.load();
     }
   }, [isLoading]);
 

@@ -41,7 +41,7 @@ class TTLCache:
 
 # Caches for different purposes
 search_cache = TTLCache(ttl_seconds=3600)      # 1 hour
-stream_cache = TTLCache(ttl_seconds=1200)      # 20 minutes (YouTube URLs expire)
+stream_cache = TTLCache(ttl_seconds=300)       # 5 minutes (YouTube URLs expire quickly)
 recommendation_cache = TTLCache(ttl_seconds=3600) # 1 hour
 
 # Shared yt-dlp options for better performance and reliability
@@ -49,8 +49,9 @@ YDL_COMMON_OPTS = {
     'quiet': True,
     'no_warnings': True,
     'source_address': '0.0.0.0',
-    'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'nocheckcertificate': True,
+    # Use a generic user agent to avoid IP/UA mismatch blocks
+    'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 
 
