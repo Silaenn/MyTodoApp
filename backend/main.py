@@ -91,12 +91,28 @@ def _run_yt_search(q: str):
         'extract_flat': True,
         'skip_download': True,
     }
+    
+    # Common words to filter out for search results to ensure they are actual songs
+    filter_words = {
+        'instrumental', 'karaoke', 'piano', 'guitar', 'backing track', 
+        'tutorial', 'how to', 'lesson', 'cover', 'instrument', 'midi'
+    }
+    
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        search_query = f"ytsearch20:{q} music"
+        # Refine search query to favor official/vocal versions
+        search_query = f"ytsearch30:{q} official music"
         search_results = ydl.extract_info(search_query, download=False)
         entries = []
+        
         if 'entries' in search_results:
             for entry in search_results['entries']:
+                entry_title = entry.get("title") or ""
+                lowered_title = entry_title.lower()
+                
+                # Check if title contains any filter words
+                if any(word in lowered_title for word in filter_words):
+                    continue
+                    
                 entries.append({
                     "id": entry.get("id"),
                     "title": entry.get("title"),
@@ -105,6 +121,11 @@ def _run_yt_search(q: str):
                     "duration": entry.get("duration"),
                     "url": f"https://www.youtube.com/watch?v={entry.get('id')}"
                 })
+                
+                # Limit to 20 high-quality results
+                if len(entries) >= 20:
+                    break
+                    
         return entries
 
 
