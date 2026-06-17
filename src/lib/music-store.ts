@@ -68,6 +68,23 @@ const normalizeTitle = (title: string) => {
     .trim();
 };
 
+const getKeywords = (title: string) => {
+  const stopWords = new Set([
+    "the", "a", "an", "in", "on", "at", "to", "for", "of", "with", "by", "and", "or", "but", 
+    "is", "are", "was", "were", "be", "been", "being", "official", "video", "audio", 
+    "lyrics", "lyric", "cover", "mv", "live", "remix", "ft", "feat", "music", "video",
+    "hd", "4k", "visualizer", "audio", "exclusive", "full", "song"
+  ]);
+  
+  return title
+    .toLowerCase()
+    .replace(/\(.*?\)/g, "")
+    .replace(/\[.*?\]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter(word => word.length > 2 && !stopWords.has(word));
+};
+
 export const useMusicStore = create<MusicStore>()(
   persist(
     (set, get) => ({
@@ -198,32 +215,24 @@ export const useMusicStore = create<MusicStore>()(
           const recommendations = await res.json();
 
           if (Array.isArray(recommendations) && recommendations.length > 0) {
-            // Stronger filtering: avoid same ID AND similar titles
-            const existingNormalizedTitles = [
-              ...queue.map(t => normalizeTitle(t.title)),
-              currentTrack ? normalizeTitle(currentTrack.title) : ""
-            ].filter(Boolean);
+            // AGGRESSIVE KEYWORD FILTERING
+            const currentKeywords = currentTrack ? getKeywords(currentTrack.title) : [];
+            const queueIds = new Set(queue.map(t => t.id));
 
             const newTracks = recommendations.filter(rec => {
-              const isSameId = queue.some(q => q.id === rec.id);
-              if (isSameId) return false;
+              // 1. Skip if already in queue
+              if (queueIds.has(rec.id)) return false;
 
-              const normalizedRecTitle = normalizeTitle(rec.title);
-              // Check if this recommendation's title matches or is very similar to anything already played/queued
-              const isDuplicateTitle = existingNormalizedTitles.some(existingTitle => {
-                if (existingTitle === normalizedRecTitle) return true;
-                // If one title is contained within another (e.g. "Song Name" vs "Song Name Cover")
-                if (normalizedRecTitle.includes(existingTitle) || existingTitle.includes(normalizedRecTitle)) {
-                   // Only block if the overlap is significant (not just common words)
-                   const words1 = normalizedRecTitle.split(" ");
-                   const words2 = existingTitle.split(" ");
-                   const commonWords = words1.filter(w => words2.includes(w));
-                   return commonWords.length >= Math.min(words1.length, words2.length, 2);
-                }
+              // 2. Skip if it shares ANY keyword with current track (No covers/duplicates allowed)
+              const recKeywords = getKeywords(rec.title);
+              const hasOverlap = currentKeywords.some(kw => recKeywords.includes(kw));
+              
+              if (hasOverlap) {
+                console.log(`Aggressive Filter: Skipping "${rec.title}" because it matches current track keywords.`);
                 return false;
-              });
+              }
 
-              return !isDuplicateTitle;
+              return true;
             }).slice(0, 5);
 
             if (newTracks.length > 0) {

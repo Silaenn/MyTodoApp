@@ -186,6 +186,24 @@ async def get_stream_url(url: str = Query(...)):
         return {"error": str(e), "stream_url": None}
 
 
+def get_keywords(title: str) -> set[str]:
+    # Common words to ignore
+    stop_words = {
+        'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'and', 'or', 'but', 
+        'is', 'are', 'was', 'were', 'be', 'been', 'being', 'official', 'video', 'audio', 
+        'lyrics', 'lyric', 'cover', 'mv', 'live', 'remix', 'ft', 'feat', 'music', 'video',
+        'hd', '4k', 'visualizer', 'audio', 'exclusive', 'full', 'song'
+    }
+    # Remove junk
+    title = title.lower()
+    title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
+    title = re.sub(r'[^\w\s]', ' ', title)
+    
+    words = title.split()
+    # Filter out stop words and short junk (less than 3 chars)
+    # But keep short meaningful words if possible (e.g. 'Go', 'Do') - maybe just > 2 for safety
+    return {w for w in words if w not in stop_words and len(w) > 2}
+
 def _run_yt_recommendations(video_id: str):
     ydl_opts = {
         **YDL_COMMON_OPTS,
@@ -198,7 +216,9 @@ def _run_yt_recommendations(video_id: str):
         original_title = info.get('title', '')
         uploader = info.get('uploader', '')
         
-        main_original_parts = get_main_title(original_title)
+        # Get keywords of the current song
+        original_keywords = get_keywords(original_title)
+        print(f"Original keywords for '{original_title}': {original_keywords}")
 
         related = []
         if 'entries' in info and info['entries']:
@@ -207,18 +227,16 @@ def _run_yt_recommendations(video_id: str):
             related = info['related_videos']
 
         if not related:
-            search_query = f"ytsearch10:{original_title} {uploader} similar music"
+            search_query = f"ytsearch15:{original_title} {uploader} similar music"
             search_results = ydl.extract_info(search_query, download=False)
             if 'entries' in search_results:
                 related = search_results['entries']
 
         recommendations = []
         seen_ids = {video_id}
-        # Use tuple of sorted parts for reliable deduplication
-        seen_titles = {tuple(sorted(main_original_parts))}
         
-        # Additional common words to filter out for discovery
-        filter_words = {'karaoke', 'instrumental', 'tutorial', 'how to', 'lesson', 'piano cover', 'guitar cover', 'lyrics'}
+        # Additional filter words for discovery
+        junk_words = {'karaoke', 'instrumental', 'tutorial', 'how to', 'lesson', 'piano cover', 'guitar cover'}
 
         for entry in related:
             entry_id = entry.get("id")
@@ -226,26 +244,20 @@ def _run_yt_recommendations(video_id: str):
             
             if not entry_id or entry_id in seen_ids:
                 continue
-                
-            entry_parts = get_main_title(entry_title)
-            entry_parts_tuple = tuple(sorted(entry_parts))
             
-            # 1. Exact title parts match (any order)
-            if entry_parts_tuple in seen_titles:
-                continue
-            
-            # 2. Heuristic similarity check for same song/covers
-            clean_original = clean_title(original_title)
-            clean_entry = clean_title(entry_title)
-            
-            # If one cleaned title is largely contained in another, it's likely the same song
-            if len(clean_original) > 8 and len(clean_entry) > 8:
-                if clean_original in clean_entry or clean_entry in clean_original:
-                    continue
-
             # Filter out junk/non-music content
             lowered_title = entry_title.lower()
-            if any(word in lowered_title for word in filter_words):
+            if any(word in lowered_title for word in junk_words):
+                continue
+                
+            entry_keywords = get_keywords(entry_title)
+            
+            # AGGRESSIVE FILTERING: 
+            # If the recommendation shares ANY keyword with the original song title, skip it.
+            # This prevents covers, different versions, etc.
+            overlap = original_keywords.intersection(entry_keywords)
+            if overlap:
+                print(f"Skipping duplicate/cover: '{entry_title}' (Overlap: {overlap})")
                 continue
 
             recommendations.append({
@@ -256,10 +268,27 @@ def _run_yt_recommendations(video_id: str):
                 "url": f"https://www.youtube.com/watch?v={entry_id}"
             })
             seen_ids.add(entry_id)
-            seen_titles.add(entry_parts_tuple)
 
             if len(recommendations) >= 5:
                 break
+        
+        # Fallback: if filtering was too aggressive and we have no recs,
+        # let's try a less aggressive search but still avoid the exact same title
+        if not recommendations:
+             print("Too aggressive! Retrying with lighter filter...")
+             for entry in related:
+                entry_id = entry.get("id")
+                entry_title = entry.get("title") or ""
+                if entry_id not in seen_ids and len(recommendations) < 5:
+                    recommendations.append({
+                        "id": entry_id,
+                        "title": entry_title,
+                        "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
+                        "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
+                        "url": f"https://www.youtube.com/watch?v={entry_id}"
+                    })
+                    seen_ids.add(entry_id)
+
         return recommendations
 
 
