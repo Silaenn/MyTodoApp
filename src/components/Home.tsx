@@ -166,7 +166,7 @@ const Home = ({ session }: { session: Session | null }) => {
             </div>
             <Link
               href="/tasks"
-              className="inline-flex items-center gap-1 rounded-md border-2 border-brutal-ink bg-brutal-secondary px-3 sm:px-4 py-1.5 sm:py-2 text-tiny sm:text-xs font-bold text-brutal-ink shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+              className="inline-flex items-center gap-1 rounded-md border-2 border-brutal-ink bg-brutal-secondary px-3 sm:px-4 py-2 sm:py-2 text-tiny sm:text-xs font-bold text-brutal-ink shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
             >
               View all <ArrowRight size={14} />
             </Link>
@@ -264,7 +264,7 @@ const Home = ({ session }: { session: Session | null }) => {
             </div>
             <Link
               href="/musics"
-              className="inline-flex items-center gap-1 rounded-md border-2 border-brutal-ink bg-brutal-paper px-3 sm:px-4 py-1.5 sm:py-2 text-tiny sm:text-xs font-bold text-brutal-ink shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+              className="inline-flex items-center gap-1 rounded-md border-2 border-brutal-ink bg-brutal-paper px-3 sm:px-4 py-2 sm:py-2 text-tiny sm:text-xs font-bold text-brutal-ink shadow-brutal-sm transition-all hover:shadow-brutal hover:-translate-x-px hover:-translate-y-px active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
             >
               Browse <ArrowRight size={14} />
             </Link>

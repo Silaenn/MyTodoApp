@@ -34,7 +34,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={spaceGrotesk.variable}>
       <body
-        className="min-h-screen flex overflow-x-hidden antialiased bg-brutal-parchment font-sans"
+        className="min-h-screen flex antialiased bg-brutal-parchment font-sans"
         suppressHydrationWarning
       >
         <LayoutClient session={session}>

@@ -112,11 +112,11 @@ const Footer = () => {
 
               {/* Drawer Header */}
               <div className="flex items-center justify-between mb-4 shrink-0">
-                <button onClick={() => setIsExpanded(false)} className="p-2 border-2 border-brutal-ink rounded-sm bg-white shadow-brutal-sm">
+                <button onClick={() => setIsExpanded(false)} className="p-3 border-2 border-brutal-ink rounded-sm bg-white shadow-brutal-sm">
                   <ChevronDown size={20} />
                 </button>
                 <span className="font-black text-tiny uppercase tracking-brutal text-brutal-muted">Now Playing</span>
-                <button onClick={() => { stopMusic(); setIsExpanded(false); }} className="p-2 border-2 border-brutal-ink rounded-sm bg-brutal-accent text-white shadow-brutal-sm">
+                <button onClick={() => { stopMusic(); setIsExpanded(false); }} className="p-3 border-2 border-brutal-ink rounded-sm bg-brutal-accent text-white shadow-brutal-sm">
                   <X size={18} />
                 </button>
               </div>
@@ -173,7 +173,7 @@ const Footer = () => {
                         <input
                           type="range" min={0} max={duration || 0} value={progress}
                           onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = parseFloat(e.target.value); }}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer py-4"
                         />
                       </div>
                       <div className="flex justify-between text-tiny font-black text-brutal-muted tabular-nums">
@@ -189,7 +189,7 @@ const Footer = () => {
                         <input
                           type="range" min={0} max={1} step={0.01} value={volume}
                           onChange={(e) => setVolume(parseFloat(e.target.value))}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 py-4"
                         />
                         <div className="h-full bg-brutal-secondary" style={{ width: `${volume * 100}%` }} />
                       </div>
