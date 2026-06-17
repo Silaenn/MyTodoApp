@@ -140,6 +140,7 @@ const Dashboard = ({
                     alt={user.name ?? "User"}
                     width={44}
                     height={44}
+                    unoptimized={user.image?.startsWith("http")}
                     className="w-full h-full object-cover"
                     priority
                   />

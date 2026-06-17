@@ -290,6 +290,7 @@ const Home = ({ session }: { session: Session | null }) => {
                           src={track.thumbnail || "/images/no_image.png"}
                           alt={track.title}
                           fill
+                          unoptimized={track.thumbnail?.includes("ytimg.com")}
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                           className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
                         />

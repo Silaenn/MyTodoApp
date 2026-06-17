@@ -54,41 +54,55 @@ const isHLS = (url: string | null | undefined, protocol?: string, ext?: string):
   return false;
 };
 
-const normalizeTitle = (title: string) => {
-  return title
-    .toLowerCase()
-    .replace(/\(.*?\)/g, "") // Remove (...)
-    .replace(/\[.*?\]/g, "") // Remove [...]
-    .replace(/official\s+(video|audio|lyric|music|mv|visualizer)/gi, "")
-    .replace(/ft\.|feat\./gi, "")
-    .replace(/[^a-z0-9\s]/g, "") // Keep spaces for word splitting
-    .split(/\s+/)
-    .filter(word => word.length > 1)
-    .join(" ")
-    .trim();
-};
-
-const getKeywords = (title: string) => {
-  const stopWords = new Set([
-    "the", "a", "an", "in", "on", "at", "to", "for", "of", "with", "by", "and", "or", "but", 
-    "is", "are", "was", "were", "be", "been", "being", "official", "video", "audio", 
-    "lyrics", "lyric", "cover", "mv", "live", "remix", "ft", "feat", "music", "video",
-    "hd", "4k", "visualizer", "audio", "exclusive", "full", "song"
-  ]);
-  
+/**
+ * Bersihkan judul dari suffix umum music video.
+ */
+const cleanTitle = (title: string): string => {
   return title
     .toLowerCase()
     .replace(/\(.*?\)/g, "")
     .replace(/\[.*?\]/g, "")
+    .replace(/official\s+(video|audio|lyric|music|mv|visualizer)/gi, "")
+    .replace(/ft\.|feat\./gi, "")
     .replace(/[^a-z0-9\s]/g, " ")
     .split(/\s+/)
-    .filter(word => word.length > 2 && !stopWords.has(word));
+    .filter((word) => word.length > 2)
+    .join(" ")
+    .trim();
+};
+
+/**
+ * ✅ FIX: Cek apakah dua judul adalah lagu yang SAMA (cover, live version, dll).
+ * Menggunakan word-overlap similarity dengan threshold 70%.
+ *
+ * Logika ini BERBEDA dari keyword matching lama:
+ * - "Bukti KasihMu" vs "Bukti KasihMu (Cover)" → true (duplikat, skip)
+ * - "Bukti KasihMu" vs "Kasih Setia-Mu" → false (lagu beda, genre sama, boleh masuk)
+ * - "Blessed" vs "Blessed Be Your Name" → false (beda lagu)
+ *
+ * Threshold bisa diturunkan ke 0.6 kalau masih kebanyakan false positive.
+ */
+const areDuplicateTitles = (title1: string, title2: string, threshold = 0.7): boolean => {
+  const words1 = new Set(cleanTitle(title1).split(" ").filter((w) => w.length > 0));
+  const words2 = new Set(cleanTitle(title2).split(" ").filter((w) => w.length > 0));
+
+  if (words1.size === 0 || words2.size === 0) return false;
+
+  const overlap = [...words1].filter((w) => words2.has(w));
+  const similarity = overlap.length / Math.min(words1.size, words2.size);
+
+  if (similarity >= threshold) {
+    console.log(
+      `[DUP] "${title1}" ~ "${title2}" (similarity=${similarity.toFixed(2)})`
+    );
+    return true;
+  }
+  return false;
 };
 
 export const useMusicStore = create<MusicStore>()(
   persist(
     (set, get) => ({
-      // ... (keep state as is)
       currentTrack: null,
       isPlaying: false,
       streamUrl: null,
@@ -121,7 +135,6 @@ export const useMusicStore = create<MusicStore>()(
         set((state) => ({ queue: [...state.queue, track] })),
 
       playTrack: async (track, newQueue) => {
-        // Batalkan fetch sebelumnya
         if (currentAbortController) {
           currentAbortController.abort();
         }
@@ -137,9 +150,12 @@ export const useMusicStore = create<MusicStore>()(
           index = currentQueue.length - 1;
         }
 
-        // Cek cache (preloaded)
+        // Gunakan cache kalau ada
         const trackWithCache = currentQueue[index];
-        if (trackWithCache.streamUrl && !isHLS(trackWithCache.streamUrl, trackWithCache.protocol, trackWithCache.ext)) {
+        if (
+          trackWithCache.streamUrl &&
+          !isHLS(trackWithCache.streamUrl, trackWithCache.protocol, trackWithCache.ext)
+        ) {
           console.log("Using cached stream for:", track.title);
           set({
             currentTrack: trackWithCache,
@@ -150,7 +166,6 @@ export const useMusicStore = create<MusicStore>()(
             isLoading: false,
           });
 
-          // Preload next 2 tracks aggressively
           get().preloadNext(index + 1);
           get().preloadNext(index + 2);
           return;
@@ -179,19 +194,22 @@ export const useMusicStore = create<MusicStore>()(
               return;
             }
 
-            // Update the track in queue with its streamUrl for future use
             const updatedQueue = [...get().queue];
             if (updatedQueue[index] && updatedQueue[index].id === track.id) {
-              updatedQueue[index] = { ...updatedQueue[index], streamUrl: data.stream_url, ext: data.ext, protocol: data.protocol };
+              updatedQueue[index] = {
+                ...updatedQueue[index],
+                streamUrl: data.stream_url,
+                ext: data.ext,
+                protocol: data.protocol,
+              };
             }
 
             set({ streamUrl: data.stream_url, isPlaying: true, isLoading: false, queue: updatedQueue });
 
-            // Preload next 2 tracks aggressively
             get().preloadNext(index + 1);
             get().preloadNext(index + 2);
-            
-            // Proactively check if we need to fetch radio recommendations
+
+            // Proactively fetch radio recs kalau queue mau habis
             if (index >= updatedQueue.length - 2) {
               get().fetchRadioRecommendations(track.id);
             }
@@ -210,40 +228,41 @@ export const useMusicStore = create<MusicStore>()(
       fetchRadioRecommendations: async (trackId: string) => {
         const { queue, currentTrack } = get();
         try {
-          console.log("Proactive Radio Mode: fetching recommendations...");
+          console.log("[Radio] Fetching recommendations for:", currentTrack?.title);
           const res = await fetch(`http://localhost:8000/recommendations/${trackId}`);
           const recommendations = await res.json();
 
           if (Array.isArray(recommendations) && recommendations.length > 0) {
-            // AGGRESSIVE KEYWORD FILTERING
-            const currentKeywords = currentTrack ? getKeywords(currentTrack.title) : [];
-            const queueIds = new Set(queue.map(t => t.id));
+            const queueIds = new Set(queue.map((t) => t.id));
 
-            const newTracks = recommendations.filter(rec => {
-              // 1. Skip if already in queue
-              if (queueIds.has(rec.id)) return false;
+            const newTracks = recommendations
+              .filter((rec) => {
+                // 1. Skip kalau sudah ada di queue
+                if (queueIds.has(rec.id)) return false;
 
-              // 2. Skip if it shares ANY keyword with current track (No covers/duplicates allowed)
-              const recKeywords = getKeywords(rec.title);
-              const hasOverlap = currentKeywords.some(kw => recKeywords.includes(kw));
-              
-              if (hasOverlap) {
-                console.log(`Aggressive Filter: Skipping "${rec.title}" because it matches current track keywords.`);
-                return false;
-              }
+                // ✅ FIX: Cek title similarity, BUKAN keyword overlap
+                // Ini supaya lagu rohani lain tetap bisa masuk,
+                // tapi cover/versi lain dari lagu yang sama difilter
+                if (currentTrack && areDuplicateTitles(currentTrack.title, rec.title)) {
+                  console.log(`[Radio] Skipping duplicate: "${rec.title}"`);
+                  return false;
+                }
 
-              return true;
-            }).slice(0, 5);
+                return true;
+              })
+              .slice(0, 5);
 
             if (newTracks.length > 0) {
               set({ queue: [...queue, ...newTracks] });
-              console.log("Proactive Radio Mode: added", newTracks.length, "tracks to queue");
+              console.log("[Radio] Added", newTracks.length, "tracks to queue:", newTracks.map(t => t.title));
               const nextIdx = queue.length;
               get().preloadNext(nextIdx);
+            } else {
+              console.log("[Radio] All recommendations filtered out.");
             }
           }
         } catch (error) {
-          console.error("Proactive Radio error:", error);
+          console.error("[Radio] Error:", error);
         }
       },
 
@@ -255,7 +274,7 @@ export const useMusicStore = create<MusicStore>()(
         if (nextTrack.streamUrl) return;
 
         try {
-          console.log("Preloading:", nextTrack.title);
+          console.log("[Preload] Preloading:", nextTrack.title);
           const res = await fetch(
             `http://localhost:8000/stream?url=${encodeURIComponent(nextTrack.url)}`
           );
@@ -272,11 +291,11 @@ export const useMusicStore = create<MusicStore>()(
                 protocol: data.protocol,
               };
               set({ queue: finalQueue });
-              console.log("Preload success:", nextTrack.title);
+              console.log("[Preload] Success:", nextTrack.title);
             }
           }
         } catch (e) {
-          console.error("Preload failed:", e);
+          console.error("[Preload] Failed:", e);
         }
       },
 
@@ -288,24 +307,63 @@ export const useMusicStore = create<MusicStore>()(
           return;
         }
 
+        // 1. Ada lagu berikutnya di queue
         if (currentIndex < queue.length - 1) {
           await playTrack(queue[currentIndex + 1]);
           return;
         }
 
+        // 2. Repeat all → kembali ke awal
         if (repeat === "all" && queue.length > 0) {
           await playTrack(queue[0]);
           return;
         }
 
-        // Final fallback if proactive fetch failed or was too slow
+        // 3. Radio Mode: queue habis → fetch rekomendasi baru
         if (currentTrack) {
-          set({ isLoading: true, isPlaying: false, streamUrl: null });
+          set({ isLoading: true });
+          console.log("[Radio] Queue finished, fetching new recommendations...");
           await get().fetchRadioRecommendations(currentTrack.id);
+
           const updatedQueue = get().queue;
           if (currentIndex < updatedQueue.length - 1) {
             await playTrack(updatedQueue[currentIndex + 1]);
             return;
+          } else {
+            // Fallback: search lagu berbeda berdasarkan judul current track
+            console.log("[Radio] Still empty after recs. Trying genre search fallback...");
+            try {
+              // Ambil bagian judul yang bermakna (hindari kata umum)
+              const titleWords = cleanTitle(currentTrack.title)
+                .split(" ")
+                .filter((w) => w.length > 3)
+                .slice(0, 3)
+                .join(" ");
+
+              const genreQuery = encodeURIComponent(`${titleWords} similar songs music`);
+              const res = await fetch(`http://localhost:8000/search?q=${genreQuery}`);
+              const searchResults = await res.json();
+
+              if (Array.isArray(searchResults) && searchResults.length > 0) {
+                const existingIds = new Set(updatedQueue.map((t) => t.id));
+
+                // Cari lagu yang beda judul dan belum di queue
+                const fallbackTrack =
+                  searchResults.find(
+                    (t) =>
+                      !existingIds.has(t.id) &&
+                      !areDuplicateTitles(currentTrack.title, t.title)
+                  ) || searchResults.find((t) => !existingIds.has(t.id)) || searchResults[0];
+
+                if (fallbackTrack) {
+                  console.log("[Radio] Genre fallback playing:", fallbackTrack.title);
+                  await playTrack(fallbackTrack, [...updatedQueue, fallbackTrack]);
+                  return;
+                }
+              }
+            } catch (e) {
+              console.error("[Radio] Genre fallback failed:", e);
+            }
           }
         }
 

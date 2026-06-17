@@ -113,7 +113,7 @@ const Footer = () => {
               {/* Album Art & Info */}
               <div className="flex flex-col items-center gap-6 overflow-y-auto no-scrollbar py-2">
                 <div className={`relative aspect-square w-48 rounded-md border-4 border-brutal-ink shadow-brutal overflow-hidden shrink-0 ${isLoading ? "animate-pulse" : ""}`}>
-                  <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
+                  <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill unoptimized={currentTrack.thumbnail?.includes("ytimg.com")} className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
                 </div>
                 
                 <div className="text-center space-y-1 w-full px-4">
@@ -216,7 +216,7 @@ const Footer = () => {
             className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
           >
              <div className={`flex-shrink-0 w-10 h-10 rounded-sm border-2 border-brutal-ink shadow-brutal-sm relative overflow-hidden ${isLoading ? "animate-pulse" : ""}`}>
-                <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
+                <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill unoptimized={currentTrack.thumbnail?.includes("ytimg.com")} className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
              </div>
              <div className="flex flex-col min-w-0">
                 <span className={`font-black text-sm truncate text-brutal-ink ${isLoading ? "opacity-50" : ""}`}>{currentTrack.title}</span>
@@ -248,7 +248,7 @@ const Footer = () => {
           {/* Left: Info */}
           <div className="flex items-center gap-4 w-[30%] min-w-0">
             <div className={`flex-shrink-0 w-16 h-16 rounded-sm border-2 border-brutal-ink shadow-brutal relative overflow-hidden ${isLoading ? "animate-pulse" : ""}`}>
-              <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
+              <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill unoptimized={currentTrack.thumbnail?.includes("ytimg.com")} className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
             </div>
             <div className="flex flex-col min-w-0">
               <span className={`font-black text-lg truncate text-brutal-ink leading-tight ${isLoading ? "opacity-50" : ""}`}>{currentTrack.title}</span>

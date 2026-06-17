@@ -19,6 +19,8 @@ app.add_middleware(
 )
 
 # Simple TTL Cache Implementation
+
+
 class TTLCache:
     def __init__(self, ttl_seconds: int):
         self.ttl = ttl_seconds
@@ -39,10 +41,12 @@ class TTLCache:
             "timestamp": time.time()
         }
 
+
 # Caches for different purposes
-search_cache = TTLCache(ttl_seconds=3600)      # 1 hour
-stream_cache = TTLCache(ttl_seconds=300)       # 5 minutes (YouTube URLs expire quickly)
-recommendation_cache = TTLCache(ttl_seconds=3600) # 1 hour
+search_cache = TTLCache(ttl_seconds=3600)         # 1 hour
+# 5 minutes (YouTube URLs expire quickly)
+stream_cache = TTLCache(ttl_seconds=300)
+recommendation_cache = TTLCache(ttl_seconds=3600)  # 1 hour
 
 # Shared yt-dlp options for better performance and reliability
 YDL_COMMON_OPTS = {
@@ -50,13 +54,12 @@ YDL_COMMON_OPTS = {
     'no_warnings': True,
     'source_address': '0.0.0.0',
     'nocheckcertificate': True,
-    # Use a generic user agent to avoid IP/UA mismatch blocks
     'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 
 
 def clean_title(title: str) -> str:
-    # Remove common music video suffixes
+    """Bersihkan judul dari suffix umum music video."""
     suffixes = [
         r'\(?official\s+video\)?', r'\(?official\s+audio\)?', r'\(?lyric\s+video\)?',
         r'\(?lyrics\)?', r'\(?official\)?', r'\(?hd\)?', r'\(?4k\)?', r'\(?live\)?',
@@ -64,30 +67,78 @@ def clean_title(title: str) -> str:
     ]
     title = title.lower()
     for s in suffixes:
-        title = re.sub(s, '', title)
-    
+        title = re.sub(s, '', title, flags=re.IGNORECASE)
+
     title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
     title = re.sub(r'[^\w\s]', ' ', title)
     return " ".join(title.split()).strip()
 
+
 def get_main_title(title: str) -> list[str]:
-    # Extract the main part of the title before common separators
+    """Ambil bagian utama judul sebelum separator umum."""
     title = title.lower()
-    # Remove anything in brackets/parentheses first
     title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
-    
+
     parts = []
     for sep in ['-', '|', ':', '–']:
         if sep in title:
             parts = [p.strip() for p in title.split(sep) if p.strip()]
             break
-    
+
     if not parts:
         parts = [title.strip()]
-    
-    # Clean each part
+
     cleaned_parts = [re.sub(r'[^\w\s]', '', p).strip() for p in parts]
     return [p for p in cleaned_parts if p]
+
+
+def titles_are_duplicate(title1: str, title2: str, threshold: float = 0.7) -> bool:
+    """
+    Cek apakah dua judul adalah lagu yang sama (cover, versi lain, dll).
+    Menggunakan word-overlap similarity — bukan exact match.
+    Threshold 0.7 = 70% kata yang sama dianggap duplikat.
+
+    Contoh:
+    - "Bukti KasihMu" vs "Bukti KasihMu (Cover)" → True (duplikat)
+    - "Bukti KasihMu" vs "Kasih Setia-Mu" → False (lagu berbeda, genre sama)
+    - "Amazing Grace" vs "Amazing Grace Live Version" → True (duplikat)
+    """
+    clean1_words = set(clean_title(title1).split())
+    clean2_words = set(clean_title(title2).split())
+
+    # Hapus kata yang terlalu pendek (noise)
+    clean1_words = {w for w in clean1_words if len(w) > 2}
+    clean2_words = {w for w in clean2_words if len(w) > 2}
+
+    if not clean1_words or not clean2_words:
+        return False
+
+    overlap = clean1_words.intersection(clean2_words)
+    similarity = len(overlap) / min(len(clean1_words), len(clean2_words))
+
+    is_dup = similarity >= threshold
+    if is_dup:
+        print(f"  [DUP] '{title1}' ~ '{title2}' (similarity={similarity:.2f})")
+    return is_dup
+
+
+def get_keywords(title: str) -> set[str]:
+    """
+    Ambil kata kunci dari judul untuk keperluan debug/logging saja.
+    TIDAK lagi digunakan untuk filtering rekomendasi.
+    """
+    stop_words = {
+        'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'and', 'or', 'but',
+        'is', 'are', 'was', 'were', 'be', 'been', 'being', 'official', 'video', 'audio',
+        'lyrics', 'lyric', 'cover', 'mv', 'live', 'remix', 'ft', 'feat', 'music',
+        'hd', '4k', 'visualizer', 'exclusive', 'full', 'song'
+    }
+    title = title.lower()
+    title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
+    title = re.sub(r'[^\w\s]', ' ', title)
+
+    words = title.split()
+    return {w for w in words if w not in stop_words and len(w) > 2}
 
 
 def _run_yt_search(q: str):
@@ -98,28 +149,26 @@ def _run_yt_search(q: str):
         'extract_flat': True,
         'skip_download': True,
     }
-    
-    # Common words to filter out for search results to ensure they are actual songs
+
+    # Filter konten non-musik yang jelas
     filter_words = {
-        'instrumental', 'karaoke', 'piano', 'guitar', 'backing track', 
-        'tutorial', 'how to', 'lesson', 'cover', 'instrument', 'midi'
+        'instrumental', 'karaoke', 'piano', 'guitar', 'backing track',
+        'tutorial', 'how to', 'lesson', 'instrument', 'midi'
     }
-    
+
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        # Refine search query to favor official/vocal versions
         search_query = f"ytsearch30:{q} official music"
         search_results = ydl.extract_info(search_query, download=False)
         entries = []
-        
+
         if 'entries' in search_results:
             for entry in search_results['entries']:
                 entry_title = entry.get("title") or ""
                 lowered_title = entry_title.lower()
-                
-                # Check if title contains any filter words
+
                 if any(word in lowered_title for word in filter_words):
                     continue
-                    
+
                 entries.append({
                     "id": entry.get("id"),
                     "title": entry.get("title"),
@@ -128,11 +177,10 @@ def _run_yt_search(q: str):
                     "duration": entry.get("duration"),
                     "url": f"https://www.youtube.com/watch?v={entry.get('id')}"
                 })
-                
-                # Limit to 20 high-quality results
+
                 if len(entries) >= 20:
                     break
-                    
+
         return entries
 
 
@@ -186,24 +234,6 @@ async def get_stream_url(url: str = Query(...)):
         return {"error": str(e), "stream_url": None}
 
 
-def get_keywords(title: str) -> set[str]:
-    # Common words to ignore
-    stop_words = {
-        'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'and', 'or', 'but', 
-        'is', 'are', 'was', 'were', 'be', 'been', 'being', 'official', 'video', 'audio', 
-        'lyrics', 'lyric', 'cover', 'mv', 'live', 'remix', 'ft', 'feat', 'music', 'video',
-        'hd', '4k', 'visualizer', 'audio', 'exclusive', 'full', 'song'
-    }
-    # Remove junk
-    title = title.lower()
-    title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
-    title = re.sub(r'[^\w\s]', ' ', title)
-    
-    words = title.split()
-    # Filter out stop words and short junk (less than 3 chars)
-    # But keep short meaningful words if possible (e.g. 'Go', 'Do') - maybe just > 2 for safety
-    return {w for w in words if w not in stop_words and len(w) > 2}
-
 def _run_yt_recommendations(video_id: str):
     ydl_opts = {
         **YDL_COMMON_OPTS,
@@ -215,10 +245,13 @@ def _run_yt_recommendations(video_id: str):
         info = ydl.extract_info(url, download=False)
         original_title = info.get('title', '')
         uploader = info.get('uploader', '')
-        
-        # Get keywords of the current song
-        original_keywords = get_keywords(original_title)
-        print(f"Original keywords for '{original_title}': {original_keywords}")
+
+        print(
+            f"[Recommendations] Fetching recs for: '{original_title}' by '{uploader}'")
+
+        # Filter konten non-musik
+        junk_words = {'karaoke', 'instrumental', 'tutorial',
+                      'how to', 'lesson', 'piano cover', 'guitar cover'}
 
         related = []
         if 'entries' in info and info['entries']:
@@ -226,6 +259,7 @@ def _run_yt_recommendations(video_id: str):
         elif 'related_videos' in info:
             related = info['related_videos']
 
+        # Fallback: search similar jika tidak ada related
         if not related:
             search_query = f"ytsearch15:{original_title} {uploader} similar music"
             search_results = ydl.extract_info(search_query, download=False)
@@ -234,30 +268,23 @@ def _run_yt_recommendations(video_id: str):
 
         recommendations = []
         seen_ids = {video_id}
-        
-        # Additional filter words for discovery
-        junk_words = {'karaoke', 'instrumental', 'tutorial', 'how to', 'lesson', 'piano cover', 'guitar cover'}
 
         for entry in related:
             entry_id = entry.get("id")
             entry_title = entry.get("title") or ""
-            
+
             if not entry_id or entry_id in seen_ids:
                 continue
-            
-            # Filter out junk/non-music content
+
+            # Filter junk content
             lowered_title = entry_title.lower()
             if any(word in lowered_title for word in junk_words):
                 continue
-                
-            entry_keywords = get_keywords(entry_title)
-            
-            # AGGRESSIVE FILTERING: 
-            # If the recommendation shares ANY keyword with the original song title, skip it.
-            # This prevents covers, different versions, etc.
-            overlap = original_keywords.intersection(entry_keywords)
-            if overlap:
-                print(f"Skipping duplicate/cover: '{entry_title}' (Overlap: {overlap})")
+
+            # ✅ FIX: Gunakan title similarity, BUKAN keyword overlap
+            # Ini mencegah cover/versi lain dari lagu yang sama,
+            # tapi tetap mengizinkan lagu satu genre (misal: sesama lagu rohani)
+            if titles_are_duplicate(original_title, entry_title):
                 continue
 
             recommendations.append({
@@ -271,24 +298,43 @@ def _run_yt_recommendations(video_id: str):
 
             if len(recommendations) >= 5:
                 break
-        
-        # Fallback: if filtering was too aggressive and we have no recs,
-        # let's try a less aggressive search but still avoid the exact same title
+
+        # Fallback 1: Broader search jika hasil terlalu sedikit
         if not recommendations:
-             print("Too aggressive! Retrying with lighter filter...")
-             for entry in related:
+            print("[Recommendations] No results, trying broader genre search...")
+            search_query = f"ytsearch20:{original_title} similar songs"
+            fallback_results = _run_yt_search(search_query)
+
+            for entry in fallback_results:
                 entry_id = entry.get("id")
                 entry_title = entry.get("title") or ""
+
+                if entry_id in seen_ids:
+                    continue
+
+                if not titles_are_duplicate(original_title, entry_title):
+                    recommendations.append(entry)
+                    seen_ids.add(entry_id)
+
+                if len(recommendations) >= 5:
+                    break
+
+        # Fallback 2 (Emergency): ambil saja related track yang ID-nya berbeda
+        if not recommendations:
+            print("[Recommendations] Emergency fallback: taking any related track.")
+            for entry in related:
+                entry_id = entry.get("id")
                 if entry_id not in seen_ids and len(recommendations) < 5:
                     recommendations.append({
                         "id": entry_id,
-                        "title": entry_title,
+                        "title": entry.get("title"),
                         "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
                         "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
                         "url": f"https://www.youtube.com/watch?v={entry_id}"
                     })
                     seen_ids.add(entry_id)
 
+        print(f"[Recommendations] Returning {len(recommendations)} tracks.")
         return recommendations
 
 
