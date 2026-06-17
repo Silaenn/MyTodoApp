@@ -54,9 +54,24 @@ const isHLS = (url: string | null | undefined, protocol?: string, ext?: string):
   return false;
 };
 
+const normalizeTitle = (title: string) => {
+  return title
+    .toLowerCase()
+    .replace(/\(.*?\)/g, "") // Remove (...)
+    .replace(/\[.*?\]/g, "") // Remove [...]
+    .replace(/official\s+(video|audio|lyric|music|mv|visualizer)/gi, "")
+    .replace(/ft\.|feat\./gi, "")
+    .replace(/[^a-z0-9\s]/g, "") // Keep spaces for word splitting
+    .split(/\s+/)
+    .filter(word => word.length > 1)
+    .join(" ")
+    .trim();
+};
+
 export const useMusicStore = create<MusicStore>()(
   persist(
     (set, get) => ({
+      // ... (keep state as is)
       currentTrack: null,
       isPlaying: false,
       streamUrl: null,
@@ -176,19 +191,44 @@ export const useMusicStore = create<MusicStore>()(
       },
 
       fetchRadioRecommendations: async (trackId: string) => {
-        const { queue } = get();
+        const { queue, currentTrack } = get();
         try {
           console.log("Proactive Radio Mode: fetching recommendations...");
           const res = await fetch(`http://localhost:8000/recommendations/${trackId}`);
           const recommendations = await res.json();
 
           if (Array.isArray(recommendations) && recommendations.length > 0) {
-            // Add only recommendations that aren't already in queue
-            const newTracks = recommendations.filter(rec => !queue.some(q => q.id === rec.id)).slice(0, 5);
+            // Stronger filtering: avoid same ID AND similar titles
+            const existingNormalizedTitles = [
+              ...queue.map(t => normalizeTitle(t.title)),
+              currentTrack ? normalizeTitle(currentTrack.title) : ""
+            ].filter(Boolean);
+
+            const newTracks = recommendations.filter(rec => {
+              const isSameId = queue.some(q => q.id === rec.id);
+              if (isSameId) return false;
+
+              const normalizedRecTitle = normalizeTitle(rec.title);
+              // Check if this recommendation's title matches or is very similar to anything already played/queued
+              const isDuplicateTitle = existingNormalizedTitles.some(existingTitle => {
+                if (existingTitle === normalizedRecTitle) return true;
+                // If one title is contained within another (e.g. "Song Name" vs "Song Name Cover")
+                if (normalizedRecTitle.includes(existingTitle) || existingTitle.includes(normalizedRecTitle)) {
+                   // Only block if the overlap is significant (not just common words)
+                   const words1 = normalizedRecTitle.split(" ");
+                   const words2 = existingTitle.split(" ");
+                   const commonWords = words1.filter(w => words2.includes(w));
+                   return commonWords.length >= Math.min(words1.length, words2.length, 2);
+                }
+                return false;
+              });
+
+              return !isDuplicateTitle;
+            }).slice(0, 5);
+
             if (newTracks.length > 0) {
               set({ queue: [...queue, ...newTracks] });
               console.log("Proactive Radio Mode: added", newTracks.length, "tracks to queue");
-              // Preload the first recommendation immediately
               const nextIdx = queue.length;
               get().preloadNext(nextIdx);
             }

@@ -70,18 +70,24 @@ def clean_title(title: str) -> str:
     title = re.sub(r'[^\w\s]', ' ', title)
     return " ".join(title.split()).strip()
 
-def get_main_title(title: str) -> str:
+def get_main_title(title: str) -> list[str]:
     # Extract the main part of the title before common separators
     title = title.lower()
     # Remove anything in brackets/parentheses first
     title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
+    
+    parts = []
     for sep in ['-', '|', ':', '–']:
         if sep in title:
-            title = title.split(sep)[0]
+            parts = [p.strip() for p in title.split(sep) if p.strip()]
             break
-    # Clean up non-alphanumeric but keep spaces
-    title = re.sub(r'[^\w\s]', '', title)
-    return title.strip()
+    
+    if not parts:
+        parts = [title.strip()]
+    
+    # Clean each part
+    cleaned_parts = [re.sub(r'[^\w\s]', '', p).strip() for p in parts]
+    return [p for p in cleaned_parts if p]
 
 
 def _run_yt_search(q: str):
@@ -192,7 +198,7 @@ def _run_yt_recommendations(video_id: str):
         original_title = info.get('title', '')
         uploader = info.get('uploader', '')
         
-        main_original_title = get_main_title(original_title)
+        main_original_parts = get_main_title(original_title)
 
         related = []
         if 'entries' in info and info['entries']:
@@ -207,37 +213,50 @@ def _run_yt_recommendations(video_id: str):
                 related = search_results['entries']
 
         recommendations = []
-        seen_main_titles = {main_original_title}
+        seen_ids = {video_id}
+        # Use tuple of sorted parts for reliable deduplication
+        seen_titles = {tuple(sorted(main_original_parts))}
         
         # Additional common words to filter out for discovery
-        filter_words = {'karaoke', 'instrumental', 'tutorial', 'how to', 'lesson', 'piano cover', 'guitar cover'}
+        filter_words = {'karaoke', 'instrumental', 'tutorial', 'how to', 'lesson', 'piano cover', 'guitar cover', 'lyrics'}
 
         for entry in related:
             entry_id = entry.get("id")
             entry_title = entry.get("title") or ""
-            entry_main_title = get_main_title(entry_title)
             
-            if not entry_id or entry_id == video_id:
+            if not entry_id or entry_id in seen_ids:
                 continue
                 
-            # Filter by main title similarity to avoid "same song, different uploader"
-            if entry_main_title in seen_main_titles or main_original_title in entry_main_title:
+            entry_parts = get_main_title(entry_title)
+            entry_parts_tuple = tuple(sorted(entry_parts))
+            
+            # 1. Exact title parts match (any order)
+            if entry_parts_tuple in seen_titles:
                 continue
             
+            # 2. Heuristic similarity check for same song/covers
+            clean_original = clean_title(original_title)
+            clean_entry = clean_title(entry_title)
+            
+            # If one cleaned title is largely contained in another, it's likely the same song
+            if len(clean_original) > 8 and len(clean_entry) > 8:
+                if clean_original in clean_entry or clean_entry in clean_original:
+                    continue
+
             # Filter out junk/non-music content
             lowered_title = entry_title.lower()
             if any(word in lowered_title for word in filter_words):
                 continue
 
-            if len(entry_main_title) > 2:
-                recommendations.append({
-                    "id": entry_id,
-                    "title": entry_title,
-                    "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
-                    "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
-                    "url": f"https://www.youtube.com/watch?v={entry_id}"
-                })
-                seen_main_titles.add(entry_main_title)
+            recommendations.append({
+                "id": entry_id,
+                "title": entry_title,
+                "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
+                "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
+                "url": f"https://www.youtube.com/watch?v={entry_id}"
+            })
+            seen_ids.add(entry_id)
+            seen_titles.add(entry_parts_tuple)
 
             if len(recommendations) >= 5:
                 break
