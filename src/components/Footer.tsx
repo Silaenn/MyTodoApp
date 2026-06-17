@@ -100,13 +100,12 @@ const Footer = () => {
               className="fixed inset-0 z-[90] bg-brutal-ink/60 backdrop-blur-sm sm:hidden"
             />
             
-            {/* Bottom Drawer */}
             <motion.div
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-brutal-paper p-6 sm:hidden rounded-t-[32px] border-t-4 border-brutal-ink h-[90dvh] shadow-[0_-10px_40px_rgba(15,26,15,0.3)]"
+              className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-brutal-paper p-6 sm:hidden rounded-t-[32px] border-t-4 border-brutal-ink h-[90dvh] shadow-brutal-drawer"
             >
               {/* Handle Bar */}
               <div className="w-12 h-1.5 bg-brutal-ink/20 rounded-full self-center mb-6 shrink-0" />

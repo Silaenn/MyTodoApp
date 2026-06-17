@@ -31,7 +31,7 @@ const categoryColors: Record<string, string> = {
   work:     "brutal-badge-primary",
   personal: "bg-brutal-accent text-brutal-paper",
   hobby:    "brutal-badge-secondary",
-  urgent:   "bg-[#D32F2F] text-brutal-paper",
+  urgent:   "bg-brutal-urgent text-brutal-paper",
   study:    "bg-brutal-primary text-brutal-paper",
   all:      "brutal-badge-muted",
 };

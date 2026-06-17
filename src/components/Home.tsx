@@ -214,7 +214,7 @@ const Home = ({ session }: { session: Session | null }) => {
                         </div>
                       </div>
                       <ArrowRight
-                        className="shrink-0 text-brutal-ink/20 transition-all group-hover:text-brutal-primary group-hover:translate-x-1 sm:size-5"
+                        className="shrink-0 text-brutal-ink/50 transition-all group-hover:text-brutal-primary group-hover:translate-x-1 sm:size-5"
                         size={18}
                       />
                     </Link>

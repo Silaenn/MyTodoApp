@@ -18,6 +18,7 @@ const config: Config = {
           ink:       "#0F1A0F",
           paper:     "#F5F8F4",
           parchment: "#E8EDE6",
+          urgent:    "#D32F2F",
         },
       },
       fontFamily: {
@@ -43,6 +44,8 @@ const config: Config = {
         "brutal-primary":   "4px 4px 0px #3B6B4A",
         "brutal-secondary": "4px 4px 0px #D4A843",
         "brutal-accent":    "4px 4px 0px #8B4A2B",
+        "brutal-sidebar":   "10px 0 30px rgba(15,26,15,0.05)",
+        "brutal-drawer":    "0 -10px 40px rgba(15,26,15,0.3)",
       },
       animation: {
         vibrate: "vibrate 0.3s linear infinite",
