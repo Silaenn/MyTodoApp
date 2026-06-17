@@ -18,6 +18,18 @@ const Footer = () => {
   const [duration, setDuration] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Lock scroll when drawer is expanded
+  useEffect(() => {
+    if (isExpanded) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isExpanded]);
+
   useEffect(() => {
     if (audioRef.current) {
       // Always sync volume before playing
@@ -94,13 +106,13 @@ const Footer = () => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-brutal-paper p-6 sm:hidden rounded-t-[32px] border-t-4 border-brutal-ink h-[90vh] shadow-[0_-10px_40px_rgba(15,26,15,0.3)]"
+              className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-brutal-paper p-6 sm:hidden rounded-t-[32px] border-t-4 border-brutal-ink h-[90dvh] shadow-[0_-10px_40px_rgba(15,26,15,0.3)]"
             >
               {/* Handle Bar */}
-              <div className="w-12 h-1.5 bg-brutal-ink/20 rounded-full self-center mb-6" />
+              <div className="w-12 h-1.5 bg-brutal-ink/20 rounded-full self-center mb-6 shrink-0" />
 
               {/* Drawer Header */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-4 shrink-0">
                 <button onClick={() => setIsExpanded(false)} className="p-2 border-2 border-brutal-ink rounded-sm bg-white shadow-brutal-sm">
                   <ChevronDown size={20} />
                 </button>
@@ -110,74 +122,78 @@ const Footer = () => {
                 </button>
               </div>
 
-              {/* Album Art & Info */}
-              <div className="flex flex-col items-center gap-6 overflow-y-auto no-scrollbar py-2">
-                <div className={`relative aspect-square w-48 rounded-md border-4 border-brutal-ink shadow-brutal overflow-hidden shrink-0 ${isLoading ? "animate-pulse" : ""}`}>
+              {/* Album Art & Info (Flexible Container) */}
+              <div className="flex-1 flex flex-col items-center justify-around min-h-0 py-4">
+                {/* Album Art Container */}
+                <div className={`relative aspect-square w-[75vw] max-w-[320px] rounded-md border-4 border-brutal-ink shadow-brutal overflow-hidden flex-shrink min-h-0 ${isLoading ? "animate-pulse" : ""}`}>
                   <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill unoptimized={currentTrack.thumbnail?.includes("ytimg.com")} className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
                 </div>
                 
-                <div className="text-center space-y-1 w-full px-4">
-                  <h2 className={`text-xl font-black text-brutal-ink line-clamp-1 ${isLoading ? "opacity-50" : ""}`}>{currentTrack.title}</h2>
-                  <p className="text-xs font-bold text-brutal-primary uppercase tracking-brutal">{isLoading ? "Loading Stream..." : currentTrack.artist}</p>
-                </div>
+                <div className="w-full flex flex-col gap-6">
+                  {/* Title & Artist */}
+                  <div className="text-center space-y-2 w-full px-4">
+                    <h2 className={`text-2xl font-black text-brutal-ink line-clamp-2 leading-tight ${isLoading ? "opacity-50" : ""}`}>{currentTrack.title}</h2>
+                    <p className="text-sm font-bold text-brutal-primary uppercase tracking-brutal">{isLoading ? "Loading Stream..." : currentTrack.artist}</p>
+                  </div>
 
-                {/* Main Playback Controls */}
-                <div className="flex items-center justify-between w-full px-4 py-2">
-                  <button onClick={toggleShuffle} className={shuffle ? "text-brutal-primary" : "text-brutal-muted"}>
-                    <Shuffle size={20} className={shuffle ? "stroke-[3px]" : ""} />
-                  </button>
-                  <div className="flex items-center gap-6">
-                    <button onClick={prevTrack} className="text-brutal-ink"><SkipBack size={28} fill="currentColor" /></button>
-                    <button
-                      onClick={() => setIsPlaying(!isPlaying)}
-                      className="flex h-14 w-14 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal"
-                    >
-                      {isLoading
-                        ? <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        : isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />
-                      }
+                  {/* Main Playback Controls */}
+                  <div className="flex items-center justify-between w-full px-4 py-2">
+                    <button onClick={toggleShuffle} className={shuffle ? "text-brutal-primary" : "text-brutal-muted"}>
+                      <Shuffle size={20} className={shuffle ? "stroke-[3px]" : ""} />
                     </button>
-                    <button onClick={nextTrack} className="text-brutal-ink"><SkipForward size={28} fill="currentColor" /></button>
-                  </div>
-                  <button onClick={toggleRepeat} className={repeat !== "none" ? "text-brutal-primary" : "text-brutal-muted"}>
-                    {repeat === "one" ? <Repeat1 size={20} className="stroke-[3px]" /> : <Repeat size={20} className={repeat === "all" ? "stroke-[3px]" : ""} />}
-                  </button>
-                </div>
-
-                {/* Progress & Volume */}
-                <div className="w-full space-y-6 mt-4">
-                  {/* Progress Bar */}
-                  <div className="space-y-2">
-                    <div className="h-2 w-full bg-brutal-parchment border-2 border-brutal-ink rounded-sm relative overflow-hidden">
-                      {isLoading ? (
-                        <div className="h-full w-full relative overflow-hidden">
-                          <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-brutal-primary/40 to-transparent" />
-                        </div>
-                      ) : (
-                        <div className="h-full bg-brutal-primary" style={{ width: `${(progress / (duration || 1)) * 100}%` }} />
-                      )}
-                      <input
-                        type="range" min={0} max={duration || 0} value={progress}
-                        onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = parseFloat(e.target.value); }}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
+                    <div className="flex items-center gap-6">
+                      <button onClick={prevTrack} className="text-brutal-ink"><SkipBack size={28} fill="currentColor" /></button>
+                      <button
+                        onClick={() => setIsPlaying(!isPlaying)}
+                        className="flex h-16 w-16 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal"
+                      >
+                        {isLoading
+                          ? <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                          : isPlaying ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1" />
+                        }
+                      </button>
+                      <button onClick={nextTrack} className="text-brutal-ink"><SkipForward size={28} fill="currentColor" /></button>
                     </div>
-                    <div className="flex justify-between text-tiny font-black text-brutal-muted tabular-nums">
-                      <span>{formatTime(progress)}</span>
-                      <span>{formatTime(duration)}</span>
-                    </div>
+                    <button onClick={toggleRepeat} className={repeat !== "none" ? "text-brutal-primary" : "text-brutal-muted"}>
+                      {repeat === "one" ? <Repeat1 size={20} className="stroke-[3px]" /> : <Repeat size={20} className={repeat === "all" ? "stroke-[3px]" : ""} />}
+                    </button>
                   </div>
 
-                  {/* Volume Slider */}
-                  <div className="flex items-center gap-3 bg-brutal-parchment p-3 rounded-md border-2 border-brutal-ink shadow-brutal-sm">
-                    <Volume2 size={18} className="text-brutal-ink" />
-                    <div className="relative flex-1 h-1.5 bg-white border border-brutal-ink rounded-full overflow-hidden">
-                      <input
-                        type="range" min={0} max={1} step={0.01} value={volume}
-                        onChange={(e) => setVolume(parseFloat(e.target.value))}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                      />
-                      <div className="h-full bg-brutal-secondary" style={{ width: `${volume * 100}%` }} />
+                  {/* Progress & Volume */}
+                  <div className="w-full space-y-6">
+                    {/* Progress Bar */}
+                    <div className="space-y-2">
+                      <div className="h-2 w-full bg-brutal-parchment border-2 border-brutal-ink rounded-sm relative overflow-hidden">
+                        {isLoading ? (
+                          <div className="h-full w-full relative overflow-hidden">
+                            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-brutal-primary/40 to-transparent" />
+                          </div>
+                        ) : (
+                          <div className="h-full bg-brutal-primary" style={{ width: `${(progress / (duration || 1)) * 100}%` }} />
+                        )}
+                        <input
+                          type="range" min={0} max={duration || 0} value={progress}
+                          onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = parseFloat(e.target.value); }}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                      </div>
+                      <div className="flex justify-between text-tiny font-black text-brutal-muted tabular-nums">
+                        <span>{formatTime(progress)}</span>
+                        <span>{formatTime(duration)}</span>
+                      </div>
+                    </div>
+
+                    {/* Volume Slider */}
+                    <div className="flex items-center gap-3 bg-brutal-parchment p-3 rounded-md border-2 border-brutal-ink shadow-brutal-sm">
+                      <Volume2 size={18} className="text-brutal-ink" />
+                      <div className="relative flex-1 h-1.5 bg-white border border-brutal-ink rounded-full overflow-hidden">
+                        <input
+                          type="range" min={0} max={1} step={0.01} value={volume}
+                          onChange={(e) => setVolume(parseFloat(e.target.value))}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        />
+                        <div className="h-full bg-brutal-secondary" style={{ width: `${volume * 100}%` }} />
+                      </div>
                     </div>
                   </div>
                 </div>
