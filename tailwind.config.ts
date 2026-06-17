@@ -51,12 +51,17 @@ const config: Config = {
         vibrate: "vibrate 0.3s linear infinite",
         shimmer: 'shimmer 1.5s infinite',
         "brutal-pop": "brutal-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+        "brutal-exit": "brutal-exit 0.2s cubic-bezier(0.4, 0, 1, 1) forwards",
       },
       keyframes: {
         "brutal-pop": {
           "0%": { transform: "translate(-50%, -45%) scale(0.9)", opacity: "0" },
           "60%": { transform: "translate(-50%, -52%) scale(1.02)", opacity: "1" },
           "100%": { transform: "translate(-50%, -50%) scale(1)", opacity: "1" },
+        },
+        "brutal-exit": {
+          "0%": { transform: "translate(-50%, -50%) scale(1)", opacity: "1" },
+          "100%": { transform: "translate(-50%, -48%) scale(0.96)", opacity: "0" },
         },
         vibrate: {
           "0%, 100%": { transform: "translateX(0)" },

@@ -39,10 +39,8 @@ const DialogContent = React.forwardRef<
         "fixed left-[50%] top-[50%] z-[90] grid w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] gap-6",
         "rounded-md border-2 border-brutal-ink bg-brutal-paper text-brutal-ink",
         "shadow-brutal-lg",
-        "p-6 sm:p-8 duration-200",
-        "data-[state=open]:animate-brutal-pop data-[state=closed]:animate-out",
-        "data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-        "data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%]",
+        "p-6 sm:p-8",
+        "data-[state=open]:animate-brutal-pop data-[state=closed]:animate-brutal-exit",
         className
       )}
       {...props}
