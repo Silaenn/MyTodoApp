@@ -101,7 +101,7 @@ export function DialogDemo({
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[460px] z-[100] border-4 border-brutal-ink bg-brutal-paper shadow-brutal-lg rounded-lg">
+      <DialogContent className="sm:max-w-[448px] z-[100] border-4 border-brutal-ink bg-brutal-paper shadow-brutal-lg rounded-lg">
         <form onSubmit={handleSubmit}>
           <DialogHeader className="border-b-2 border-brutal-ink pb-4 mb-5">
             <DialogTitle className="text-3xl font-black italic">

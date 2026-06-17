@@ -120,7 +120,7 @@ const Home = ({ session }: { session: Session | null }) => {
           </div>
 
           <div className="grid w-full grid-cols-2 gap-3 sm:gap-4 md:w-auto">
-            <div className="rounded-md border-2 border-brutal-ink bg-brutal-secondary p-3 sm:p-5 text-center shadow-brutal min-w-[100px] sm:min-w-[140px]">
+            <div className="rounded-md border-2 border-brutal-ink bg-brutal-secondary p-3 sm:p-5 text-center shadow-brutal min-w-[96px] sm:min-w-[144px]">
               {loading ? (
                 <div className="h-8 w-12 mx-auto animate-pulse rounded-sm bg-brutal-ink/20" />
               ) : (
@@ -130,7 +130,7 @@ const Home = ({ session }: { session: Session | null }) => {
                 Active tasks
               </span>
             </div>
-            <div className="rounded-md border-2 border-brutal-ink bg-brutal-primary p-3 sm:p-5 text-center shadow-brutal min-w-[100px] sm:min-w-[140px]">
+            <div className="rounded-md border-2 border-brutal-ink bg-brutal-primary p-3 sm:p-5 text-center shadow-brutal min-w-[96px] sm:min-w-[144px]">
               {loading ? (
                 <div className="h-8 w-12 mx-auto animate-pulse rounded-sm bg-brutal-paper/20" />
               ) : (
@@ -198,7 +198,7 @@ const Home = ({ session }: { session: Session | null }) => {
                     <Link
                       key={task.id}
                       href="/tasks"
-                      className="min-h-[5rem] sm:min-h-[6rem] group flex items-center justify-between gap-3 sm:gap-4 rounded-md border-2 border-brutal-ink bg-brutal-paper p-4 sm:p-5 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-brutal-primary hover:-translate-x-px hover:-translate-y-px hover:rotate-1"
+                      className="min-h-[5rem] sm:min-h-[6rem] group flex items-center justify-between gap-3 sm:gap-4 rounded-md border-2 border-brutal-ink bg-brutal-paper p-4 sm:p-5 shadow-brutal transition-all hover:shadow-brutal-lg hover:border-brutal-primary hover:-translate-x-1 hover:-translate-y-1"
                     >
                       <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                         <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-secondary font-black text-brutal-ink transition-colors group-hover:bg-brutal-primary group-hover:text-brutal-paper text-sm sm:text-base">
@@ -234,7 +234,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   </div>
                   <Link
                     href="/tasks"
-                    className="group flex min-h-[50px] sm:min-h-[60px] items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 text-center transition-all hover:border-brutal-primary hover:bg-brutal-paper p-3 sm:p-4 shrink-0"
+                    className="group flex min-h-[48px] sm:min-h-[64px] items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 text-center transition-all hover:border-brutal-primary hover:bg-brutal-paper p-3 sm:p-4 shrink-0"
                   >
                     <span className="text-tiny sm:text-xs font-bold uppercase tracking-brutal text-brutal-muted group-hover:text-brutal-primary">
                       + Create a new task
@@ -283,7 +283,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   {likedTracks.slice(0, 6).map((track) => (
                     <div
                       key={track.id}
-                      className="group flex flex-col rounded-md border-2 border-brutal-ink bg-brutal-paper p-2 shadow-brutal transition-all hover:shadow-brutal-primary hover:border-brutal-primary hover:-translate-x-px hover:-translate-y-px hover:-rotate-1"
+                      className="group flex flex-col rounded-md border-2 border-brutal-ink bg-brutal-paper p-2 shadow-brutal transition-all hover:shadow-brutal-lg hover:border-brutal-primary hover:-translate-x-1 hover:-translate-y-1"
                     >
                       <div className="relative mb-2 aspect-square overflow-hidden rounded-sm border-2 border-brutal-ink">
                         <Image
