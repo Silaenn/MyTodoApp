@@ -25,7 +25,7 @@ const config: Config = {
         brutal: ["var(--font-space-grotesk)", "sans-serif"],
       },
       fontSize: {
-        tiny: "10px",
+        tiny: "12px",
       },
       borderWidth: {
         brutal: "2px",

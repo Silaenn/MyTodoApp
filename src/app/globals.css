@@ -168,6 +168,14 @@ h3 {
   @apply text-xl font-bold tracking-tight leading-tight text-brutal-ink;
 }
 
+h4 {
+  @apply text-lg font-bold tracking-tight leading-tight text-brutal-ink;
+}
+
+.caption {
+  @apply text-tiny font-bold uppercase tracking-brutal text-brutal-muted;
+}
+
 .font-brutal {
   @apply tracking-tight font-bold text-brutal-ink;
 }
