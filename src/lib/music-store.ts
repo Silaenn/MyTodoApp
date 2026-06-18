@@ -332,17 +332,22 @@ export const useMusicStore = create<MusicStore>()(
             await playTrack(updatedQueue[currentIndex + 1]);
             return;
           } else {
-            // Fallback: search lagu berbeda berdasarkan judul current track
+            // Fallback: search lagu berbeda berdasarkan artis/judul current track
             console.log("[Radio] Still empty after recs. Trying genre search fallback...");
             try {
-              // Ambil bagian judul yang bermakna (hindari kata umum)
+              const searchArtist = currentTrack.artist || "";
               const titleWords = cleanTitle(currentTrack.title)
                 .split(" ")
                 .filter((w) => w.length > 3)
                 .slice(0, 3)
                 .join(" ");
 
-              const genreQuery = encodeURIComponent(`${titleWords} similar songs music`);
+              // Cari berdasarkan nama artis untuk menghindari covers lagu yang sama
+              const queryStr = searchArtist 
+                ? `${searchArtist} similar songs music`
+                : `${titleWords} similar songs music`;
+
+              const genreQuery = encodeURIComponent(queryStr);
               const res = await fetch(`${BACKEND_URL}/search?q=${genreQuery}`);
               const searchResults = await res.json();
 
@@ -355,7 +360,7 @@ export const useMusicStore = create<MusicStore>()(
                     (t) =>
                       !existingIds.has(t.id) &&
                       !areDuplicateTitles(currentTrack.title, t.title)
-                  ) || searchResults.find((t) => !existingIds.has(t.id)) || searchResults[0];
+                  ) || searchResults.find((t) => !existingIds.has(t.id) && t.id !== currentTrack.id) || searchResults[0];
 
                 if (fallbackTrack) {
                   console.log("[Radio] Genre fallback playing:", fallbackTrack.title);

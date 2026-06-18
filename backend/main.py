@@ -259,9 +259,9 @@ def _run_yt_recommendations(video_id: str):
         elif 'related_videos' in info:
             related = info['related_videos']
 
-        # Fallback: search similar jika tidak ada related
+        # Fallback: search similar jika tidak ada related (Gunakan uploader/artis alih-alih judul lagu untuk menghindari cover)
         if not related:
-            search_query = f"ytsearch15:{original_title} {uploader} similar music"
+            search_query = f"ytsearch15:{uploader} similar music" if uploader else f"ytsearch15:{original_title} similar music"
             search_results = ydl.extract_info(search_query, download=False)
             if 'entries' in search_results:
                 related = search_results['entries']
@@ -299,10 +299,10 @@ def _run_yt_recommendations(video_id: str):
             if len(recommendations) >= 5:
                 break
 
-        # Fallback 1: Broader search jika hasil terlalu sedikit
+        # Fallback 1: Broader search jika hasil terlalu sedikit (Gunakan uploader/artis agar dapat lagu berbeda)
         if not recommendations:
             print("[Recommendations] No results, trying broader genre search...")
-            search_query = f"ytsearch20:{original_title} similar songs"
+            search_query = f"ytsearch20:{uploader} similar songs" if uploader else f"ytsearch20:{original_title} similar songs"
             fallback_results = _run_yt_search(search_query)
 
             for entry in fallback_results:
@@ -319,20 +319,22 @@ def _run_yt_recommendations(video_id: str):
                 if len(recommendations) >= 5:
                     break
 
-        # Fallback 2 (Emergency): ambil saja related track yang ID-nya berbeda
+        # Fallback 2 (Emergency): ambil saja related track yang ID-nya berbeda dan bukan duplikat lagu yang sama
         if not recommendations:
             print("[Recommendations] Emergency fallback: taking any related track.")
             for entry in related:
                 entry_id = entry.get("id")
+                entry_title = entry.get("title") or ""
                 if entry_id not in seen_ids and len(recommendations) < 5:
-                    recommendations.append({
-                        "id": entry_id,
-                        "title": entry.get("title"),
-                        "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
-                        "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
-                        "url": f"https://www.youtube.com/watch?v={entry_id}"
-                    })
-                    seen_ids.add(entry_id)
+                    if not titles_are_duplicate(original_title, entry_title):
+                        recommendations.append({
+                            "id": entry_id,
+                            "title": entry_title,
+                            "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
+                            "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
+                            "url": f"https://www.youtube.com/watch?v={entry_id}"
+                        })
+                        seen_ids.add(entry_id)
 
         print(f"[Recommendations] Returning {len(recommendations)} tracks.")
         return recommendations
