@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Menu } from "lucide-react";
 import Dashboard from "@/components/Dashboard";
 import Footer from "@/components/Footer";
@@ -91,17 +92,20 @@ export default function LayoutClient({
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="flex items-center gap-4 mb-6 md:hidden"
+            className="flex items-center gap-3 mb-6 md:hidden"
           >
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="brutal-btn brutal-btn-primary h-11 w-11 p-0"
+              className="brutal-btn brutal-btn-primary h-11 w-11 p-0 flex-shrink-0"
             >
               <Menu size={22} />
             </button>
-            <h1 className="text-xl font-black tracking-tight text-brutal-ink">
-              TASKTUNE
-            </h1>
+            <div className="flex items-center gap-2 min-w-0">
+              <Image src="/images/logo.png" alt="Logo" width={32} height={32} />
+              <h1 className="text-xl font-black tracking-tight text-brutal-ink truncate">
+                TASK<span className="text-brutal-primary">TUNE</span>
+              </h1>
+            </div>
           </motion.div>
         )}
         <motion.div 

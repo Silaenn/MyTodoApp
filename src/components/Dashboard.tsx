@@ -83,16 +83,18 @@ const Dashboard = ({
               variants={itemVariants}
               className="flex justify-between items-center mb-8 border-b-2 border-brutal-ink pb-6"
             >
-              <div className="lg:block md:hidden">
-                <p className="text-tiny font-bold uppercase tracking-brutal text-brutal-muted">
-                  Workspace
-                </p>
-                <h2 className="text-3xl font-black tracking-tight text-brutal-ink">
-                  TASK<span className="text-brutal-primary">TUNE</span>
-                </h2>
-              </div>
-              <div className="lg:hidden md:block hidden w-full text-center">
-                <Image src="/images/logo.png" alt="Logo" width={120} height={120} />
+              <div className="flex items-center gap-3 md:flex-col lg:flex-row md:gap-1 lg:gap-3 w-full">
+                <div className="flex-shrink-0">
+                  <Image src="/images/logo.png" alt="Logo" width={40} height={40} className="md:w-10 md:h-10 lg:w-12 lg:h-12" />
+                </div>
+                <div className="md:hidden lg:block">
+                  <p className="text-tiny font-bold uppercase tracking-brutal text-brutal-muted leading-none">
+                    Workspace
+                  </p>
+                  <h2 className="text-2xl font-black tracking-tight text-brutal-ink">
+                    TASK<span className="text-brutal-primary">TUNE</span>
+                  </h2>
+                </div>
               </div>
               <button
                 onClick={onClose}

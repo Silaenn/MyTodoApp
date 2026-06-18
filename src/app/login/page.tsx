@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { LogIn, Loader2 } from "lucide-react";
 import { motion, Variants } from "framer-motion";
@@ -88,7 +89,10 @@ const LoginPage = () => {
       >
         <div className="rounded-md border-2 border-brutal-ink bg-brutal-paper p-10 shadow-brutal-lg text-center space-y-8">
           {/* Logo */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={itemVariants} className="flex flex-col items-center">
+            <div className="mb-4">
+              <Image src="/images/logo.png" alt="Logo" width={80} height={80} className="md:w-24 md:h-24" />
+            </div>
             <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter text-brutal-ink">
               TASK<span className="text-brutal-primary">TUNE</span>
             </h1>
