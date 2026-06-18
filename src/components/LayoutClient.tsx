@@ -47,16 +47,23 @@ export default function LayoutClient({
   useEffect(() => {
     if (!session) return;
 
+    let lastRefreshTime = Date.now();
+    const minRefreshInterval = 5 * 60 * 1000; // 5 minutes
+
     const refreshSession = async () => {
-      // Fetch session endpoint to trigger updateAge: 0
-      await fetch("/api/auth/session");
+      try {
+        await fetch("/api/auth/session");
+        lastRefreshTime = Date.now();
+      } catch (err) {
+        console.error("Failed to refresh session:", err);
+      }
     };
 
-    let timeout: NodeJS.Timeout;
     const handleActivity = () => {
-      clearTimeout(timeout);
-      // Debounce refresh call (misal: panggil refresh hanya sekali setiap 5 menit jika aktif)
-      timeout = setTimeout(refreshSession, 5 * 60 * 1000); 
+      const now = Date.now();
+      if (now - lastRefreshTime > minRefreshInterval) {
+        refreshSession();
+      }
     };
 
     window.addEventListener("mousemove", handleActivity);
@@ -67,7 +74,6 @@ export default function LayoutClient({
       window.removeEventListener("mousemove", handleActivity);
       window.removeEventListener("keydown", handleActivity);
       window.removeEventListener("click", handleActivity);
-      clearTimeout(timeout);
     };
   }, [session]);
 

@@ -36,6 +36,15 @@ const categoryColors: Record<string, string> = {
   all:      "brutal-badge-muted",
 };
 
+const isOverdue = (deadlineStr: string) => {
+  if (!deadlineStr) return false;
+  const deadline = new Date(deadlineStr);
+  deadline.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return deadline < today;
+};
+
 // Animation Variants
 const headerVariants: Variants = {
   hidden: { opacity: 0, y: -20 },
@@ -89,10 +98,14 @@ const Tasks = () => {
 
   const deleteTask = async (id: string) => {
     try {
-      await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        throw new Error("Failed to delete task");
+      }
       setTasks(tasks.filter((t) => t.id !== id));
     } catch (err: unknown) {
       console.error("Failed to delete task:", err);
+      throw err;
     }
   };
 
@@ -319,7 +332,7 @@ const Tasks = () => {
                               Deadline:
                             </span>
                             <span className={`rounded-sm border border-brutal-ink/20 px-2 py-0.5 text-tiny sm:text-xs font-bold ${
-                              task.deadline && new Date(task.deadline) < new Date() && !task.is_done
+                              task.deadline && isOverdue(task.deadline) && !task.is_done
                                 ? "bg-red-100 text-red-600 border-red-200"
                                 : "bg-brutal-parchment text-brutal-primary"
                             }`}>

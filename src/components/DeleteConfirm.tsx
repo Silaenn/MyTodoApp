@@ -23,21 +23,28 @@ export const DeleteConfirm = ({
   trigger 
 }: DeleteConfirmProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    setError(null);
     try {
       await onConfirm();
+      setOpen(false);
+    } catch (err: unknown) {
+      console.error("Delete failed:", err);
+      setError(err instanceof Error ? err.message : "Failed to delete task");
     } finally {
       setIsDeleting(false);
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={(newOpen) => { if (!isDeleting) { setOpen(newOpen); setError(null); } }}>
       <DialogTrigger asChild>
         {trigger || (
-          <button className="brutal-btn brutal-btn-accent shadow-brutal-sm flex items-center justify-center gap-2 py-2 px-4 h-11 sm:w-auto">
+          <button className="brutal-btn brutal-btn-accent shadow-brutal-sm flex items-center justify-center gap-2 py-2 px-4 h-11 sm:w-auto" onClick={() => setOpen(true)}>
             <Trash2 size={16} />
             <span className="text-xs sm:text-sm font-bold">Delete</span>
           </button>
@@ -59,6 +66,12 @@ export const DeleteConfirm = ({
             <br /><br />
             This action is <span className="uppercase text-brutal-accent">irreversible</span> and will wipe this frequency from your board.
           </DialogDescription>
+
+          {error && (
+            <p className="text-sm font-bold text-red-600 bg-red-100 border-2 border-brutal-ink p-3 rounded-sm shadow-brutal-sm">
+              Error: {error}
+            </p>
+          )}
 
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <DialogClose asChild>

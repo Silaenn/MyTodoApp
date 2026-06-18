@@ -43,6 +43,8 @@ interface MusicStore {
   isLiked: (trackId: string) => boolean;
 }
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
 // Track fetch yang sedang berjalan agar bisa di-abort
 let currentAbortController: AbortController | null = null;
 
@@ -182,7 +184,7 @@ export const useMusicStore = create<MusicStore>()(
 
         try {
           const res = await fetch(
-            `http://localhost:8000/stream?url=${encodeURIComponent(track.url)}`,
+            `${BACKEND_URL}/stream?url=${encodeURIComponent(track.url)}`,
             { signal }
           );
           const data = await res.json();
@@ -229,7 +231,7 @@ export const useMusicStore = create<MusicStore>()(
         const { queue, currentTrack } = get();
         try {
           console.log("[Radio] Fetching recommendations for:", currentTrack?.title);
-          const res = await fetch(`http://localhost:8000/recommendations/${trackId}`);
+          const res = await fetch(`${BACKEND_URL}/recommendations/${trackId}`);
           const recommendations = await res.json();
 
           if (Array.isArray(recommendations) && recommendations.length > 0) {
@@ -276,7 +278,7 @@ export const useMusicStore = create<MusicStore>()(
         try {
           console.log("[Preload] Preloading:", nextTrack.title);
           const res = await fetch(
-            `http://localhost:8000/stream?url=${encodeURIComponent(nextTrack.url)}`
+            `${BACKEND_URL}/stream?url=${encodeURIComponent(nextTrack.url)}`
           );
           const data = await res.json();
 
@@ -341,7 +343,7 @@ export const useMusicStore = create<MusicStore>()(
                 .join(" ");
 
               const genreQuery = encodeURIComponent(`${titleWords} similar songs music`);
-              const res = await fetch(`http://localhost:8000/search?q=${genreQuery}`);
+              const res = await fetch(`${BACKEND_URL}/search?q=${genreQuery}`);
               const searchResults = await res.json();
 
               if (Array.isArray(searchResults) && searchResults.length > 0) {

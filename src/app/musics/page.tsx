@@ -7,6 +7,8 @@ import { useMusicStore } from "@/lib/music-store";
 import { MusicSpacer } from "@/components/MusicSpacer";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
 interface SearchResult {
   id: string;
   title: string;
@@ -122,7 +124,7 @@ const Musics = () => {
     const randomSearch = randomKeywords[Math.floor(Math.random() * randomKeywords.length)];
     
     try {
-      const res = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(randomSearch)}`);
+      const res = await fetch(`${BACKEND_URL}/search?q=${encodeURIComponent(randomSearch)}`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setWeeklyPicks(data);
@@ -157,7 +159,7 @@ const Musics = () => {
     setRadioQueue([]); // Clear old recommendations immediately
     try {
       const res = await fetch(
-        `http://localhost:8000/search?q=${encodeURIComponent(query)}`,
+        `${BACKEND_URL}/search?q=${encodeURIComponent(query)}`,
         { signal: searchAbortControllerRef.current.signal }
       );
       const data = await res.json();
@@ -168,7 +170,7 @@ const Musics = () => {
         
         // Background fetch for Radio Mode WITHOUT affecting results state
         if (data.length > 0) {
-          fetch(`http://localhost:8000/recommendations/${data[0].id}`)
+          fetch(`${BACKEND_URL}/recommendations/${data[0].id}`)
             .then(r => r.json())
             .then(recData => {
               if (Array.isArray(recData)) {
@@ -179,8 +181,8 @@ const Musics = () => {
             });
         }
       }
-    } catch (error: any) {
-      if (error.name !== 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name !== 'AbortError') {
         console.error("Search failed:", error);
       }
     } finally {

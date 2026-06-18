@@ -12,7 +12,7 @@ app = FastAPI()
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -237,7 +237,7 @@ async def get_stream_url(url: str = Query(...)):
 def _run_yt_recommendations(video_id: str):
     ydl_opts = {
         **YDL_COMMON_OPTS,
-        'extract_flat': False,
+        'extract_flat': True,
         'skip_download': True,
     }
     url = f"https://www.youtube.com/watch?v={video_id}"

@@ -14,16 +14,17 @@ const client = createClient({
 export const turso = {
   ...client,
   execute: async (stmt: InStatement, retries = 3): Promise<ResultSet> => {
-    let lastError: any;
+    let lastError: unknown;
     for (let i = 0; i < retries; i++) {
       try {
         return await client.execute(stmt);
-      } catch (error: any) {
+      } catch (error: unknown) {
         lastError = error;
+        const err = error as { message?: string; code?: string; cause?: { code?: string } } | null;
         const isTimeout = 
-          error?.message?.includes("timeout") || 
-          error?.code === "UND_ERR_CONNECT_TIMEOUT" ||
-          error?.cause?.code === "UND_ERR_CONNECT_TIMEOUT";
+          err?.message?.includes("timeout") || 
+          err?.code === "UND_ERR_CONNECT_TIMEOUT" ||
+          err?.cause?.code === "UND_ERR_CONNECT_TIMEOUT";
           
         if (isTimeout && i < retries - 1) {
           console.warn(`Turso connection timeout, retrying (${i + 1}/${retries})...`);
