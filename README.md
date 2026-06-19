@@ -116,12 +116,6 @@ Tasks are persisted in **Turso** (libSQL/SQLite at the edge), and authentication
 <!-- Music Player (Desktop) -->
 <img width="1599" height="144" alt="TaskTune-Productivity-Meets-Rhythm(3)" src="https://github.com/user-attachments/assets/81527ea4-a83a-4b7e-9438-94cc30d39351" />
 
-
-<!-- Music Player (Mobile Drawer) -->
-<img width="346" height="93" alt="TaskTune-Productivity-Meets-Rhythm(4)" src="https://github.com/user-attachments/assets/5c1f8d0a-8a53-4ccb-935b-63a68cefa45a" />
-<img width="362" height="763" alt="Screenshot_2026-06-19_13-33-29" src="https://github.com/user-attachments/assets/e09c6f56-930d-45e1-9d4b-2865bdf39ce8" />
-
-
 <!-- Login -->
 <img width="1920" height="964" alt="TaskTune-Productivity-Meets-Rhythm(5)" src="https://github.com/user-attachments/assets/b27a5d51-088c-418d-b98e-92f6f24ba03b" />
 
