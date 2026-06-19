@@ -91,7 +91,7 @@ const LoginPage = () => {
           {/* Logo */}
           <motion.div variants={itemVariants} className="flex flex-col items-center">
             <div className="mb-4">
-              <Image src="/images/logo.png" alt="Logo" width={80} height={80} className="md:w-24 md:h-24" />
+              <Image src="/images/logo.png" alt="TaskTune" width={80} height={80} className="md:w-24 md:h-24" />
             </div>
             <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter text-brutal-ink">
               TASK<span className="text-brutal-primary">TUNE</span>
