@@ -101,7 +101,6 @@ Tasks are persisted in **Turso** (libSQL/SQLite at the edge), and authentication
 
 ## Screenshots
 
-```
 <!-- Dashboard -->
 <img width="1920" height="964" alt="TaskTune-Productivity-Meets-Rhythm" src="https://github.com/user-attachments/assets/15d7e7ae-089b-4a02-a1e9-68debd9377c2" />
 
@@ -125,8 +124,6 @@ Tasks are persisted in **Turso** (libSQL/SQLite at the edge), and authentication
 
 <!-- Login -->
 <img width="1920" height="964" alt="TaskTune-Productivity-Meets-Rhythm(5)" src="https://github.com/user-attachments/assets/b27a5d51-088c-418d-b98e-92f6f24ba03b" />
-
-```
 
 ---
 
