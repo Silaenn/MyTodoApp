@@ -6,8 +6,10 @@ export default auth((req) => {
   const { pathname } = nextUrl
 
   const isApiAuthRoute = pathname.startsWith("/api/auth")
+  const isStaticFile = /\.(png|jpg|jpeg|gif|svg|ico|webp|css|js|woff2?|ttf|eot|json)$/i.test(pathname)
+  const isPublicPath = pathname.startsWith("/images") || pathname.startsWith("/_next/image")
 
-  if (isApiAuthRoute) return null
+  if (isApiAuthRoute || isStaticFile || isPublicPath) return null
 
   if (pathname === "/") {
     if (!isLoggedIn) return Response.redirect(new URL("/login", nextUrl))
@@ -27,5 +29,5 @@ export default auth((req) => {
 })
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images).*)"],
 }
