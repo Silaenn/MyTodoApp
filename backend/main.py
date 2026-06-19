@@ -1,15 +1,16 @@
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-import yt_dlp
-import json
+import httpx
+import os
 import re
-import anyio
 import time
 from typing import Dict, Any, Optional
+from dotenv import load_dotenv
+
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env.local'))
 
 app = FastAPI()
 
-# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
@@ -18,7 +19,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Simple TTL Cache Implementation
+API_KEY = os.environ.get("YOUTUBE_API_KEY")
+if not API_KEY:
+    print("WARNING: YOUTUBE_API_KEY environment variable not set")
+
+SEARCH_URL = "https://www.googleapis.com/youtube/v3/search"
+VIDEO_URL = "https://www.googleapis.com/youtube/v3/videos"
+
+NON_MUSIC_KEYWORDS = [
+    'instrumental', 'karaoke', 'piano', 'guitar', 'backing track',
+    'tutorial', 'how to', 'lesson', 'instrument', 'midi',
+    'sound test', 'bass test', 'speaker test', 'subwoofer test',
+    'sound check', 'bass boost', 'bass boosted', 'extreme bass',
+    'test sound', 'cek sound', 'full bass', 'mega bass',
+    'dj cek', 'dj sound', 'dj bass', 'bass vibration',
+    'audiophile', 'sound system', 'quality check',
+    'music quiz', 'quiz challenge', 'test your',
+    '#shorts', 'shorts', 'short video',
+]
 
 
 class TTLCache:
@@ -42,24 +60,11 @@ class TTLCache:
         }
 
 
-# Caches for different purposes
-search_cache = TTLCache(ttl_seconds=3600)         # 1 hour
-# 5 minutes (YouTube URLs expire quickly)
-stream_cache = TTLCache(ttl_seconds=300)
-recommendation_cache = TTLCache(ttl_seconds=3600)  # 1 hour
-
-# Shared yt-dlp options for better performance and reliability
-YDL_COMMON_OPTS = {
-    'quiet': True,
-    'no_warnings': True,
-    'source_address': '0.0.0.0',
-    'nocheckcertificate': True,
-    'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-}
+search_cache = TTLCache(ttl_seconds=3600)
+recommendation_cache = TTLCache(ttl_seconds=3600)
 
 
 def clean_title(title: str) -> str:
-    """Bersihkan judul dari suffix umum music video."""
     suffixes = [
         r'\(?official\s+video\)?', r'\(?official\s+audio\)?', r'\(?lyric\s+video\)?',
         r'\(?lyrics\)?', r'\(?official\)?', r'\(?hd\)?', r'\(?4k\)?', r'\(?live\)?',
@@ -68,230 +73,168 @@ def clean_title(title: str) -> str:
     title = title.lower()
     for s in suffixes:
         title = re.sub(s, '', title, flags=re.IGNORECASE)
-
     title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
     title = re.sub(r'[^\w\s]', ' ', title)
     return " ".join(title.split()).strip()
 
 
-def get_main_title(title: str) -> list[str]:
-    """Ambil bagian utama judul sebelum separator umum."""
-    title = title.lower()
-    title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
-
-    parts = []
-    for sep in ['-', '|', ':', '–']:
-        if sep in title:
-            parts = [p.strip() for p in title.split(sep) if p.strip()]
-            break
-
-    if not parts:
-        parts = [title.strip()]
-
-    cleaned_parts = [re.sub(r'[^\w\s]', '', p).strip() for p in parts]
-    return [p for p in cleaned_parts if p]
-
-
 def titles_are_duplicate(title1: str, title2: str, threshold: float = 0.7) -> bool:
-    """
-    Cek apakah dua judul adalah lagu yang sama (cover, versi lain, dll).
-    Menggunakan word-overlap similarity — bukan exact match.
-    Threshold 0.7 = 70% kata yang sama dianggap duplikat.
-
-    Contoh:
-    - "Bukti KasihMu" vs "Bukti KasihMu (Cover)" → True (duplikat)
-    - "Bukti KasihMu" vs "Kasih Setia-Mu" → False (lagu berbeda, genre sama)
-    - "Amazing Grace" vs "Amazing Grace Live Version" → True (duplikat)
-    """
     clean1_words = set(clean_title(title1).split())
     clean2_words = set(clean_title(title2).split())
-
-    # Hapus kata yang terlalu pendek (noise)
     clean1_words = {w for w in clean1_words if len(w) > 2}
     clean2_words = {w for w in clean2_words if len(w) > 2}
-
     if not clean1_words or not clean2_words:
         return False
-
     overlap = clean1_words.intersection(clean2_words)
     similarity = len(overlap) / min(len(clean1_words), len(clean2_words))
-
     is_dup = similarity >= threshold
     if is_dup:
         print(f"  [DUP] '{title1}' ~ '{title2}' (similarity={similarity:.2f})")
     return is_dup
 
 
-def get_keywords(title: str) -> set[str]:
-    """
-    Ambil kata kunci dari judul untuk keperluan debug/logging saja.
-    TIDAK lagi digunakan untuk filtering rekomendasi.
-    """
-    stop_words = {
-        'the', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'and', 'or', 'but',
-        'is', 'are', 'was', 'were', 'be', 'been', 'being', 'official', 'video', 'audio',
-        'lyrics', 'lyric', 'cover', 'mv', 'live', 'remix', 'ft', 'feat', 'music',
-        'hd', '4k', 'visualizer', 'exclusive', 'full', 'song'
+async def _fetch_video_info(video_id: str) -> tuple[str, str]:
+    async with httpx.AsyncClient() as client:
+        params = {
+            "part": "snippet",
+            "id": video_id,
+            "key": API_KEY,
+        }
+        resp = await client.get(VIDEO_URL, params=params)
+        resp.raise_for_status()
+        data = resp.json()
+        items = data.get("items", [])
+        if items:
+            snippet = items[0].get("snippet", {})
+            return snippet.get("title", ""), snippet.get("channelTitle", "")
+        return "", ""
+
+
+def _extract_thumbnail(snippet: dict) -> str:
+    thumbs = snippet.get("thumbnails", {})
+    return (
+        thumbs.get("high", {}).get("url")
+        or thumbs.get("medium", {}).get("url")
+        or thumbs.get("default", {}).get("url")
+        or ""
+    )
+
+
+def _build_track(item: dict) -> Optional[dict]:
+    snippet = item.get("snippet", {})
+    entry_id = item.get("id", {})
+    if isinstance(entry_id, dict):
+        video_id = entry_id.get("videoId")
+    else:
+        video_id = entry_id
+    if not video_id:
+        return None
+    title = snippet.get("title", "")
+    return {
+        "id": video_id,
+        "title": title,
+        "thumbnail": _extract_thumbnail(snippet),
+        "artist": snippet.get("channelTitle", ""),
+        "url": f"https://www.youtube.com/watch?v={video_id}"
     }
-    title = title.lower()
-    title = re.sub(r'[\(\[][^()]*[\)\]]', '', title)
-    title = re.sub(r'[^\w\s]', ' ', title)
-
-    words = title.split()
-    return {w for w in words if w not in stop_words and len(w) > 2}
-
-
-def _run_yt_search(q: str):
-    ydl_opts = {
-        **YDL_COMMON_OPTS,
-        'format': 'bestaudio/best',
-        'noplaylist': True,
-        'extract_flat': True,
-        'skip_download': True,
-    }
-
-    # Filter konten non-musik yang jelas
-    filter_words = {
-        'instrumental', 'karaoke', 'piano', 'guitar', 'backing track',
-        'tutorial', 'how to', 'lesson', 'instrument', 'midi'
-    }
-
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        search_query = f"ytsearch30:{q} official music"
-        search_results = ydl.extract_info(search_query, download=False)
-        entries = []
-
-        if 'entries' in search_results:
-            for entry in search_results['entries']:
-                entry_title = entry.get("title") or ""
-                lowered_title = entry_title.lower()
-
-                if any(word in lowered_title for word in filter_words):
-                    continue
-
-                entries.append({
-                    "id": entry.get("id"),
-                    "title": entry.get("title"),
-                    "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
-                    "artist": entry.get("uploader"),
-                    "duration": entry.get("duration"),
-                    "url": f"https://www.youtube.com/watch?v={entry.get('id')}"
-                })
-
-                if len(entries) >= 20:
-                    break
-
-        return entries
 
 
 @app.get("/search")
 async def search_songs(q: str = Query(...)):
-    cached_result = search_cache.get(q)
-    if cached_result:
-        return cached_result
+    cached = search_cache.get(q)
+    if cached:
+        return cached
 
     try:
-        entries = await anyio.to_thread.run_sync(_run_yt_search, q)
-        search_cache.set(q, entries)
-        return entries
+        params = {
+            "part": "snippet",
+            "type": "video",
+            "videoCategoryId": "10",
+            "maxResults": 50,
+            "q": q,
+            "videoEmbeddable": "true",
+            "key": API_KEY,
+        }
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(SEARCH_URL, params=params)
+            resp.raise_for_status()
+            data = resp.json()
+
+        non_music_keywords = NON_MUSIC_KEYWORDS
+
+        entries = []
+        for item in data.get("items", []):
+            snippet = item.get("snippet", {})
+            title = snippet.get("title", "")
+            lowered = title.lower()
+
+            if any(kw in lowered for kw in non_music_keywords):
+                continue
+
+            track = _build_track(item)
+            if track:
+                entries.append(track)
+
+        result = entries[:20]
+        search_cache.set(q, result)
+        return result
     except Exception as e:
         print(f"Search error: {e}")
         return []
 
 
-def _run_yt_stream(url: str):
-    ydl_opts = {
-        **YDL_COMMON_OPTS,
-        'format': 'bestaudio[protocol!=m3u8][protocol!=m3u8_native]/bestaudio',
-        'skip_download': True,
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
-        selected_url = info.get("url")
-        ext = info.get("ext", "")
-        protocol = info.get("protocol", "")
-        return {
-            "stream_url": selected_url,
-            "title": info.get("title"),
-            "ext": ext,
-            "protocol": protocol
-        }
-
-
-@app.get("/stream")
-async def get_stream_url(url: str = Query(...)):
-    cached_result = stream_cache.get(url)
-    if cached_result:
-        return cached_result
+@app.get("/recommendations/{video_id}")
+async def get_recommendations(video_id: str):
+    cached = recommendation_cache.get(video_id)
+    if cached:
+        return cached
 
     try:
-        result = await anyio.to_thread.run_sync(_run_yt_stream, url)
-        if result["stream_url"]:
-            stream_cache.set(url, result)
-        return result
-    except Exception as e:
-        print(f"Stream error for {url}: {e}")
-        return {"error": str(e), "stream_url": None}
+        original_title, uploader = await _fetch_video_info(video_id)
+        print(f"[Recommendations] Fetching recs for: '{original_title}' by '{uploader}'")
 
+        search_query = f"{uploader} music" if uploader else f"{original_title} music"
+        if uploader:
+            search_query = f"{uploader} - topic"
 
-def _run_yt_recommendations(video_id: str):
-    ydl_opts = {
-        **YDL_COMMON_OPTS,
-        'extract_flat': True,
-        'skip_download': True,
-    }
-    url = f"https://www.youtube.com/watch?v={video_id}"
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
-        original_title = info.get('title', '')
-        uploader = info.get('uploader', '')
+        params = {
+            "part": "snippet",
+            "type": "video",
+            "videoCategoryId": "10",
+            "maxResults": 15,
+            "q": search_query,
+            "key": API_KEY,
+        }
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(SEARCH_URL, params=params)
+            resp.raise_for_status()
+            data = resp.json()
 
-        print(
-            f"[Recommendations] Fetching recs for: '{original_title}' by '{uploader}'")
-
-        # Filter konten non-musik
-        junk_words = {'karaoke', 'instrumental', 'tutorial',
-                      'how to', 'lesson', 'piano cover', 'guitar cover'}
-
-        related = []
-        if 'entries' in info and info['entries']:
-            related = info['entries']
-        elif 'related_videos' in info:
-            related = info['related_videos']
-
-        # Fallback: search similar jika tidak ada related (Gunakan uploader/artis alih-alih judul lagu untuk menghindari cover)
-        if not related:
-            search_query = f"ytsearch15:{uploader} similar music" if uploader else f"ytsearch15:{original_title} similar music"
-            search_results = ydl.extract_info(search_query, download=False)
-            if 'entries' in search_results:
-                related = search_results['entries']
-
+        junk_words = NON_MUSIC_KEYWORDS
         recommendations = []
         seen_ids = {video_id}
 
-        for entry in related:
-            entry_id = entry.get("id")
-            entry_title = entry.get("title") or ""
-
+        for item in data.get("items", []):
+            snippet = item.get("snippet", {})
+            entry_title = snippet.get("title", "")
+            entry_id = item.get("id", {})
+            if isinstance(entry_id, dict):
+                entry_id = entry_id.get("videoId")
             if not entry_id or entry_id in seen_ids:
                 continue
 
-            # Filter junk content
             lowered_title = entry_title.lower()
             if any(word in lowered_title for word in junk_words):
                 continue
 
-            # ✅ FIX: Gunakan title similarity, BUKAN keyword overlap
-            # Ini mencegah cover/versi lain dari lagu yang sama,
-            # tapi tetap mengizinkan lagu satu genre (misal: sesama lagu rohani)
             if titles_are_duplicate(original_title, entry_title):
                 continue
 
             recommendations.append({
                 "id": entry_id,
                 "title": entry_title,
-                "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
-                "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
+                "thumbnail": _extract_thumbnail(snippet),
+                "artist": snippet.get("channelTitle", "") or "Various Artists",
                 "url": f"https://www.youtube.com/watch?v={entry_id}"
             })
             seen_ids.add(entry_id)
@@ -299,60 +242,55 @@ def _run_yt_recommendations(video_id: str):
             if len(recommendations) >= 5:
                 break
 
-        # Fallback 1: Broader search jika hasil terlalu sedikit (Gunakan uploader/artis agar dapat lagu berbeda)
         if not recommendations:
             print("[Recommendations] No results, trying broader genre search...")
-            search_query = f"ytsearch20:{uploader} similar songs" if uploader else f"ytsearch20:{original_title} similar songs"
-            fallback_results = _run_yt_search(search_query)
+            broader_query = f"{uploader} similar songs" if uploader else f"{original_title} similar songs"
+            broader_params = {
+                "part": "snippet",
+                "type": "video",
+                "videoCategoryId": "10",
+            "maxResults": 50,
+                "q": broader_query,
+                "key": API_KEY,
+            }
+            async with httpx.AsyncClient() as bc:
+                broader_resp = await bc.get(SEARCH_URL, params=broader_params)
+                broader_resp.raise_for_status()
+                broader_data = broader_resp.json()
 
-            for entry in fallback_results:
-                entry_id = entry.get("id")
-                entry_title = entry.get("title") or ""
-
-                if entry_id in seen_ids:
+            for item in broader_data.get("items", []):
+                snippet = item.get("snippet", {})
+                entry_title = snippet.get("title", "")
+                entry_id = item.get("id", {})
+                if isinstance(entry_id, dict):
+                    entry_id = entry_id.get("videoId")
+                if not entry_id or entry_id in seen_ids:
                     continue
 
                 if not titles_are_duplicate(original_title, entry_title):
-                    recommendations.append(entry)
+                    recommendations.append({
+                        "id": entry_id,
+                        "title": entry_title,
+                        "thumbnail": _extract_thumbnail(snippet),
+                        "artist": snippet.get("channelTitle", "") or "Various Artists",
+                        "url": f"https://www.youtube.com/watch?v={entry_id}"
+                    })
                     seen_ids.add(entry_id)
 
                 if len(recommendations) >= 5:
                     break
 
-        # Fallback 2 (Emergency): ambil saja related track yang ID-nya berbeda dan bukan duplikat lagu yang sama
-        if not recommendations:
-            print("[Recommendations] Emergency fallback: taking any related track.")
-            for entry in related:
-                entry_id = entry.get("id")
-                entry_title = entry.get("title") or ""
-                if entry_id not in seen_ids and len(recommendations) < 5:
-                    if not titles_are_duplicate(original_title, entry_title):
-                        recommendations.append({
-                            "id": entry_id,
-                            "title": entry_title,
-                            "thumbnail": entry.get("thumbnails")[0]["url"] if entry.get("thumbnails") else None,
-                            "artist": entry.get("uploader") or entry.get("artist") or "Various Artists",
-                            "url": f"https://www.youtube.com/watch?v={entry_id}"
-                        })
-                        seen_ids.add(entry_id)
-
         print(f"[Recommendations] Returning {len(recommendations)} tracks.")
-        return recommendations
-
-
-@app.get("/recommendations/{video_id}")
-async def get_recommendations(video_id: str):
-    cached_result = recommendation_cache.get(video_id)
-    if cached_result:
-        return cached_result
-
-    try:
-        recommendations = await anyio.to_thread.run_sync(_run_yt_recommendations, video_id)
         recommendation_cache.set(video_id, recommendations)
         return recommendations
     except Exception as e:
         print(f"Recommendations error: {e}")
         return []
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
 
 
 if __name__ == "__main__":

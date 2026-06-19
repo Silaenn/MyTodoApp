@@ -1,24 +1,32 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
+
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
 import Image from "next/image";
 import { Repeat1, Repeat, Play, Pause, SkipForward, SkipBack, Volume2, Shuffle, X, ChevronDown } from "lucide-react";
 import { useMusicStore } from "@/lib/music-store";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Footer = () => {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const { 
-    currentTrack, isPlaying, streamUrl, setIsPlaying, 
-    nextTrack, prevTrack, shuffle, toggleShuffle, 
+  const playerRef = useRef<YT.Player | null>(null);
+  const playerReadyRef = useRef(false);
+  const prevTrackIdRef = useRef<string | null>(null);
+  const [playerApiReady, setPlayerApiReady] = useState(false);
+  const {
+    currentTrack, isPlaying, setIsPlaying,
+    nextTrack, prevTrack, shuffle, toggleShuffle,
     repeat, toggleRepeat, volume, setVolume, stopMusic,
-    isLoading 
+    isLoading
   } = useMusicStore();
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Lock scroll when drawer is expanded
   useEffect(() => {
     if (isExpanded) {
       document.body.style.overflow = "hidden";
@@ -31,44 +39,130 @@ const Footer = () => {
   }, [isExpanded]);
 
   useEffect(() => {
-    if (audioRef.current) {
-      // Always sync volume before playing
-      audioRef.current.volume = volume;
-      
-      if (isPlaying) {
-        audioRef.current.play().catch(e => console.error("Playback failed:", e));
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  }, [isPlaying, streamUrl, volume]);
-
-  // Force stop audio when loading new track without triggering "not suitable" error
-  useEffect(() => {
-    if (isLoading && audioRef.current) {
-      audioRef.current.pause();
-    }
-  }, [isLoading]);
-
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setProgress(audioRef.current.currentTime);
-      setDuration(audioRef.current.duration || 0);
-    }
-  };
-
-  const handleEnded = () => {
-    if (repeat === "one") {
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play();
-      }
+    if (!window.YT?.Player) {
+      window.onYouTubeIframeAPIReady = () => {
+        setPlayerApiReady(true);
+      };
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
     } else {
-      nextTrack();
+      setPlayerApiReady(true);
     }
-  };
 
-  const togglePlay = () => setIsPlaying(!isPlaying);
+    return () => {
+      if (window.onYouTubeIframeAPIReady) {
+        delete window.onYouTubeIframeAPIReady;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!playerApiReady || !currentTrack) {
+      if (!currentTrack && playerRef.current) {
+        playerRef.current.destroy();
+        playerRef.current = null;
+        playerReadyRef.current = false;
+      }
+      prevTrackIdRef.current = null;
+      return;
+    }
+
+    const prevId = prevTrackIdRef.current;
+    prevTrackIdRef.current = currentTrack.id;
+
+    if (currentTrack.id === prevId && playerRef.current && playerReadyRef.current) {
+      playerRef.current.seekTo(0, true);
+      playerRef.current.playVideo();
+      return;
+    }
+
+    if (playerRef.current) {
+      playerRef.current.destroy();
+    }
+
+    playerReadyRef.current = false;
+    setProgress(0);
+    setDuration(0);
+
+    playerRef.current = new YT.Player('youtube-player', {
+      videoId: currentTrack.id,
+      playerVars: {
+        controls: 0,
+        disablekb: 1,
+        fs: 0,
+        modestbranding: 1,
+        rel: 0,
+        iv_load_policy: 3,
+        playsinline: 1,
+      },
+      events: {
+        onReady: () => {
+          playerReadyRef.current = true;
+          playerRef.current?.setVolume(Math.round(volume * 100));
+          playerRef.current?.playVideo();
+        },
+        onStateChange: (event: YT.OnStateChangeEvent) => {
+          if (event.data === YT.PlayerState.PLAYING) {
+            setIsPlaying(true);
+          } else if (event.data === YT.PlayerState.PAUSED) {
+            setIsPlaying(false);
+          } else if (event.data === YT.PlayerState.ENDED) {
+            if (repeat === "one") {
+              playerRef.current?.seekTo(0, true);
+              playerRef.current?.playVideo();
+            } else {
+              nextTrack();
+            }
+          }
+        },
+        onError: () => {
+          console.error('YouTube player error, skipping track');
+          nextTrack();
+        },
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack, playerApiReady]);
+
+  useEffect(() => {
+    if (!playerRef.current || !playerReadyRef.current) return;
+    if (isPlaying) {
+      playerRef.current.playVideo();
+    } else {
+      playerRef.current.pauseVideo();
+    }
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (playerRef.current && playerReadyRef.current) {
+      playerRef.current.setVolume(Math.round(volume * 100));
+    }
+  }, [volume]);
+
+  useEffect(() => {
+    if (!playerApiReady || !currentTrack) return;
+
+    const interval = setInterval(() => {
+      if (playerRef.current && playerReadyRef.current) {
+        const currentTime = playerRef.current.getCurrentTime();
+        const dur = playerRef.current.getDuration();
+        if (typeof currentTime === 'number') setProgress(currentTime);
+        if (typeof dur === 'number' && dur > 0) setDuration(dur);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [playerApiReady, currentTrack]);
+
+  const togglePlay = () => {
+    if (isPlaying) {
+      playerRef.current?.pauseVideo();
+    } else {
+      playerRef.current?.playVideo();
+    }
+    setIsPlaying(!isPlaying);
+  };
 
   const formatTime = (time: number) => {
     if (isNaN(time)) return "0:00";
@@ -81,17 +175,11 @@ const Footer = () => {
 
   return (
     <>
-      <audio
-        ref={audioRef}
-        src={streamUrl || undefined}
-        onTimeUpdate={handleTimeUpdate}
-        onEnded={handleEnded}
-      />
+      <div id="youtube-player" style={{ width: 0, height: 0, position: 'absolute', visibility: 'hidden' }} />
 
       <AnimatePresence>
         {isExpanded && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -99,7 +187,7 @@ const Footer = () => {
               onClick={() => setIsExpanded(false)}
               className="fixed inset-0 z-[90] bg-brutal-ink/60 backdrop-blur-sm sm:hidden"
             />
-            
+
             <motion.div
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
@@ -107,10 +195,8 @@ const Footer = () => {
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
               className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col bg-brutal-paper p-6 sm:hidden rounded-t-[32px] border-t-4 border-brutal-ink h-[90dvh] shadow-brutal-drawer"
             >
-              {/* Handle Bar */}
               <div className="w-12 h-1.5 bg-brutal-ink/20 rounded-full self-center mb-6 shrink-0" />
 
-              {/* Drawer Header */}
               <div className="flex items-center justify-between mb-4 shrink-0">
                 <button onClick={() => setIsExpanded(false)} className="p-3 border-2 border-brutal-ink rounded-sm bg-white shadow-brutal-sm">
                   <ChevronDown size={20} />
@@ -121,21 +207,17 @@ const Footer = () => {
                 </button>
               </div>
 
-              {/* Album Art & Info (Flexible Container) */}
               <div className="flex-1 flex flex-col items-center justify-around min-h-0 py-4">
-                {/* Album Art Container */}
                 <div className={`relative aspect-square w-[75vw] max-w-[320px] rounded-md border-4 border-brutal-ink shadow-brutal overflow-hidden flex-shrink min-h-0 ${isLoading ? "animate-pulse" : ""}`}>
                   <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill unoptimized={currentTrack.thumbnail?.includes("ytimg.com")} className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
                 </div>
-                
+
                 <div className="w-full flex flex-col gap-6">
-                  {/* Title & Artist */}
                   <div className="text-center space-y-2 w-full px-4">
                     <h2 className={`text-2xl font-black text-brutal-ink line-clamp-2 leading-tight ${isLoading ? "opacity-50" : ""}`}>{currentTrack.title}</h2>
                     <p className="text-sm font-bold text-brutal-primary uppercase tracking-brutal">{isLoading ? "Loading Stream..." : currentTrack.artist}</p>
                   </div>
 
-                  {/* Main Playback Controls */}
                   <div className="flex items-center justify-between w-full px-4 py-2">
                     <button onClick={toggleShuffle} className={shuffle ? "text-brutal-primary" : "text-brutal-muted"}>
                       <Shuffle size={20} className={shuffle ? "stroke-[3px]" : ""} />
@@ -143,7 +225,7 @@ const Footer = () => {
                     <div className="flex items-center gap-6">
                       <button onClick={prevTrack} className="text-brutal-ink"><SkipBack size={28} fill="currentColor" /></button>
                       <button
-                        onClick={() => setIsPlaying(!isPlaying)}
+                        onClick={togglePlay}
                         className="flex h-16 w-16 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal"
                       >
                         {isLoading
@@ -158,9 +240,7 @@ const Footer = () => {
                     </button>
                   </div>
 
-                  {/* Progress & Volume */}
                   <div className="w-full space-y-6">
-                    {/* Progress Bar */}
                     <div className="space-y-2">
                       <div className="h-2 w-full bg-brutal-parchment border-2 border-brutal-ink rounded-sm relative overflow-hidden">
                         {isLoading ? (
@@ -172,7 +252,7 @@ const Footer = () => {
                         )}
                         <input
                           type="range" min={0} max={duration || 0} value={progress}
-                          onChange={(e) => { if (audioRef.current) audioRef.current.currentTime = parseFloat(e.target.value); }}
+                          onChange={(e) => { if (playerRef.current) playerRef.current.seekTo(parseFloat(e.target.value), true); }}
                           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer py-4"
                         />
                       </div>
@@ -182,7 +262,6 @@ const Footer = () => {
                       </div>
                     </div>
 
-                    {/* Volume Slider */}
                     <div className="flex items-center gap-3 bg-brutal-parchment p-3 rounded-md border-2 border-brutal-ink shadow-brutal-sm">
                       <Volume2 size={18} className="text-brutal-ink" />
                       <div className="relative flex-1 h-1.5 bg-white border border-brutal-ink rounded-full overflow-hidden">
@@ -203,13 +282,12 @@ const Footer = () => {
       </AnimatePresence>
 
       <footer className="fixed bottom-4 left-4 right-4 z-50 flex flex-col rounded-md border-2 border-brutal-ink bg-brutal-paper shadow-brutal-lg md:bottom-8 md:left-[7rem] lg:left-[20rem] md:right-8 sm:left-6 sm:right-6 overflow-hidden">
-        {/* Progress Bar - Always on top */}
         <div className="h-1.5 w-full bg-brutal-parchment relative cursor-pointer"
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const clickedValue = (x / rect.width) * duration;
-            if (audioRef.current) audioRef.current.currentTime = clickedValue;
+            if (playerRef.current) playerRef.current.seekTo(clickedValue, true);
           }}
         >
           {isLoading ? (
@@ -224,9 +302,8 @@ const Footer = () => {
           )}
         </div>
 
-        {/* --- MOBILE LAYOUT (< 640px) --- */}
         <div className="flex sm:hidden items-center justify-between px-3 py-2.5 gap-2">
-          <div 
+          <div
             onClick={() => setIsExpanded(true)}
             className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
           >
@@ -244,12 +321,12 @@ const Footer = () => {
               onClick={togglePlay}
               className="flex h-11 w-11 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal-sm active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
             >
-               {isLoading 
+               {isLoading
                 ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
                 : isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-0.5" />
                }
             </button>
-            <button 
+            <button
               onClick={stopMusic}
               className="flex h-11 w-11 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-paper text-brutal-accent shadow-brutal-sm active:shadow-none active:translate-x-0.5 active:translate-y-0.5"
             >
@@ -258,9 +335,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* --- DESKTOP LAYOUT (>= 640px) --- */}
         <div className="hidden sm:flex items-center justify-between px-4 py-4 gap-4">
-          {/* Left: Info */}
           <div className="flex items-center gap-4 w-[30%] min-w-0">
             <div className={`flex-shrink-0 w-16 h-16 rounded-sm border-2 border-brutal-ink shadow-brutal relative overflow-hidden ${isLoading ? "animate-pulse" : ""}`}>
               <Image src={currentTrack.thumbnail || "/images/no_image.png"} alt="" fill unoptimized={currentTrack.thumbnail?.includes("ytimg.com")} className={`object-cover ${isLoading ? "grayscale opacity-50" : ""}`} />
@@ -271,7 +346,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Center: Controls */}
           <div className="flex flex-col items-center flex-1 gap-1">
             <div className="flex items-center gap-6">
               <button onClick={toggleShuffle} className={shuffle ? "text-brutal-primary" : "text-brutal-muted"}>
@@ -282,7 +356,7 @@ const Footer = () => {
                 onClick={togglePlay}
                 className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-brutal-ink bg-brutal-primary text-brutal-paper shadow-brutal hover:-translate-y-0.5 transition-transform"
               >
-                {isLoading 
+                {isLoading
                   ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   : isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-0.5" />
                 }
@@ -297,7 +371,6 @@ const Footer = () => {
             </span>
           </div>
 
-          {/* Right: Utils */}
           <div className="flex items-center gap-4 w-[30%] justify-end">
             <div className="flex items-center gap-3 w-32 group">
               <Volume2 size={20} className="text-brutal-muted" />
@@ -310,7 +383,7 @@ const Footer = () => {
                 <div className="h-full bg-brutal-secondary" style={{ width: `${volume * 100}%` }} />
               </div>
             </div>
-            <button 
+            <button
               onClick={stopMusic}
               className="flex h-10 w-10 items-center justify-center rounded-sm border-2 border-brutal-ink bg-brutal-paper shadow-brutal-sm hover:bg-brutal-accent hover:text-white transition-colors"
             >
