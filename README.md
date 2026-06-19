@@ -43,7 +43,7 @@
 
 **TaskTune** is a full-stack web application that merges task management with a streaming music player. It was built for people who work better with background music — instead of switching between a to-do app and a music service, TaskTune keeps everything in one place.
 
-The frontend is a **Next.js 15** (App Router) single-page application with a distinctive **brutalist UI** design. The backend is a **FastAPI** server that wraps `yt-dlp` to search YouTube, extract streaming audio URLs, and generate music recommendations with intelligent deduplication.
+The frontend is a **Next.js 15** (App Router) single-page application with a distinctive **brutalist UI** design. The backend is a **FastAPI** server that uses the **YouTube Data API v3** to search for music and generate recommendations with intelligent deduplication. Audio playback uses the **YouTube IFrame Player API** — no stream extraction needed.
 
 Tasks are persisted in **Turso** (libSQL/SQLite at the edge), and authentication is handled via **Auth.js v5** with Google OAuth.
 
@@ -53,10 +53,9 @@ Tasks are persisted in **Turso** (libSQL/SQLite at the edge), and authentication
 
 - **Task Management** — Create, update, delete, and mark tasks as done. Filter by category, search by title, and sort by date or deadline.
 - **Deadline Tracking** — Tasks with passed deadlines are visually flagged. Overdue highlighting keeps you accountable.
-- **YouTube Music Search** — Search YouTube for any track via the FastAPI backend. Results are cached for one hour.
-- **Streaming Audio Player** — Play audio directly in the browser. Supports shuffle, repeat (one/all), volume control, and progress scrubbing.
+- **YouTube Music Search** — Search YouTube for any track via the YouTube Data API v3. Results are filtered for actual music only and cached for one hour.
+- **YouTube IFrame Player** — Plays video/audio directly via the embedded YouTube player. Supports shuffle, repeat (one/all), volume control, and progress scrubbing.
 - **Radio Mode** — When the queue is about to run out, the app automatically fetches music recommendations based on the current track. Duplicate titles (covers, live versions) are filtered out using word-overlap similarity.
-- **Smart Preloading** — The next two tracks are pre-fetched in the background for gapless playback.
 - **Favorite Tracks** — Like tracks to build a personal library. Persisted across sessions via Zustand + localStorage.
 - **Responsive Music Drawer** — On mobile, the player expands into a full-height drawer with album art and all controls.
 - **Google OAuth** — Login with a single click. No password setup required.
@@ -83,12 +82,19 @@ Tasks are persisted in **Turso** (libSQL/SQLite at the edge), and authentication
 
 ### Backend
 
-| Technology              | Purpose                                                                       |
-| ----------------------- | ----------------------------------------------------------------------------- |
-| **FastAPI**             | Python web framework                                                          |
-| **yt-dlp**              | YouTube metadata extraction and audio stream resolution                       |
-| **Uvicorn**             | ASGI server                                                                   |
-| **In-memory TTL Cache** | Caches search results (1 hr), stream URLs (5 min), and recommendations (1 hr) |
+| Technology              | Purpose                                                               |
+| ----------------------- | --------------------------------------------------------------------- |
+| **FastAPI**             | Python web framework                                                  |
+| **YouTube Data API v3** | Search and recommendations via `httpx`                                |
+| **Uvicorn**             | ASGI server                                                           |
+| **In-memory TTL Cache** | Caches search results (1 hr) and recommendations (1 hr)              |
+
+### Frontend Audio
+
+| Technology                       | Purpose                                |
+| -------------------------------- | -------------------------------------- |
+| **YouTube IFrame Player API**    | Video/audio playback in a hidden player|
+| **Zustand**                      | Client-side state management           |
 
 ### Database
 
@@ -130,6 +136,7 @@ Tasks are persisted in **Turso** (libSQL/SQLite at the edge), and authentication
 - **npm** 10+ or **pnpm**
 - A **Turso** database (free tier works)
 - A **Google Cloud Console** project with OAuth 2.0 credentials
+- A **YouTube Data API v3** API key
 
 ### Installation
 
@@ -145,7 +152,7 @@ npm install
 cd backend
 python3 -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+pip install fastapi uvicorn httpx python-dotenv
 cd ..
 
 # 4. Copy the environment file and fill in your values
@@ -171,6 +178,9 @@ AUTH_GOOGLE_SECRET=your-google-client-secret
 
 # FastAPI Backend URL
 NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+
+# YouTube Data API v3 (https://console.cloud.google.com/apis/credentials)
+YOUTUBE_API_KEY=your-youtube-api-key
 ```
 
 **Generating an `AUTH_SECRET`**:
@@ -216,7 +226,7 @@ Open `http://localhost:3000` in your browser.
 1. **Sign in** with your Google account on the login page.
 2. **Dashboard** shows your active task count, liked tracks, and quick-access cards.
 3. **Tasks page** (`/tasks`) — manage your to-do list. Click the circle icon to mark a task as done.
-4. **Music page** (`/musics`) — search for any song. Click the play button to start streaming. Liked tracks appear at the top.
+4. **Music page** (`/musics`) — search for any song. Click the play button to start playback via the embedded YouTube player. Liked tracks appear at the top.
 5. **Music footer** — controls are always accessible at the bottom. On mobile, tap the album art to open the full drawer.
 
 ---
@@ -226,7 +236,7 @@ Open `http://localhost:3000` in your browser.
 ```
 my-todo-app/
 ├── backend/
-│   └── main.py                    # FastAPI server (search, stream, recommendations)
+│   └── main.py                    # FastAPI server (search, recommendations, health)
 ├── public/
 │   └── images/
 │       ├── logo.png               # Application logo
@@ -288,11 +298,11 @@ The FastAPI backend can be deployed to services like **Railway**, **Render**, or
 
 ```bash
 cd backend
-pip install -r requirements.txt
+pip install fastapi uvicorn httpx python-dotenv
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-Make sure `NEXT_PUBLIC_BACKEND_URL` in the frontend points to the deployed backend URL, and update the `allow_origins` list in `backend/main.py` to include your frontend domain.
+Make sure `NEXT_PUBLIC_BACKEND_URL` in the frontend points to the deployed backend URL, update the `allow_origins` list in `backend/main.py` to include your frontend domain, and set the `YOUTUBE_API_KEY` environment variable.
 
 ### Database
 
