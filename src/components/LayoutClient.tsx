@@ -50,18 +50,24 @@ export default function LayoutClient({
     let lastRefreshTime = Date.now();
     const minRefreshInterval = 5 * 60 * 1000; // 5 minutes
 
+    let refreshing = false;
+
     const refreshSession = async () => {
+      if (refreshing) return;
+      refreshing = true;
       try {
         await fetch("/api/auth/session");
         lastRefreshTime = Date.now();
       } catch (err) {
         console.error("Failed to refresh session:", err);
+      } finally {
+        refreshing = false;
       }
     };
 
     const handleActivity = () => {
       const now = Date.now();
-      if (now - lastRefreshTime > minRefreshInterval) {
+      if (now - lastRefreshTime > minRefreshInterval && !refreshing) {
         refreshSession();
       }
     };

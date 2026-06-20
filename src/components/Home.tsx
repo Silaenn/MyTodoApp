@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Clock, Heart, Play } from "lucide-react";
@@ -53,9 +53,10 @@ const Home = ({ session }: { session: Session | null }) => {
   const likedTracks = useMusicStore((state) => state.likedTracks);
   const playTrack = useMusicStore((state) => state.playTrack);
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const res = await fetch("/api/tasks");
+      if (!res.ok) throw new Error("Failed to fetch tasks");
       const data = await res.json();
       
       if (!Array.isArray(data)) {
@@ -72,7 +73,7 @@ const Home = ({ session }: { session: Session | null }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (session) {
@@ -80,7 +81,7 @@ const Home = ({ session }: { session: Session | null }) => {
     } else {
       setLoading(false);
     }
-  }, [session]);
+  }, [session, fetchTasks]);
 
   return (
     <motion.div 

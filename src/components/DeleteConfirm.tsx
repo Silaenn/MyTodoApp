@@ -44,7 +44,7 @@ export const DeleteConfirm = ({
     <Dialog open={open} onOpenChange={(newOpen) => { if (!isDeleting) { setOpen(newOpen); setError(null); } }}>
       <DialogTrigger asChild>
         {trigger || (
-          <button className="brutal-btn brutal-btn-accent shadow-brutal-sm flex items-center justify-center gap-2 py-2 px-4 h-11 sm:w-auto" onClick={() => setOpen(true)}>
+          <button className="brutal-btn brutal-btn-accent shadow-brutal-sm flex items-center justify-center gap-2 py-2 px-4 h-11 sm:w-auto">
             <Trash2 size={16} />
             <span className="text-xs sm:text-sm font-bold">Delete</span>
           </button>

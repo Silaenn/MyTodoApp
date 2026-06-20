@@ -138,7 +138,7 @@ const Dashboard = ({
               <div className="w-11 h-11 overflow-hidden rounded-sm border-2 border-brutal-ink flex-shrink-0 shadow-brutal-sm">
                 {user?.image ? (
                   <Image
-                    src={user.image || "/images/no_image.png"}
+                    src={user.image}
                     alt={user.name ?? "User"}
                     width={44}
                     height={44}

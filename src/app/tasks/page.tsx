@@ -115,11 +115,12 @@ const Tasks = () => {
       // Optimistic update
       setTasks(tasks.map(t => t.id === task.id ? { ...t, is_done: newStatus } : t));
 
-      await fetch(`/api/tasks/${task.id}`, {
+      const res = await fetch(`/api/tasks/${task.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ is_done: newStatus }),
       });
+      if (!res.ok) throw new Error("Failed to toggle task status");
     } catch (error) {
       console.error("Failed to toggle task status:", error);
       // Revert on error

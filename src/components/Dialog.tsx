@@ -42,11 +42,13 @@ export function DialogDemo({
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
   // Sync internal open state with parent if needed
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
+    setError(null);
     if (onOpenChange) onOpenChange(newOpen);
   };
 
@@ -78,9 +80,13 @@ export function DialogDemo({
         } else {
           router.refresh();
         }
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Failed to save task (${res.status})`);
       }
     } catch (error) {
       console.error("Failed to save task:", error);
+      setError(error instanceof Error ? error.message : "Failed to save task");
     } finally {
       setLoading(false);
     }
@@ -168,6 +174,12 @@ export function DialogDemo({
               </Select>
             </div>
           </div>
+
+          {error && (
+            <p className="text-sm font-bold text-red-600 bg-red-100 border-2 border-brutal-ink p-3 rounded-sm shadow-brutal-sm">
+              {error}
+            </p>
+          )}
 
           <DialogFooter className="mt-8 border-t-2 border-brutal-ink pt-6 gap-3">
             <DialogClose asChild>
