@@ -169,14 +169,15 @@ const Musics = () => {
     if (searchAbortControllerRef.current) {
       searchAbortControllerRef.current.abort();
     }
-    searchAbortControllerRef.current = new AbortController();
+    const controller = new AbortController();
+    searchAbortControllerRef.current = controller;
     
     setLoading(true);
     setRadioQueue([]); // Clear old recommendations immediately
     try {
       const res = await fetch(
         `${BACKEND_URL}/search?q=${encodeURIComponent(query)}`,
-        { signal: searchAbortControllerRef.current.signal }
+        { signal: controller.signal }
       );
       const data = await res.json();
       if (Array.isArray(data)) {
@@ -202,7 +203,7 @@ const Musics = () => {
         console.error("Search failed:", error);
       }
     } finally {
-      if (searchAbortControllerRef.current?.signal.aborted === false) {
+      if (!controller.signal.aborted) {
         setLoading(false);
       }
     }

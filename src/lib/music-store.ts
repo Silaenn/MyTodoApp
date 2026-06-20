@@ -73,6 +73,8 @@ const areDuplicateTitles = (title1: string, title2: string, threshold = 0.7): bo
   return false;
 };
 
+let nextTrackGeneration = 0;
+
 export const useMusicStore = create<MusicStore>()(
   persist(
     (set, get) => ({
@@ -168,6 +170,7 @@ export const useMusicStore = create<MusicStore>()(
       },
 
       nextTrack: async () => {
+        const gen = ++nextTrackGeneration;
         const { currentTrack, playTrack, repeat, queue, currentIndex, fetchRadioRecommendations } = get();
 
         if (currentIndex < queue.length - 1) {
@@ -184,6 +187,7 @@ export const useMusicStore = create<MusicStore>()(
           set({ isLoading: true });
           console.log("[Radio] Queue finished, fetching new recommendations...");
           await fetchRadioRecommendations(currentTrack.id);
+          if (nextTrackGeneration !== gen) return;
 
           const updatedQueue = get().queue;
           if (currentIndex < updatedQueue.length - 1) {
@@ -232,12 +236,12 @@ export const useMusicStore = create<MusicStore>()(
         set({ isPlaying: false, isLoading: false });
       },
 
-      prevTrack: () => {
+      prevTrack: async () => {
         const { queue, currentIndex, playTrack } = get();
         if (queue.length === 0) return;
 
         const prevIndex = (currentIndex - 1 + queue.length) % queue.length;
-        playTrack(queue[prevIndex]);
+        await playTrack(queue[prevIndex]);
       },
 
       toggleLike: (track) => {

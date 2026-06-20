@@ -3,7 +3,7 @@
 import { useMusicStore } from "@/lib/music-store";
 
 export const MusicSpacer = () => {
-  const { currentTrack } = useMusicStore();
+  const currentTrack = useMusicStore((state) => state.currentTrack);
   return (
     <div className={`transition-all duration-300 shrink-0 ${currentTrack ? "h-24 sm:h-32" : "h-0"}`} />
   );

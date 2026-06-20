@@ -16,6 +16,8 @@ const Footer = () => {
   const playerRef = useRef<YT.Player | null>(null);
   const playerReadyRef = useRef(false);
   const prevTrackIdRef = useRef<string | null>(null);
+  const generationRef = useRef(0);
+  const seekTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [playerApiReady, setPlayerApiReady] = useState(false);
   const {
     currentTrack, isPlaying, setIsPlaying, setIsLoading,
@@ -23,6 +25,9 @@ const Footer = () => {
     repeat, toggleRepeat, volume, setVolume, stopMusic,
     isLoading
   } = useMusicStore();
+  const volumeRef = useRef(volume);
+  const repeatRef = useRef(repeat);
+  const nextTrackRef = useRef(nextTrack);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -57,6 +62,10 @@ const Footer = () => {
     };
   }, []);
 
+  useEffect(() => { volumeRef.current = volume; }, [volume]);
+  useEffect(() => { repeatRef.current = repeat; }, [repeat]);
+  useEffect(() => { nextTrackRef.current = nextTrack; }, [nextTrack]);
+
   useEffect(() => {
     if (!playerApiReady || !currentTrack) {
       if (!currentTrack && playerRef.current) {
@@ -68,13 +77,16 @@ const Footer = () => {
       return;
     }
 
-    const prevId = prevTrackIdRef.current;
-    prevTrackIdRef.current = currentTrack.id;
+    const gen = ++generationRef.current;
+    const trackId = currentTrack.id;
 
-    if (currentTrack.id === prevId && playerRef.current && playerReadyRef.current) {
+    const prevId = prevTrackIdRef.current;
+    prevTrackIdRef.current = trackId;
+
+    if (trackId === prevId && playerRef.current && playerReadyRef.current) {
       setIsLoading(true);
       playerRef.current.seekTo(0, true);
-      playerRef.current.setVolume(Math.round(volume * 100));
+      playerRef.current.setVolume(Math.round(volumeRef.current * 100));
       playerRef.current.playVideo();
       return;
     }
@@ -87,59 +99,71 @@ const Footer = () => {
     setProgress(0);
     setDuration(0);
 
-    playerRef.current = new YT.Player('youtube-player', {
-      videoId: currentTrack.id,
-      playerVars: {
-        controls: 0,
-        disablekb: 1,
-        fs: 0,
-        modestbranding: 1,
-        rel: 0,
-        iv_load_policy: 3,
-        playsinline: 1,
-      },
-      events: {
-        onReady: () => {
-          playerReadyRef.current = true;
-          setIsLoading(true);
-          playerRef.current?.seekTo(0, true);
-          playerRef.current?.setVolume(Math.round(volume * 100));
-          playerRef.current?.playVideo();
+    try {
+      playerRef.current = new YT.Player('youtube-player', {
+        videoId: trackId,
+        playerVars: {
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          modestbranding: 1,
+          rel: 0,
+          iv_load_policy: 3,
+          playsinline: 1,
         },
-        onStateChange: (event: YT.OnStateChangeEvent) => {
-          if (event.data === YT.PlayerState.PLAYING) {
-            setIsPlaying(true);
-            setIsLoading(false);
-            playerRef.current?.setVolume(Math.round(volume * 100));
-          } else if (event.data === YT.PlayerState.PAUSED) {
-            setIsPlaying(false);
-          } else if (event.data === YT.PlayerState.ENDED) {
-            if (repeat === "one") {
-              playerRef.current?.seekTo(0, true);
-              playerRef.current?.playVideo();
-            } else {
-              nextTrack();
+        events: {
+          onReady: () => {
+            if (generationRef.current !== gen) return;
+            playerReadyRef.current = true;
+            setIsLoading(true);
+            playerRef.current?.seekTo(0, true);
+            playerRef.current?.setVolume(Math.round(volumeRef.current * 100));
+            playerRef.current?.playVideo();
+          },
+          onStateChange: (event: YT.OnStateChangeEvent) => {
+            if (generationRef.current !== gen) return;
+            if (event.data === YT.PlayerState.BUFFERING) {
+              setIsLoading(true);
+            } else if (event.data === YT.PlayerState.PLAYING) {
+              setIsPlaying(true);
+              setIsLoading(false);
+              playerRef.current?.setVolume(Math.round(volumeRef.current * 100));
+            } else if (event.data === YT.PlayerState.PAUSED) {
+              setIsPlaying(false);
+            } else if (event.data === YT.PlayerState.ENDED) {
+              if (repeatRef.current === "one") {
+                playerRef.current?.seekTo(0, true);
+                playerRef.current?.setVolume(Math.round(volumeRef.current * 100));
+                playerRef.current?.playVideo();
+              } else {
+                nextTrackRef.current();
+              }
             }
-          }
+          },
+          onError: () => {
+            if (generationRef.current !== gen) return;
+            console.error('YouTube player error, skipping track');
+            setIsLoading(false);
+            nextTrackRef.current();
+          },
         },
-        onError: () => {
-          console.error('YouTube player error, skipping track');
-          setIsLoading(false);
-          nextTrack();
-        },
-      },
-    });
+      });
+    } catch {
+      console.error('Failed to create YouTube player');
+      setIsLoading(false);
+      setIsPlaying(false);
+      playerReadyRef.current = false;
+    }
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.destroy();
+        playerRef.current = null;
+        playerReadyRef.current = false;
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack, playerApiReady]);
-
-  useEffect(() => {
-    if (!playerRef.current || !playerReadyRef.current) return;
-    if (isPlaying) {
-      playerRef.current.playVideo();
-    } else {
-      playerRef.current.pauseVideo();
-    }
-  }, [isPlaying]);
 
   useEffect(() => {
     if (playerRef.current && playerReadyRef.current) {
@@ -148,7 +172,7 @@ const Footer = () => {
   }, [volume]);
 
   useEffect(() => {
-    if (!playerApiReady || !currentTrack) return;
+    if (!playerApiReady || !currentTrack || !isPlaying) return;
 
     const interval = setInterval(() => {
       if (playerRef.current && playerReadyRef.current) {
@@ -160,7 +184,7 @@ const Footer = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [playerApiReady, currentTrack]);
+  }, [playerApiReady, currentTrack, isPlaying]);
 
   const togglePlay = () => {
     if (isPlaying) {
@@ -168,7 +192,6 @@ const Footer = () => {
     } else {
       playerRef.current?.playVideo();
     }
-    setIsPlaying(!isPlaying);
   };
 
   const formatTime = (time: number) => {
@@ -259,7 +282,17 @@ const Footer = () => {
                         )}
                         <input
                           type="range" min={0} max={duration || 0} value={progress}
-                          onChange={(e) => { if (playerRef.current) playerRef.current.seekTo(parseFloat(e.target.value), true); }}
+                          onChange={(e) => {
+                            const val = parseFloat(e.target.value);
+                            const seekTrackId = prevTrackIdRef.current;
+                            setProgress(val);
+                            clearTimeout(seekTimeoutRef.current);
+                            seekTimeoutRef.current = setTimeout(() => {
+                              if (prevTrackIdRef.current === seekTrackId) {
+                                playerRef.current?.seekTo(val, true);
+                              }
+                            }, 100);
+                          }}
                           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer py-4"
                         />
                       </div>

@@ -295,7 +295,7 @@ const Home = ({ session }: { session: Session | null }) => {
                           className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
                         />
                         <button
-                          onClick={() => playTrack(track)}
+                          onClick={() => playTrack(track, likedTracks)}
                           className="absolute inset-0 flex items-center justify-center bg-brutal-primary/40 opacity-0 transition-all group-hover:opacity-100"
                         >
                           <div className="rounded-full border-2 border-brutal-paper bg-brutal-paper p-1.5 sm:p-2 shadow-brutal-sm">
