@@ -18,7 +18,7 @@ const Footer = () => {
   const prevTrackIdRef = useRef<string | null>(null);
   const [playerApiReady, setPlayerApiReady] = useState(false);
   const {
-    currentTrack, isPlaying, setIsPlaying,
+    currentTrack, isPlaying, setIsPlaying, setIsLoading,
     nextTrack, prevTrack, shuffle, toggleShuffle,
     repeat, toggleRepeat, volume, setVolume, stopMusic,
     isLoading
@@ -72,6 +72,7 @@ const Footer = () => {
     prevTrackIdRef.current = currentTrack.id;
 
     if (currentTrack.id === prevId && playerRef.current && playerReadyRef.current) {
+      setIsLoading(true);
       playerRef.current.seekTo(0, true);
       playerRef.current.playVideo();
       return;
@@ -99,12 +100,15 @@ const Footer = () => {
       events: {
         onReady: () => {
           playerReadyRef.current = true;
+          setIsLoading(true);
+          playerRef.current?.seekTo(0, true);
           playerRef.current?.setVolume(Math.round(volume * 100));
           playerRef.current?.playVideo();
         },
         onStateChange: (event: YT.OnStateChangeEvent) => {
           if (event.data === YT.PlayerState.PLAYING) {
             setIsPlaying(true);
+            setIsLoading(false);
           } else if (event.data === YT.PlayerState.PAUSED) {
             setIsPlaying(false);
           } else if (event.data === YT.PlayerState.ENDED) {
@@ -118,6 +122,7 @@ const Footer = () => {
         },
         onError: () => {
           console.error('YouTube player error, skipping track');
+          setIsLoading(false);
           nextTrack();
         },
       },

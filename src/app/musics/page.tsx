@@ -120,7 +120,23 @@ const Musics = () => {
   const likedTracks = useMusicStore((state) => state.likedTracks);
 
   const fetchWeeklyPicks = useCallback(async () => {
-    const randomKeywords = ["lofi chill", "trending music 2024", "aesthetic vibes", "indie gems", "gaming beats"];
+    const randomKeywords = [
+      "lofi hip hop chill",
+      "bedroom pop indie",
+      "midnight phonk",
+      "neo soul vibes",
+      "dark academia music",
+      "synthwave retro",
+      "alt r&b english",
+      "acoustic singer songwriter english",
+      "chillwave dream pop",
+      "jazz cafe western",
+      "indie folk morning english",
+      "electronic ambient chill",
+      "pop punk energy",
+      "city pop japanese",
+      "ethereal indie pop english"
+    ];
     const randomSearch = randomKeywords[Math.floor(Math.random() * randomKeywords.length)];
     
     try {

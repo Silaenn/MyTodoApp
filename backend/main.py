@@ -36,7 +36,28 @@ NON_MUSIC_KEYWORDS = [
     'audiophile', 'sound system', 'quality check',
     'music quiz', 'quiz challenge', 'test your',
     '#shorts', 'shorts', 'short video',
+    'reaction', 'react to', 'reacts to',
+    'top 10', 'top 5', 'top 20', 'top 50', 'top 100',
+    'review', 'vlog', 'behind the scenes', 'making of',
+    'interview', 'live at', 'concert',
+    'slowed', 'reverb', 'nightcore', 'sped up', 'speed up',
+    'tiktok', 'trending',
 ]
+
+NON_MUSIC_CHANNELS = ['reaction', 'react', 'review', 'podcast']
+
+
+DURATION_MIN_SECONDS = 120
+
+
+def parse_duration(iso_duration: str) -> int:
+    match = re.match(r'PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?', iso_duration)
+    if not match:
+        return 0
+    hours = int(match.group(1) or 0)
+    minutes = int(match.group(2) or 0)
+    seconds = int(match.group(3) or 0)
+    return hours * 3600 + minutes * 60 + seconds
 
 
 class TTLCache:
@@ -139,6 +160,27 @@ def _build_track(item: dict) -> Optional[dict]:
     }
 
 
+async def _fetch_durations(video_ids: list[str]) -> dict[str, int]:
+    if not video_ids:
+        return {}
+    async with httpx.AsyncClient() as client:
+        params = {
+            "part": "contentDetails",
+            "id": ",".join(video_ids),
+            "key": API_KEY,
+        }
+        resp = await client.get(VIDEO_URL, params=params)
+        resp.raise_for_status()
+        data = resp.json()
+        durations = {}
+        for item in data.get("items", []):
+            vid = item.get("id")
+            duration_str = item.get(
+                "contentDetails", {}).get("duration", "PT0S")
+            durations[vid] = parse_duration(duration_str)
+        return durations
+
+
 @app.get("/search")
 async def search_songs(q: str = Query(...)):
     cached = search_cache.get(q)
@@ -150,6 +192,7 @@ async def search_songs(q: str = Query(...)):
             "part": "snippet",
             "type": "video",
             "videoCategoryId": "10",
+            "videoDuration": "medium",
             "maxResults": 50,
             "q": q,
             "videoEmbeddable": "true",
@@ -166,7 +209,11 @@ async def search_songs(q: str = Query(...)):
         for item in data.get("items", []):
             snippet = item.get("snippet", {})
             title = snippet.get("title", "")
+            channel = snippet.get("channelTitle", "").lower()
             lowered = title.lower()
+
+            if any(kw in channel for kw in NON_MUSIC_CHANNELS):
+                continue
 
             if any(kw in lowered for kw in non_music_keywords):
                 continue
@@ -174,6 +221,13 @@ async def search_songs(q: str = Query(...)):
             track = _build_track(item)
             if track:
                 entries.append(track)
+
+        entry_ids = [e["id"] for e in entries]
+        durations = await _fetch_durations(entry_ids)
+        entries = [
+            e for e in entries
+            if durations.get(e["id"], 0) >= DURATION_MIN_SECONDS
+        ]
 
         result = entries[:20]
         search_cache.set(q, result)
@@ -191,7 +245,8 @@ async def get_recommendations(video_id: str):
 
     try:
         original_title, uploader = await _fetch_video_info(video_id)
-        print(f"[Recommendations] Fetching recs for: '{original_title}' by '{uploader}'")
+        print(
+            f"[Recommendations] Fetching recs for: '{original_title}' by '{uploader}'")
 
         search_query = f"{uploader} music" if uploader else f"{original_title} music"
         if uploader:
@@ -224,6 +279,11 @@ async def get_recommendations(video_id: str):
                 continue
 
             lowered_title = entry_title.lower()
+
+            channel = snippet.get("channelTitle", "").lower()
+            if any(kw in channel for kw in NON_MUSIC_CHANNELS):
+                continue
+
             if any(word in lowered_title for word in junk_words):
                 continue
 
@@ -239,8 +299,17 @@ async def get_recommendations(video_id: str):
             })
             seen_ids.add(entry_id)
 
-            if len(recommendations) >= 5:
+            if len(recommendations) >= 10:
                 break
+
+        rec_ids = [r["id"] for r in recommendations]
+        durations = await _fetch_durations(rec_ids)
+        recommendations = [
+            r for r in recommendations
+            if durations.get(r["id"], 0) >= DURATION_MIN_SECONDS
+        ]
+
+        recommendations = recommendations[:5]
 
         if not recommendations:
             print("[Recommendations] No results, trying broader genre search...")
@@ -249,7 +318,7 @@ async def get_recommendations(video_id: str):
                 "part": "snippet",
                 "type": "video",
                 "videoCategoryId": "10",
-            "maxResults": 50,
+                "maxResults": 50,
                 "q": broader_query,
                 "key": API_KEY,
             }
@@ -267,6 +336,10 @@ async def get_recommendations(video_id: str):
                 if not entry_id or entry_id in seen_ids:
                     continue
 
+                channel = snippet.get("channelTitle", "").lower()
+                if any(kw in channel for kw in NON_MUSIC_CHANNELS):
+                    continue
+
                 if not titles_are_duplicate(original_title, entry_title):
                     recommendations.append({
                         "id": entry_id,
@@ -277,12 +350,20 @@ async def get_recommendations(video_id: str):
                     })
                     seen_ids.add(entry_id)
 
-                if len(recommendations) >= 5:
+                if len(recommendations) >= 10:
                     break
 
+            broader_rec_ids = [r["id"] for r in recommendations]
+            if broader_rec_ids:
+                broader_durations = await _fetch_durations(broader_rec_ids)
+                recommendations = [
+                    r for r in recommendations
+                    if broader_durations.get(r["id"], 0) >= DURATION_MIN_SECONDS
+                ]
+
         print(f"[Recommendations] Returning {len(recommendations)} tracks.")
-        recommendation_cache.set(video_id, recommendations)
-        return recommendations
+        recommendation_cache.set(video_id, recommendations[:5])
+        return recommendations[:5]
     except Exception as e:
         print(f"Recommendations error: {e}")
         return []

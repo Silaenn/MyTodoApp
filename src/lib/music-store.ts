@@ -24,6 +24,7 @@ interface MusicStore {
 
   setCurrentTrack: (track: Track) => void;
   setIsPlaying: (playing: boolean) => void;
+  setIsLoading: (loading: boolean) => void;
   setVolume: (volume: number) => void;
   toggleShuffle: () => void;
   toggleRepeat: () => void;
@@ -91,6 +92,7 @@ export const useMusicStore = create<MusicStore>()(
 
       setCurrentTrack: (track) => set({ currentTrack: track }),
       setIsPlaying: (playing) => set({ isPlaying: playing }),
+      setIsLoading: (loading) => set({ isLoading: loading }),
       setVolume: (volume) => set({ volume }),
       toggleShuffle: () => set((state) => ({ shuffle: !state.shuffle })),
       toggleRepeat: () =>
@@ -119,7 +121,7 @@ export const useMusicStore = create<MusicStore>()(
           isPlaying: true,
           queue: currentQueue,
           currentIndex: index,
-          isLoading: false,
+          isLoading: true,
         });
 
         if (index >= currentQueue.length - 2) {
