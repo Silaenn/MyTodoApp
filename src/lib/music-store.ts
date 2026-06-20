@@ -93,7 +93,10 @@ export const useMusicStore = create<MusicStore>()(
       setCurrentTrack: (track) => set({ currentTrack: track }),
       setIsPlaying: (playing) => set({ isPlaying: playing }),
       setIsLoading: (loading) => set({ isLoading: loading }),
-      setVolume: (volume) => set({ volume }),
+      setVolume: (volume) => {
+        const safe = typeof volume === 'number' && !isNaN(volume) ? Math.max(0, Math.min(1, volume)) : 0.7;
+        set({ volume: safe });
+      },
       toggleShuffle: () => set((state) => ({ shuffle: !state.shuffle })),
       toggleRepeat: () =>
         set((state) => {

@@ -74,6 +74,7 @@ const Footer = () => {
     if (currentTrack.id === prevId && playerRef.current && playerReadyRef.current) {
       setIsLoading(true);
       playerRef.current.seekTo(0, true);
+      playerRef.current.setVolume(Math.round(volume * 100));
       playerRef.current.playVideo();
       return;
     }
@@ -109,6 +110,7 @@ const Footer = () => {
           if (event.data === YT.PlayerState.PLAYING) {
             setIsPlaying(true);
             setIsLoading(false);
+            playerRef.current?.setVolume(Math.round(volume * 100));
           } else if (event.data === YT.PlayerState.PAUSED) {
             setIsPlaying(false);
           } else if (event.data === YT.PlayerState.ENDED) {
