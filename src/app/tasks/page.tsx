@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,6 +71,8 @@ const Tasks = () => {
   const [sortBy, setSortBy] = useState("newest");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isScrollable, setIsScrollable] = useState(false);
 
   const fetchTasks = async () => {
     try {
@@ -95,6 +97,20 @@ const Tasks = () => {
   useEffect(() => {
     fetchTasks();
   }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const observer = new ResizeObserver(() => {
+      setIsScrollable(el.scrollHeight > el.clientHeight);
+    });
+
+    observer.observe(el);
+    setIsScrollable(el.scrollHeight > el.clientHeight);
+
+    return () => observer.disconnect();
+  }, [tasks]);
 
   const deleteTask = async (id: string) => {
     try {
@@ -296,9 +312,10 @@ const Tasks = () => {
               initial="hidden"
               animate="visible"
               variants={listContainerVariants}
+              ref={scrollRef}
               className="h-full overflow-y-auto custom-scrollbar scrollbar-gutter-stable"
             >
-              <div className="min-h-full flex flex-col gap-4 px-2 sm:px-4 pt-2 pb-4">
+              <div className={`min-h-full flex flex-col gap-4 pt-2 pb-4 ${isScrollable ? "px-2 sm:px-4" : ""}`}>
                 {filteredAndSortedTasks.length > 0 ? (
                   filteredAndSortedTasks.map((task) => (
                     <div
@@ -355,7 +372,7 @@ const Tasks = () => {
                 ) : (
                   <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 bg-brutal-paper text-center p-8">
                     <p className="text-sm font-bold uppercase tracking-brutal text-brutal-muted">
-                      {searchQuery ? "No matching tasks." : "No tasks found."}
+                      {searchQuery ? "No matching tasks." : "No tasks found"}
                     </p>
                   </div>
                 )}
