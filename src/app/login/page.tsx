@@ -145,7 +145,7 @@ const LoginPage = () => {
         {/* Bottom labels */}
         <motion.div 
           variants={itemVariants}
-          className="mt-6 flex justify-between px-2"
+          className="mt-6 flex flex-col sm:flex-row items-center gap-1 sm:gap-0 sm:justify-between px-2"
         >
           <span className="text-tiny font-bold uppercase tracking-brutal text-brutal-muted">
             Auth: Auth.js v5
