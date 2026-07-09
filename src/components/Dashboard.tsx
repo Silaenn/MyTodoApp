@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { LogOut, X, User, Home, CheckSquare, Music } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { motion, Variants } from "framer-motion";
@@ -54,6 +54,17 @@ const Dashboard = ({
   user?: UserProfile;
 }) => {
   const pathname = usePathname();
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   return (
     <>
