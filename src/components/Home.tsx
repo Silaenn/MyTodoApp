@@ -226,20 +226,16 @@ const Home = ({ session }: { session: Session | null }) => {
                   key="empty"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex-1 flex flex-col gap-4"
+                  className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 bg-brutal-paper text-center p-6 sm:p-8"
                 >
-                  <div className="flex-1 flex items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 bg-brutal-paper text-center p-6 sm:p-8">
-                    <p className="text-xs sm:text-sm font-bold uppercase tracking-brutal text-brutal-muted">
-                      All clear. No tasks pending.
-                    </p>
-                  </div>
+                  <p className="text-xs sm:text-sm font-bold uppercase tracking-brutal text-brutal-muted">
+                    All clear. No tasks pending
+                  </p>
                   <Link
                     href="/tasks"
-                    className="group flex min-h-[48px] sm:min-h-[64px] items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 text-center transition-all hover:border-brutal-primary hover:bg-brutal-paper p-3 sm:p-4 shrink-0"
+                    className="mt-3 sm:mt-4 inline-flex items-center gap-1 rounded-md border-2 border-brutal-ink bg-brutal-primary px-3 sm:px-4 py-1.5 sm:py-2 text-tiny sm:text-xs font-bold text-brutal-paper shadow-brutal-sm"
                   >
-                    <span className="text-tiny sm:text-xs font-bold uppercase tracking-brutal text-brutal-muted group-hover:text-brutal-primary">
-                      + Create a new task
-                    </span>
+                    Create a task
                   </Link>
                 </motion.div>
               )}
@@ -321,7 +317,7 @@ const Home = ({ session }: { session: Session | null }) => {
                   className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 bg-brutal-paper text-center p-6 sm:p-8"
                 >
                   <p className="text-xs sm:text-sm font-bold uppercase tracking-brutal text-brutal-muted">
-                    No tracks saved yet.
+                    No tracks saved yet
                   </p>
                   <Link
                     href="/musics"

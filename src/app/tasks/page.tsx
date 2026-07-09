@@ -372,7 +372,7 @@ const Tasks = () => {
                 ) : (
                   <div className="flex-1 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-brutal-ink/30 bg-brutal-paper text-center p-8">
                     <p className="text-sm font-bold uppercase tracking-brutal text-brutal-muted">
-                      {searchQuery ? "No matching tasks." : "No tasks found"}
+                      {searchQuery ? "No matching tasks" : "No tasks found"}
                     </p>
                   </div>
                 )}
