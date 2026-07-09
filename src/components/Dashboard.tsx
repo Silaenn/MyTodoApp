@@ -75,7 +75,7 @@ const Dashboard = ({
           initial="hidden"
           animate="visible"
           variants={sidebarVariants}
-          className="flex h-full flex-col justify-between p-6 md:p-3 lg:p-4 xl:p-6 overflow-y-auto"
+          className="flex h-full flex-col justify-between p-6 md:p-3 lg:p-4 xl:p-6 overflow-hidden"
         >
           <div>
             {/* Logo */}
