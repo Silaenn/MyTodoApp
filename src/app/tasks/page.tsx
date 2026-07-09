@@ -313,7 +313,7 @@ const Tasks = () => {
               animate="visible"
               variants={listContainerVariants}
               ref={scrollRef}
-              className="h-full overflow-y-auto "
+              className="h-full overflow-y-auto custom-scrollbar"
             >
               <div className={`min-h-full flex flex-col gap-4 pt-2 pb-4 ${isScrollable ? "px-2 sm:px-4" : ""}`}>
                 {filteredAndSortedTasks.length > 0 ? (

@@ -133,7 +133,6 @@ body::before {
 
 /* Custom Scrollbar Class */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 14px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
