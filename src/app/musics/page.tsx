@@ -72,14 +72,14 @@ const TrackCard = memo(({
         </div>
         <button
           onClick={() => toggleLike(track)}
-          className={`absolute right-1.5 top-1.5 sm:right-2 sm:top-2 rounded-sm border-2 border-brutal-ink p-2 sm:p-1.5 transition-all ${
+          className={`absolute right-1 top-2 sm:right-1 sm:top-2.5 rounded-sm border-2 border-brutal-ink p-1.5 transition-all ${
             liked
               ? "bg-brutal-accent text-brutal-paper shadow-brutal-sm"
               : "bg-brutal-paper text-brutal-ink hover:bg-brutal-secondary"
           }`}
           aria-label="Toggle favorite"
         >
-          <Heart size={14} className="sm:size-4" fill={liked ? "currentColor" : "none"} />
+          <Heart size={12} className="sm:size-4" fill={liked ? "currentColor" : "none"} />
         </button>
         </div>
 
@@ -306,9 +306,9 @@ const Musics = () => {
               initial="hidden"
               animate="visible"
               variants={contentVariants}
-              className="h-full overflow-y-auto custom-scrollbar flex flex-col scrollbar-gutter-stable"
+              className="h-full overflow-y-auto custom-scrollbar flex flex-col"
             >
-              <div className="flex-1 flex flex-col px-4 pt-2 pb-2">
+              <div className="flex-1 flex flex-col px-2 sm:px-4 pt-2 pb-2">
                 {/* Liked Playlist Section */}
                 {likedTracks.length > 0 && !searchExecuted && (
                   <div className="mb-8 sm:mb-12 shrink-0">
