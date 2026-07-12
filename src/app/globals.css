@@ -133,21 +133,28 @@ body::before {
 
 /* Custom Scrollbar Class */
 .custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-  border-left: none;
+  background: rgba(0,0,0,0.06);
+  border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--foreground);
+  background: var(--primary);
   border: none;
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  filter: brightness(0.85);
+}
+
+/* Firefox support for custom scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) rgba(0,0,0,0.06);
 }
 
 .scrollbar-gutter-stable {
