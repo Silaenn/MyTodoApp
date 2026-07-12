@@ -47,6 +47,7 @@ export function DialogDemo({
 
   // Sync internal open state with parent if needed
   const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen && loading) return;
     setOpen(newOpen);
     setError(null);
     if (onOpenChange) onOpenChange(newOpen);
@@ -107,7 +108,12 @@ export function DialogDemo({
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[448px] z-[100] border-4 border-brutal-ink bg-brutal-paper shadow-brutal-lg rounded-lg">
+      <DialogContent
+        className="sm:max-w-[448px] z-[100] border-4 border-brutal-ink bg-brutal-paper shadow-brutal-lg rounded-lg"
+        onEscapeKeyDown={(e) => { if (loading) e.preventDefault(); }}
+        onPointerDownOutside={(e) => { if (loading) e.preventDefault(); }}
+        onInteractOutside={(e) => { if (loading) e.preventDefault(); }}
+      >
         <form onSubmit={handleSubmit}>
           <DialogHeader className="border-b-2 border-brutal-ink pb-4 mb-5">
             <DialogTitle className="text-3xl font-black italic">
@@ -185,7 +191,8 @@ export function DialogDemo({
             <DialogClose asChild>
               <button
                 type="button"
-                className="brutal-btn brutal-btn-outline shadow-brutal-sm"
+                disabled={loading}
+                className="brutal-btn brutal-btn-outline shadow-brutal-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
