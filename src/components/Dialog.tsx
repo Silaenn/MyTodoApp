@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Dialog,
   DialogClose,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Edit2 } from "lucide-react";
+import { Plus, Edit2, Calendar } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -44,12 +44,17 @@ export function DialogDemo({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const [deadline, setDeadline] = useState(task?.deadline || "");
+  const deadlineRef = useRef<HTMLInputElement>(null);
 
   // Sync internal open state with parent if needed
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen && loading) return;
     setOpen(newOpen);
     setError(null);
+    if (newOpen) {
+      setDeadline(task?.deadline || "");
+    }
     if (onOpenChange) onOpenChange(newOpen);
   };
 
@@ -150,13 +155,26 @@ export function DialogDemo({
               >
                 Deadline
               </Label>
-              <Input
-                id="deadline"
-                name="deadline"
-                type="date"
-                defaultValue={task?.deadline}
-                className="brutal-input"
-              />
+              <div
+                className="relative h-11 cursor-pointer"
+                onClick={() => deadlineRef.current?.showPicker()}
+              >
+                <input
+                  ref={deadlineRef}
+                  id="deadline"
+                  name="deadline"
+                  type="date"
+                  value={deadline}
+                  onChange={(e) => setDeadline(e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                />
+                <div className="brutal-input flex items-center h-11 w-full px-4 pointer-events-none">
+                  <span className={`text-sm font-medium ${deadline ? "text-brutal-ink" : "text-brutal-muted"}`}>
+                    {deadline || "mm/dd/yyyy"}
+                  </span>
+                </div>
+                <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-brutal-muted" size={18} />
+              </div>
             </div>
 
             <div className="grid gap-2">
